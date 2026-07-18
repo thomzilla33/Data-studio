@@ -1651,7 +1651,7 @@ function renderEntities(){
       ${viewToggle(listState,'eView')}
       <button class="btn btn-primary" onclick="openCreateEntity()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New entity</button>
     </div>
-    ${filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`}
+    ${listState.view==='table' ? dtblView('entities',filtered,_entCols(),'entities') : (filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`)}
     ${vcallout('v2','Models &amp; Marketplace — group entities and tables into publishable models, browse pre-built marketplace models, and generate entities with AI.')}
   `;
 }
@@ -2053,7 +2053,7 @@ function renderTablesList(){
       ${viewToggle(tablesListState,'tlView')}
       <button class="btn btn-primary" onclick="openCreateTable()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New table</button>
     </div>
-    ${filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(tableRow).join('')}</div>`}`;
+    ${tablesListState.view==='table' ? dtblView('tables',filtered,_tblCols(),'tables') : (filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(tableRow).join('')}</div>`)}`;
 }
 function tableRow(t){
   const relN=(t.rels?t.rels.length:0);
@@ -2531,7 +2531,7 @@ function renderReferenceList(){
       ${viewToggle(refListState,'rlView')}
       <button class="btn btn-primary" onclick="openCreateReference()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New reference list</button>
     </div>
-    ${filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(refRow).join('')}</div>`}`;
+    ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : (filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(refRow).join('')}</div>`)}`;
 }
 function refRow(r){
   return `<div class="lrow" onclick="navigate('reference/${r.id}')">
@@ -2992,6 +2992,83 @@ function modelTableView(filtered){
     </div>
   </div>`;
 }
+/* ── Generic table view (reused by Entities / Tables / Reference) ── */
+function _numAbbr(s){ s=String(s).trim(); const m=s.match(/^([\d.]+)\s*([KMB]?)/i); if(!m) return 0; let n=parseFloat(m[1])||0; const u=(m[2]||'').toUpperCase(); if(u==='K')n*=1e3; else if(u==='M')n*=1e6; else if(u==='B')n*=1e9; return n; }
+function _ownerCell(k){ return `<span class="mcard-owner" style="font-size:12.5px;color:var(--t2)">${av(P(k),'sm')}${escapeHtml(P(k).n)}</span>`; }
+function _caret(st,col){ const active=st.sortCol===col; if(!active) return '<svg class="mtbl-caret" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3" opacity=".5"/></svg>'; return st.sortDir==='asc'?'<svg class="mtbl-caret on" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 9.5L8 5.5l4 4"/></svg>':'<svg class="mtbl-caret on" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6.5L8 10.5l4-4"/></svg>'; }
+function _tblState(s){ return ({entities:listState, tables:tablesListState, reference:refListState})[s]; }
+function _tblRender(s){ return ({entities:renderEntities, tables:renderTablesList, reference:renderReferenceList})[s]; }
+function tblSort(s,col){ const st=_tblState(s); if(st.sortCol===col) st.sortDir=st.sortDir==='asc'?'desc':'asc'; else { st.sortCol=col; st.sortDir='asc'; } _tblRender(s)(); }
+function tblPage(s,p){ _tblState(s).page=p; _tblRender(s)(); }
+function tblPerPage(s,n){ const st=_tblState(s); st.perPage=+n; st.page=1; _tblRender(s)(); }
+function tblSelToggle(s,id){ const st=_tblState(s); st.sel=st.sel||new Set(); st.sel.has(id)?st.sel.delete(id):st.sel.add(id); _tblRender(s)(); }
+function tblSelAll(s,ids){ const st=_tblState(s); st.sel=st.sel||new Set(); const all=ids.length>0&&ids.every(i=>st.sel.has(i)); ids.forEach(i=>all?st.sel.delete(i):st.sel.add(i)); _tblRender(s)(); }
+function dtblView(surface, rows, columns, hrefBase){
+  const st=_tblState(surface);
+  st.sortCol=st.sortCol||columns[0].key; st.sortDir=st.sortDir||'asc'; st.perPage=st.perPage||9; st.page=st.page||1; st.sel=st.sel||new Set();
+  const col=columns.find(c=>c.key===st.sortCol)||columns[0];
+  const sorted=rows.slice().sort((a,b)=>{ const va=col.sort(a), vb=col.sort(b); const c=va<vb?-1:va>vb?1:0; return st.sortDir==='asc'?c:-c; });
+  const per=st.perPage, total=sorted.length, pages=Math.max(1,Math.ceil(total/per)), page=Math.min(Math.max(1,st.page),pages);
+  const start=(page-1)*per, vis=sorted.slice(start,start+per);
+  const pageIds=vis.map(r=>r.id), allSel=pageIds.length>0&&pageIds.every(i=>st.sel.has(i));
+  const cb=(checked,onclick)=>`<button class="mtbl-cb ${checked?'on':''}" onclick="event.stopPropagation();${onclick}" role="checkbox" aria-checked="${checked}">${checked?'<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>':''}</button>`;
+  if(total===0) return `<div class="empty" style="padding:44px">No results match your filters.</div>`;
+  const idsJson=JSON.stringify(pageIds).replace(/"/g,'&quot;');
+  return `<div class="mtbl-wrap"><table class="mtbl">
+    <thead><tr>
+      <th class="mtbl-th mtbl-cbcol">${cb(allSel,`tblSelAll('${surface}',${idsJson})`)}</th>
+      ${columns.map(c=>`<th class="mtbl-th" ${c.sortable!==false?`onclick="tblSort('${surface}','${c.key}')"`:''}><span>${escapeHtml(c.label)}</span>${c.sortable!==false?_caret(st,c.key):''}</th>`).join('')}
+      <th class="mtbl-th mtbl-actcol"></th>
+    </tr></thead>
+    <tbody>
+      ${vis.map(r=>`<tr class="mtbl-r" onclick="navigate('${hrefBase}/${r.id}')">
+        <td class="mtbl-cbcol">${cb(st.sel.has(r.id),`tblSelToggle('${surface}','${r.id}')`)}</td>
+        ${columns.map(c=>`<td class="${c.tdcls||''}">${c.cell(r)}</td>`).join('')}
+        <td class="mtbl-actcol"><span class="mtbl-acts"><button class="lrow-menu" title="Open" onclick="event.stopPropagation();navigate('${hrefBase}/${r.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v7M13 3L7 9"/><path d="M11 13H4a1 1 0 0 1-1-1V5"/></svg></button><button class="lrow-menu" title="Actions" onclick="event.stopPropagation();toast('Row actions — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span></td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>
+  <div class="mtbl-foot">
+    <div class="mtbl-foot-l">Rows per page <span class="mtbl-per"><select onchange="tblPerPage('${surface}',this.value)">${[9,25,50].map(n=>`<option value="${n}" ${n===per?'selected':''}>${n}</option>`).join('')}</select></span></div>
+    <div class="mtbl-foot-r"><span class="mtbl-range">${start+1}–${Math.min(start+per,total)} of ${total} items</span>
+      <button class="mtbl-pg" ${page<=1?'disabled':''} onclick="tblPage('${surface}',${page-1})" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg></button>
+      <span class="mtbl-pgnum">${page} / ${pages}</span>
+      <button class="mtbl-pg" ${page>=pages?'disabled':''} onclick="tblPage('${surface}',${page+1})" aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+    </div>
+  </div>`;
+}
+function _entCols(){ return [
+  {key:'name',label:'Name',cell:e=>`<span class="mtbl-name">${escapeHtml(e.name)}</span>`,sort:e=>e.name.toLowerCase()},
+  {key:'model',label:'Model',cell:e=>_modelChip(e.model),sort:e=>(_model(e.model)||{name:''}).name.toLowerCase()},
+  {key:'domain',label:'Domain',cell:e=>`<span class="chip">${escapeHtml(e.domain)}</span>`,sort:e=>e.domain},
+  {key:'tables',label:'Tables',tdcls:'mtbl-num',cell:e=>e.tables.length,sort:e=>e.tables.length},
+  {key:'records',label:'Records',tdcls:'mtbl-num',cell:e=>escapeHtml(e.records),sort:e=>_numAbbr(e.records)},
+  {key:'status',label:'Status',cell:e=>_stPill(e.status),sort:e=>e.status},
+  {key:'owner',label:'Owner',cell:e=>_ownerCell(e.owner),sort:e=>P(e.owner).n.toLowerCase()},
+  {key:'updated',label:'Last modified',cell:e=>`<span class="mtbl-date">${escapeHtml(e.updated)}</span>`,sort:e=>_agoOrder(e.updated)},
+]; }
+function _tblCols(){ return [
+  {key:'alias',label:'Name',cell:t=>`<span class="mtbl-name">${escapeHtml(t.alias)}</span>`,sort:t=>t.alias.toLowerCase()},
+  {key:'model',label:'Model',cell:t=>_modelChip(t.model),sort:t=>(_model(t.model)||{name:''}).name.toLowerCase()},
+  {key:'entity',label:'Entity',cell:t=>_entityChip(t.entityId,t.entity),sort:t=>t.entity.toLowerCase()},
+  {key:'role',label:'Type',cell:t=>`<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>`,sort:t=>t.role},
+  {key:'cols',label:'Columns',tdcls:'mtbl-num',cell:t=>t.cols.length,sort:t=>t.cols.length},
+  {key:'rows',label:'Rows',tdcls:'mtbl-num',cell:t=>escapeHtml(t.rows),sort:t=>_numAbbr(t.rows)},
+  {key:'status',label:'Status',cell:t=>_stPill(t.status),sort:t=>t.status},
+  {key:'owner',label:'Owner',cell:t=>_ownerCell(t.owner),sort:t=>P(t.owner).n.toLowerCase()},
+  {key:'updated',label:'Last modified',cell:t=>`<span class="mtbl-date">${escapeHtml(t.updated)}</span>`,sort:t=>_agoOrder(t.updated)},
+]; }
+function _refCols(){ return [
+  {key:'name',label:'Name',cell:r=>`<span class="mtbl-name">${escapeHtml(r.name)}</span>`,sort:r=>r.name.toLowerCase()},
+  {key:'category',label:'Category',cell:r=>_catBadge(r.category),sort:r=>r.category},
+  {key:'origin',label:'Origin',cell:r=>_originBadge(r.origin),sort:r=>r.origin},
+  {key:'items',label:'Items',tdcls:'mtbl-num',cell:r=>r.values.length,sort:r=>r.values.length},
+  {key:'fields',label:'Fields',tdcls:'mtbl-num',cell:r=>r.fields,sort:r=>r.fields},
+  {key:'referencedBy',label:'Referenced by',tdcls:'mtbl-num',cell:r=>r.referencedBy,sort:r=>r.referencedBy},
+  {key:'status',label:'Status',cell:r=>_stPill(r.status),sort:r=>r.status},
+  {key:'owner',label:'Owner',cell:r=>_ownerCell(r.owner),sort:r=>P(r.owner).n.toLowerCase()},
+  {key:'updated',label:'Last modified',cell:r=>`<span class="mtbl-date">${escapeHtml(r.updated)}</span>`,sort:r=>_agoOrder(r.updated)},
+]; }
 function openModelPreview(id){
   const m=_model(id); if(!m) return;
   $('slideout').innerHTML=`
