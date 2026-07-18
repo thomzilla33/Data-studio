@@ -1651,7 +1651,7 @@ function renderEntities(){
       ${viewToggle(listState,'eView')}
       <button class="btn btn-primary" onclick="openCreateEntity()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New entity</button>
     </div>
-    ${listState.view==='table' ? dtblView('entities',filtered,_entCols(),'entities') : (filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`)}
+    ${listState.view==='table' ? dtblView('entities',filtered,_entCols(),'entities') : filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : listState.view==='grid' ? `<div class="mcard-grid">${filtered.map(entityCard).join('')}</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`}
     ${vcallout('v2','Models &amp; Marketplace — group entities and tables into publishable models, browse pre-built marketplace models, and generate entities with AI.')}
   `;
 }
@@ -2053,7 +2053,7 @@ function renderTablesList(){
       ${viewToggle(tablesListState,'tlView')}
       <button class="btn btn-primary" onclick="openCreateTable()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New table</button>
     </div>
-    ${tablesListState.view==='table' ? dtblView('tables',filtered,_tblCols(),'tables') : (filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(tableRow).join('')}</div>`)}`;
+    ${tablesListState.view==='table' ? dtblView('tables',filtered,_tblCols(),'tables') : filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>` : tablesListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(tableCard).join('')}</div>` : `<div class="lrows">${filtered.map(tableRow).join('')}</div>`}`;
 }
 function tableRow(t){
   const relN=(t.rels?t.rels.length:0);
@@ -2531,7 +2531,7 @@ function renderReferenceList(){
       ${viewToggle(refListState,'rlView')}
       <button class="btn btn-primary" onclick="openCreateReference()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New reference list</button>
     </div>
-    ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : (filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>`:`<div class="lrows">${filtered.map(refRow).join('')}</div>`)}`;
+    ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>` : refListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(refCard).join('')}</div>` : `<div class="lrows">${filtered.map(refRow).join('')}</div>`}`;
 }
 function refRow(r){
   return `<div class="lrow" onclick="navigate('reference/${r.id}')">
@@ -3069,6 +3069,39 @@ function _refCols(){ return [
   {key:'owner',label:'Owner',cell:r=>_ownerCell(r.owner),sort:r=>P(r.owner).n.toLowerCase()},
   {key:'updated',label:'Last modified',cell:r=>`<span class="mtbl-date">${escapeHtml(r.updated)}</span>`,sort:r=>_agoOrder(r.updated)},
 ]; }
+/* ── Grid (card) views for Entities / Tables / Reference ── */
+const _MI_TBL='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg>';
+const _MI_COL='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M2.5 6.5h11"/></svg>';
+const _MI_DB='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="4" rx="5" ry="2"/><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/></svg>';
+const _MI_ITEMS='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg>';
+const _MI_LINK='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 10a3 3 0 0 1 0-4l1-1a3 3 0 0 1 4 4M10 6a3 3 0 0 1 0 4l-1 1a3 3 0 0 1-4-4"/></svg>';
+function entityCard(e){
+  return `<div class="mcard" onclick="navigate('entities/${e.id}')">
+    <div class="mcard-head"><div class="mcard-title">${escapeHtml(e.name)}</div>${e.collab&&e.collab.length?avStack([e.owner].concat(e.collab),3):''}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${_modelChip(e.model)}<span class="chip">${escapeHtml(e.domain)}</span></div>
+    <div class="mcard-desc">${escapeHtml(e.desc)}</div>
+    <div class="mcard-meta">${_stPill(e.status)}<span class="metaico">${_MI_TBL}${e.tables.length} tables</span><span class="metaico">${_MI_DB}${escapeHtml(e.records)}</span></div>
+    <div class="mcard-foot"><span class="mcard-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="mcard-date">${escapeHtml(e.updated)}</span></div>
+  </div>`;
+}
+function tableCard(t){
+  return `<div class="mcard" onclick="navigate('tables/${t.id}')">
+    <div class="mcard-head"><div class="mcard-title">${escapeHtml(t.alias)}</div><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${t.collab&&t.collab.length?avStack([t.owner].concat(t.collab),3):''}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${_modelChip(t.model)}${_entityChip(t.entityId,t.entity)}</div>
+    <div class="mcard-desc">${escapeHtml(t.desc)}</div>
+    <div class="mcard-meta">${_stPill(t.status)}<span class="metaico">${_MI_COL}${t.cols.length} cols</span><span class="metaico">${_MI_DB}${escapeHtml(t.rows)}</span></div>
+    <div class="mcard-foot"><span class="mcard-owner">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span><span class="mcard-date">${escapeHtml(t.updated)}</span></div>
+  </div>`;
+}
+function refCard(r){
+  return `<div class="mcard" onclick="navigate('reference/${r.id}')">
+    <div class="mcard-head"><div class="mcard-title">${escapeHtml(r.name)}</div>${r.collab&&r.collab.length?avStack([r.owner].concat(r.collab),3):''}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${_catBadge(r.category)}${_originBadge(r.origin)}</div>
+    <div class="mcard-desc">${escapeHtml(r.desc)}</div>
+    <div class="mcard-meta">${_stPill(r.status)}<span class="metaico">${_MI_ITEMS}${r.values.length} items</span><span class="metaico">${_MI_LINK}${r.referencedBy} refs</span></div>
+    <div class="mcard-foot"><span class="mcard-owner">${av(P(r.owner),'sm')}${escapeHtml(P(r.owner).n)}</span><span class="mcard-date">${escapeHtml(r.updated)}</span></div>
+  </div>`;
+}
 function openModelPreview(id){
   const m=_model(id); if(!m) return;
   $('slideout').innerHTML=`
