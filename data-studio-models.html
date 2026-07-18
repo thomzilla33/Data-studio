@@ -1420,6 +1420,41 @@ html.theme-light .vw-seg button.on{background:#fff}
 .chip-model{font-weight:600; color:var(--t1)}
 .flt-btn{display:inline-flex; align-items:center; gap:7px; height:40px; padding:0 14px; border-radius:10px; border:1px solid var(--field-border); background:var(--field-bg); color:var(--t2); font-size:13px; font-weight:500; cursor:pointer}
 .flt-btn:hover{color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
+
+/* ── Table view (spreadsheet-style list) ── */
+.mtbl-wrap{border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); overflow-x:auto}
+.mtbl{width:100%; min-width:860px; border-collapse:collapse; font-size:13px}
+.mtbl thead th{position:sticky; top:0; background:var(--table-header-bg,var(--muted)); text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--table-header-text,var(--t3)); padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; user-select:none}
+.mtbl-th{cursor:default}
+.mtbl-th[onclick]{cursor:pointer}
+.mtbl-th span{vertical-align:middle}
+.mtbl-th[onclick]:hover{color:var(--t1)}
+.mtbl-caret{margin-left:5px; vertical-align:middle; color:var(--t3)}
+.mtbl-caret.on{color:var(--primary)}
+.mtbl-cbcol{width:44px; text-align:center}
+.mtbl-actcol{width:72px}
+.mtbl tbody td{padding:13px 14px; border-bottom:1px solid var(--line); color:var(--t2); vertical-align:middle}
+.mtbl-r{cursor:pointer; transition:background .1s}
+.mtbl-r:last-child td{border-bottom:none}
+.mtbl-r:hover{background:var(--table-row-hover-bg,var(--hover))}
+.mtbl-name{font-weight:700; color:var(--t1); min-width:130px}
+.mtbl-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--primary); margin-left:7px; vertical-align:middle}
+.mtbl-desc{color:var(--t2); max-width:340px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.mtbl-num{font-weight:600; color:var(--t1)}
+.mtbl-date{color:var(--t2); white-space:nowrap}
+.mtbl-cb{width:18px; height:18px; border-radius:5px; border:1.5px solid var(--field-border,var(--line-strong)); background:var(--field-bg,transparent); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0; vertical-align:middle}
+.mtbl-cb.on{background:var(--primary); border-color:var(--primary)}
+.mtbl-acts{display:inline-flex; gap:2px; opacity:0; transition:opacity .1s}
+.mtbl-r:hover .mtbl-acts{opacity:1}
+.mtbl-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; font-size:12.5px; color:var(--t2); flex-wrap:wrap}
+.mtbl-foot-l{display:flex; align-items:center; gap:8px}
+.mtbl-per select{height:30px; border-radius:8px; border:1px solid var(--field-border); background:var(--field-bg); color:var(--t1); font-size:12.5px; padding:0 6px; cursor:pointer}
+.mtbl-foot-r{display:flex; align-items:center; gap:10px}
+.mtbl-range{color:var(--t3)}
+.mtbl-pg{width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--field-border); background:var(--field-bg); color:var(--t2); border-radius:8px; cursor:pointer}
+.mtbl-pg:hover:not([disabled]){color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
+.mtbl-pg[disabled]{opacity:.4; cursor:not-allowed}
+.mtbl-pgnum{font-weight:600; color:var(--t1)}
 </style>
 </head>
 <body>
@@ -2837,11 +2872,20 @@ function viewToggle(state, fn){
 }
 
 /* Models render */
-const modelsState={ search:'', category:'all', origin:'all', status:'all', owner:'all', view:'grid', page:1 };
+const modelsState={ search:'', category:'all', origin:'all', status:'all', owner:'all', view:'grid', page:1, perPage:9, sortCol:'name', sortDir:'asc', sel:new Set() };
 function mSearch(v){ modelsState.search=v; modelsState.page=1; renderModels(); setTimeout(()=>{const el=$('mdlSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function mSet(k,v){ modelsState[k]=v; modelsState.page=1; renderModels(); }
-function mView(v){ if(v==='table'){ toast('Table view — coming soon'); return; } modelsState.view=v; renderModels(); }
+function mView(v){ modelsState.view=v; renderModels(); }
 function mClear(){ modelsState.category='all'; modelsState.origin='all'; modelsState.status='all'; modelsState.owner='all'; modelsState.page=1; renderModels(); }
+function mSort(col){ if(modelsState.sortCol===col){ modelsState.sortDir=modelsState.sortDir==='asc'?'desc':'asc'; } else { modelsState.sortCol=col; modelsState.sortDir='asc'; } renderModels(); }
+function mPerPage(n){ modelsState.perPage=+n; modelsState.page=1; renderModels(); }
+function mTablePage(p){ modelsState.page=p; renderModels(); }
+function mSelToggle(id){ const s=modelsState.sel; s.has(id)?s.delete(id):s.add(id); renderModels(); }
+function mSelAll(ids){ const s=modelsState.sel; const all=ids.every(i=>s.has(i)); ids.forEach(i=>all?s.delete(i):s.add(i)); renderModels(); }
+function _mSortVal(m,col){ return col==='entities'?m.entities : col==='owner'?P(m.owner).n.toLowerCase() : col==='updated'?_agoOrder(m.updated) : String(m[col]||'').toLowerCase(); }
+function _agoOrder(s){ // rough recency rank: "just now" < "Nh"/"Nd ago" < explicit dates
+  s=String(s); if(/just now/.test(s)) return 0; const m=s.match(/^(\d+)([hd])/); if(m) return (m[2]==='h'?1:100)*(+m[1]); if(/ago/.test(s)) return 500; const d=Date.parse(s); return isNaN(d)?9e14:(9e15-d)/1e9; }
+function _mSorted(arr){ const {sortCol,sortDir}=modelsState; const s=arr.slice().sort((a,b)=>{ const va=_mSortVal(a,sortCol),vb=_mSortVal(b,sortCol); const c=va<vb?-1:va>vb?1:0; return sortDir==='asc'?c:-c; }); return s; }
 function _modelsFiltered(){
   const q=modelsState.search.toLowerCase();
   return MODELS.filter(m=>{
@@ -2855,7 +2899,8 @@ function _modelsFiltered(){
 }
 function renderModels(){
   _dsfRerender=renderModels;
-  const filtered=_modelsFiltered().sort((a,b)=>a.name.localeCompare(b.name));
+  const filtered=_modelsFiltered();
+  const alpha=filtered.slice().sort((a,b)=>a.name.localeCompare(b.name));
   const cats=[...new Set(MODELS.map(m=>m.category))].sort();
   const owners=[...new Set(MODELS.map(m=>m.owner))];
   const catChip=modelsState.category!=='all'?{label:modelsState.category,onremove:"mSet('category','all')"}:null;
@@ -2863,9 +2908,11 @@ function renderModels(){
   const stChip=modelsState.status!=='all'?{label:modelsState.status,onremove:"mSet('status','all')"}:null;
   const ownChip=modelsState.owner!=='all'?{label:P(modelsState.owner).n,onremove:"mSet('owner','all')"}:null;
   const filtering=modelsState.category!=='all'||modelsState.origin!=='all'||modelsState.status!=='all'||modelsState.owner!=='all';
-  const body = modelsState.view==='list'
-    ? `<div class="dtable">${filtered.map(modelRow).join('')||`<div class="empty" style="padding:44px">No models match.</div>`}</div>`
-    : `<div class="mcard-grid">${filtered.map(modelCard).join('')}</div>${filtered.length===0?`<div class="empty" style="padding:44px">No models match your filters.</div>`:''}`;
+  const body = modelsState.view==='table'
+    ? modelTableView(filtered)
+    : modelsState.view==='list'
+    ? `<div class="dtable">${alpha.map(modelRow).join('')||`<div class="empty" style="padding:44px">No models match.</div>`}</div>`
+    : `<div class="mcard-grid">${alpha.map(modelCard).join('')}</div>${filtered.length===0?`<div class="empty" style="padding:44px">No models match your filters.</div>`:''}`;
   $('content').innerHTML = pageShell('models') + `
     <div class="tbar">
       <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="mdlSearch" type="text" placeholder="Search models…" value="${escapeHtml(modelsState.search)}" oninput="mSearch(this.value)" autocomplete="off"></label>
@@ -2896,6 +2943,53 @@ function modelRow(m){
     <div>${m.version?`<span class="ver-chip">${m.version}</span>`:'<span style="color:var(--field-placeholder)">—</span>'}</div>
     <div class="mcard-owner" style="font-size:12.5px;color:var(--t2)">${av(P(m.owner),'sm')}${escapeHtml(P(m.owner).n)}</div>
     <div class="mcard-date">${escapeHtml(m.updated)}</div>
+  </div>`;
+}
+function _sortCaret(col){
+  const active=modelsState.sortCol===col;
+  if(!active) return '<svg class="mtbl-caret" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3" opacity=".5"/></svg>';
+  return modelsState.sortDir==='asc'
+    ? '<svg class="mtbl-caret on" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 9.5L8 5.5l4 4"/></svg>'
+    : '<svg class="mtbl-caret on" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6.5L8 10.5l4-4"/></svg>';
+}
+function modelTableView(filtered){
+  const rows=_mSorted(filtered);
+  const per=modelsState.perPage, total=rows.length, pages=Math.max(1,Math.ceil(total/per));
+  const page=Math.min(Math.max(1,modelsState.page),pages);
+  const start=(page-1)*per, vis=rows.slice(start,start+per);
+  const pageIds=vis.map(m=>m.id), allSel=pageIds.length>0&&pageIds.every(i=>modelsState.sel.has(i));
+  const th=(col,label,extra)=>`<th class="mtbl-th ${extra||''}" onclick="mSort('${col}')"><span>${label}</span>${_sortCaret(col)}</th>`;
+  const cb=(checked,onclick)=>`<button class="mtbl-cb ${checked?'on':''}" onclick="event.stopPropagation();${onclick}" role="checkbox" aria-checked="${checked}">${checked?'<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>':''}</button>`;
+  if(total===0) return `<div class="empty" style="padding:44px">No models match your filters.</div>`;
+  return `<div class="mtbl-wrap"><table class="mtbl">
+    <thead><tr>
+      <th class="mtbl-th mtbl-cbcol">${cb(allSel,`mSelAll(${JSON.stringify(pageIds).replace(/"/g,'&quot;')})`)}</th>
+      ${th('name','Name')}${th('origin','Origin')}
+      <th class="mtbl-th">Description</th>
+      ${th('entities','Entities')}${th('status','Status')}${th('owner','Owner')}${th('updated','Last modified')}
+      <th class="mtbl-th mtbl-actcol"></th>
+    </tr></thead>
+    <tbody>
+      ${vis.map(m=>`<tr class="mtbl-r" onclick="navigate('models/${m.id}')">
+        <td class="mtbl-cbcol">${cb(modelsState.sel.has(m.id),`mSelToggle('${m.id}')`)}</td>
+        <td class="mtbl-name">${escapeHtml(m.name)}${m.origin==='Implemented'?'<span class="mtbl-dot" title="Implemented from marketplace"></span>':''}</td>
+        <td>${_origin(m.origin)}</td>
+        <td class="mtbl-desc">${escapeHtml(m.desc)}</td>
+        <td class="mtbl-num">${m.entities}</td>
+        <td>${_stPill(m.status)}</td>
+        <td><span class="mcard-owner" style="font-size:12.5px;color:var(--t2)">${av(P(m.owner),'sm')}${escapeHtml(P(m.owner).n)}</span></td>
+        <td class="mtbl-date">${escapeHtml(m.updated)}</td>
+        <td class="mtbl-actcol"><span class="mtbl-acts"><button class="lrow-menu" title="Open" onclick="event.stopPropagation();navigate('models/${m.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v7M13 3L7 9"/><path d="M11 13H4a1 1 0 0 1-1-1V5"/></svg></button><button class="lrow-menu" title="Actions" onclick="event.stopPropagation();toast('Row actions — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span></td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>
+  <div class="mtbl-foot">
+    <div class="mtbl-foot-l">Rows per page <span class="mtbl-per"><select onchange="mPerPage(this.value)">${[9,25,50].map(n=>`<option value="${n}" ${n===per?'selected':''}>${n}</option>`).join('')}</select></span></div>
+    <div class="mtbl-foot-r"><span class="mtbl-range">${total===0?0:start+1}–${Math.min(start+per,total)} of ${total} items</span>
+      <button class="mtbl-pg" ${page<=1?'disabled':''} onclick="mTablePage(${page-1})" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg></button>
+      <span class="mtbl-pgnum">${page} / ${pages}</span>
+      <button class="mtbl-pg" ${page>=pages?'disabled':''} onclick="mTablePage(${page+1})" aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+    </div>
   </div>`;
 }
 function openModelPreview(id){
