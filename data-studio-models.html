@@ -1420,6 +1420,15 @@ html.theme-light .vw-seg button.on{background:#fff}
 .chip-model{font-weight:600; color:var(--t1)}
 .flt-btn{display:inline-flex; align-items:center; gap:7px; height:40px; padding:0 14px; border-radius:10px; border:1px solid var(--field-border); background:var(--field-bg); color:var(--t2); font-size:13px; font-weight:500; cursor:pointer}
 .flt-btn:hover{color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
+.flt-badge{display:inline-flex; align-items:center; justify-content:center; min-width:17px; height:17px; padding:0 4px; border-radius:9px; background:var(--primary); color:#fff; font-size:10.5px; font-weight:800; margin-left:3px}
+
+/* ── Filters slideout (all-filters) ── */
+.flt-opts{display:flex; flex-wrap:wrap; gap:8px}
+.flt-opt{display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px; border-radius:8px; border:1px solid var(--field-border); background:var(--field-bg); color:var(--t2); font-size:12.5px; font-weight:500; cursor:pointer; transition:background .1s, border-color .1s, color .1s}
+.flt-opt:hover{color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
+.flt-opt.on{background:var(--tag-informative-bg,rgba(43,127,255,0.14)); color:var(--tag-informative-fg,#7db1ff); border-color:var(--tag-informative-bd,rgba(43,127,255,0.4))}
+.flt-c{font-size:11px; font-weight:700; color:var(--field-placeholder)}
+.flt-opt.on .flt-c{color:var(--tag-informative-fg,#7db1ff)}
 
 /* ── Table view (spreadsheet-style list) ── */
 .mtbl-wrap{border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); overflow-x:auto}
@@ -1610,7 +1619,7 @@ function dsfDrop(id, placeholder, chip, options){
 function setSearch(v){ listState.search=v; renderEntities(); setTimeout(()=>{const el=$('entSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function eSet(k,v){ listState[k]=v; renderEntities(); }
 function eView(v){ listState.view=v; renderEntities(); }
-function clearFilters(){ listState.model='all'; listState.domain='all'; listState.status='all'; listState.owner='all'; renderEntities(); }
+function clearFilters(){ listState.model='all'; listState.domain='all'; listState.status='all'; listState.owner='all'; listState.tags=[]; renderEntities(); }
 document.addEventListener('click', e=>{ if(_dsfOpen && !e.target.closest('.dsf-drop')){ _dsfOpen=null; _dsfRerender(); } });
 
 function _filtered(){
@@ -1620,6 +1629,7 @@ function _filtered(){
     if(listState.domain!=='all' && e.domain!==listState.domain) return false;
     if(listState.status!=='all' && e.status!==listState.status) return false;
     if(listState.owner!=='all' && e.owner!==listState.owner) return false;
+    if(listState.tags&&listState.tags.length && !listState.tags.some(t=>(e.tags||[]).includes(t))) return false;
     if(q && !(e.name.toLowerCase().includes(q) || e.desc.toLowerCase().includes(q) || (_model(e.model)||{name:''}).name.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -1645,7 +1655,7 @@ function renderEntities(){
       ${dsfDrop('fDomain','Domain', dc, [{label:'All domains',selected:listState.domain==='all',onclick:"dsfPickSingle();eSet('domain','all')"}].concat(domains.map(d=>({label:d,count:ENTITIES.filter(e=>e.domain===d).length,selected:listState.domain===d,onclick:`dsfPickSingle();eSet('domain','${d}')`}))))}
       ${dsfDrop('fStatus','Status', stc, [{label:'All statuses',selected:listState.status==='all',onclick:"dsfPickSingle();eSet('status','all')"}].concat(['Published','Draft','Pending changes','Deprecated'].map(s=>({label:s,selected:listState.status===s,onclick:`dsfPickSingle();eSet('status','${s}')`}))))}
       ${dsfDrop('fOwner','Owner', oc, [{label:'All owners',selected:listState.owner==='all',onclick:"dsfPickSingle();eSet('owner','all')"}].concat(owners.map(o=>({label:P(o).n,selected:listState.owner===o,onclick:`dsfPickSingle();eSet('owner','${o}')`}))))}
-      <button class="flt-btn" onclick="toast('More filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters</button>
+      <button class="flt-btn" onclick="openFilters('entities')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters${_fltCount('entities')?` <span class="flt-badge">${_fltCount('entities')}</span>`:''}</button>
       ${filtering ? `<button class="dsf-clear" onclick="clearFilters()">Clear</button>` : ''}
       <span class="tbar-spring"></span>
       ${viewToggle(listState,'eView')}
@@ -2016,7 +2026,7 @@ function tlModel(v){ tablesListState.model=v; renderTablesList(); }
 function tlType(v){ tablesListState.type=v; renderTablesList(); }
 function tlStatus(v){ tablesListState.status=v; renderTablesList(); }
 function tlView(v){ tablesListState.view=v; renderTablesList(); }
-function tlClear(){ tablesListState.model='all'; tablesListState.entity='all'; tablesListState.type='all'; tablesListState.status='all'; renderTablesList(); }
+function tlClear(){ tablesListState.model='all'; tablesListState.entity='all'; tablesListState.type='all'; tablesListState.status='all'; tablesListState.tags=[]; renderTablesList(); }
 function _tablesFiltered(){
   const q=tablesListState.search.toLowerCase();
   return TABLES.filter(t=>{
@@ -2024,6 +2034,7 @@ function _tablesFiltered(){
     if(tablesListState.entity!=='all' && t.entityId!==tablesListState.entity) return false;
     if(tablesListState.type!=='all' && t.role!==tablesListState.type) return false;
     if(tablesListState.status!=='all' && t.status!==tablesListState.status) return false;
+    if(tablesListState.tags&&tablesListState.tags.length && !tablesListState.tags.some(x=>(t.tags||[]).includes(x))) return false;
     if(q && !(t.id.toLowerCase().includes(q)||t.alias.toLowerCase().includes(q)||t.entity.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -2047,7 +2058,7 @@ function renderTablesList(){
       ${dsfDrop('tblEntity','Entity', ec, [{label:'All entities',selected:tablesListState.entity==='all',onclick:"dsfPickSingle();tlEntity('all')"}].concat(ents.map(e=>({label:e.name,selected:tablesListState.entity===e.id,onclick:`dsfPickSingle();tlEntity('${e.id}')`}))))}
       ${dsfDrop('tblType','Type', tc, [{label:'All types',selected:tablesListState.type==='all',onclick:"dsfPickSingle();tlType('all')"},{label:'Primary',count:TABLES.filter(t=>t.role==='Primary').length,selected:tablesListState.type==='Primary',onclick:"dsfPickSingle();tlType('Primary')"},{label:'Secondary',count:TABLES.filter(t=>t.role==='Secondary').length,selected:tablesListState.type==='Secondary',onclick:"dsfPickSingle();tlType('Secondary')"}])}
       ${dsfDrop('tblStatus','Status', stc, [{label:'All statuses',selected:tablesListState.status==='all',onclick:"dsfPickSingle();tlStatus('all')"}].concat(['Published','Draft','Archived'].map(s=>({label:s,count:TABLES.filter(t=>t.status===s).length,selected:tablesListState.status===s,onclick:`dsfPickSingle();tlStatus('${s}')`}))))}
-      <button class="flt-btn" onclick="toast('More filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters</button>
+      <button class="flt-btn" onclick="openFilters('tables')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters${_fltCount('tables')?` <span class="flt-badge">${_fltCount('tables')}</span>`:''}</button>
       ${filtering?`<button class="dsf-clear" onclick="tlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(tablesListState,'tlView')}
@@ -2500,13 +2511,14 @@ const refListState = { search:'', category:'all', status:'all', origin:'all', vi
 function rlSearch(v){ refListState.search=v; renderReferenceList(); setTimeout(()=>{const el=$('refSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function rlSet(k,v){ refListState[k]=v; renderReferenceList(); }
 function rlView(v){ refListState.view=v; renderReferenceList(); }
-function rlClear(){ refListState.category='all'; refListState.status='all'; refListState.origin='all'; renderReferenceList(); }
+function rlClear(){ refListState.category='all'; refListState.status='all'; refListState.origin='all'; refListState.tags=[]; renderReferenceList(); }
 function _refFiltered(){
   const q=refListState.search.toLowerCase();
   return REFDATA.filter(r=>{
     if(refListState.category!=='all' && r.category!==refListState.category) return false;
     if(refListState.status!=='all' && r.status!==refListState.status) return false;
     if(refListState.origin!=='all' && r.origin!==refListState.origin) return false;
+    if(refListState.tags&&refListState.tags.length && !refListState.tags.some(x=>(r.tags||[]).includes(x))) return false;
     if(q && !(r.name.toLowerCase().includes(q)||r.id.toLowerCase().includes(q)||r.desc.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -2525,7 +2537,7 @@ function renderReferenceList(){
       ${dsfDrop('rlCat','Category', cc, [{label:'All categories',selected:refListState.category==='all',onclick:"dsfPickSingle();rlSet('category','all')"}].concat(cats.map(c=>({label:c,count:REFDATA.filter(r=>r.category===c).length,selected:refListState.category===c,onclick:`dsfPickSingle();rlSet('category','${c}')`}))))}
       ${dsfDrop('rlStatus','Status', stc, [{label:'All statuses',selected:refListState.status==='all',onclick:"dsfPickSingle();rlSet('status','all')"}].concat(['Published','Draft','Archived'].map(s=>({label:s,count:REFDATA.filter(r=>r.status===s).length,selected:refListState.status===s,onclick:`dsfPickSingle();rlSet('status','${s}')`}))))}
       ${dsfDrop('rlOrigin','Origin', oc, [{label:'All origins',selected:refListState.origin==='all',onclick:"dsfPickSingle();rlSet('origin','all')"}].concat(['Custom','From catalog'].map(o=>({label:o,count:REFDATA.filter(r=>r.origin===o).length,selected:refListState.origin===o,onclick:`dsfPickSingle();rlSet('origin','${o}')`}))))}
-      <button class="flt-btn" onclick="toast('More filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters</button>
+      <button class="flt-btn" onclick="openFilters('reference')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters${_fltCount('reference')?` <span class="flt-badge">${_fltCount('reference')}</span>`:''}</button>
       ${filtering?`<button class="dsf-clear" onclick="rlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(refListState,'rlView')}
@@ -3180,6 +3192,61 @@ function saveNewModel(){
   MODELS.unshift({id, name, origin:$('nmOri').value, category:$('nmCat').value, status:'Draft', entities:0, owner:'sc', collab:[], updated:'just now', tags:[], desc:($('nmDesc').value||'').trim()});
   closeModal(); toast('“'+name+'” created','ok'); renderModels();
 }
+
+/* ──────────────────────────────────────────────────────────────
+   ALL-FILTERS SLIDEOUT (draft → Apply / Clear) — Entities / Tables / Reference
+   ────────────────────────────────────────────────────────────── */
+function _fltCfg(surface){
+  const uniq=a=>[...new Set(a)];
+  const cnt=(rows,key,val)=>rows.filter(r=>r[key]===val).length;
+  const tagOpts=rows=>uniq(rows.flatMap(r=>r.tags||[])).sort().map(v=>({value:v,label:v,count:rows.filter(r=>(r.tags||[]).includes(v)).length}));
+  if(surface==='entities'){ const rows=ENTITIES; return {label:'Entities', state:listState, render:renderEntities, groups:[
+    {key:'model',label:'Model',options:uniq(rows.map(r=>r.model)).map(v=>({value:v,label:(_model(v)||{name:v}).name,count:cnt(rows,'model',v)}))},
+    {key:'domain',label:'Domain',options:uniq(rows.map(r=>r.domain)).map(v=>({value:v,label:v,count:cnt(rows,'domain',v)}))},
+    {key:'status',label:'Status',options:['Published','Draft','Pending changes','Deprecated'].map(v=>({value:v,label:v,count:cnt(rows,'status',v)}))},
+    {key:'owner',label:'Owner',options:uniq(rows.map(r=>r.owner)).map(v=>({value:v,label:P(v).n,count:cnt(rows,'owner',v)}))},
+    {key:'tags',label:'Tags',multi:true,options:tagOpts(rows)},
+  ]}; }
+  if(surface==='tables'){ const rows=TABLES; return {label:'Tables', state:tablesListState, render:renderTablesList, groups:[
+    {key:'model',label:'Model',options:uniq(rows.map(r=>r.model)).map(v=>({value:v,label:(_model(v)||{name:v}).name,count:cnt(rows,'model',v)}))},
+    {key:'entity',label:'Entity',options:uniq(rows.map(r=>r.entityId)).map(v=>({value:v,label:(ENTITIES.find(e=>e.id===v)||{}).name||v,count:cnt(rows,'entityId',v)}))},
+    {key:'type',label:'Type',options:['Primary','Secondary'].map(v=>({value:v,label:v,count:cnt(rows,'role',v)}))},
+    {key:'status',label:'Status',options:['Published','Draft','Archived'].map(v=>({value:v,label:v,count:cnt(rows,'status',v)}))},
+    {key:'tags',label:'Tags',multi:true,options:tagOpts(rows)},
+  ]}; }
+  const rows=REFDATA; return {label:'Reference Data', state:refListState, render:renderReferenceList, groups:[
+    {key:'category',label:'Category',options:uniq(rows.map(r=>r.category)).map(v=>({value:v,label:v,count:cnt(rows,'category',v)}))},
+    {key:'origin',label:'Origin',options:['Custom','From catalog'].map(v=>({value:v,label:v,count:cnt(rows,'origin',v)}))},
+    {key:'status',label:'Status',options:['Published','Draft','Archived'].map(v=>({value:v,label:v,count:cnt(rows,'status',v)}))},
+    {key:'tags',label:'Tags',multi:true,options:tagOpts(rows)},
+  ]};
+}
+function _fltCount(surface){ const cfg=_fltCfg(surface); const st=cfg.state; return cfg.groups.reduce((n,g)=>n+(g.multi?((st[g.key]||[]).length):(st[g.key]&&st[g.key]!=='all'?1:0)),0); }
+let _fltDraft=null;
+function openFilters(surface){
+  const cfg=_fltCfg(surface); const st=cfg.state;
+  _fltDraft={surface}; cfg.groups.forEach(g=>{ _fltDraft[g.key]= g.multi ? (st[g.key]||[]).slice() : (st[g.key]||'all'); });
+  _renderFilters();
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
+function _renderFilters(){
+  const cfg=_fltCfg(_fltDraft.surface), d=_fltDraft;
+  const active=cfg.groups.reduce((n,g)=>n+(g.multi?d[g.key].length:(d[g.key]!=='all'?1:0)),0);
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">Filters</div><div class="so-internal">${escapeHtml(cfg.label)}${active?` · ${active} active`:''}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${cfg.groups.map(g=>`<div class="so-sec"><div class="so-sec-h">${escapeHtml(g.label)}</div><div class="flt-opts">
+        ${g.multi
+          ? g.options.map(o=>`<button class="flt-opt ${d[g.key].includes(o.value)?'on':''}" onclick="_fltTag('${g.key}','${escapeHtml(o.value)}')">${escapeHtml(o.label)}${o.count!=null?`<span class="flt-c">${o.count}</span>`:''}</button>`).join('')
+          : [{value:'all',label:'All'}].concat(g.options).map(o=>`<button class="flt-opt ${String(d[g.key])===String(o.value)?'on':''}" onclick="_fltPick('${g.key}','${escapeHtml(o.value)}')">${escapeHtml(o.label)}${o.count!=null?`<span class="flt-c">${o.count}</span>`:''}</button>`).join('')
+        }</div></div>`).join('')}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="_fltClear()">Clear all</button><button class="btn btn-primary" onclick="_fltApply()">Apply filters</button></div>`;
+}
+function _fltPick(key,val){ _fltDraft[key]=val; _renderFilters(); }
+function _fltTag(key,val){ const a=_fltDraft[key]; const i=a.indexOf(val); i<0?a.push(val):a.splice(i,1); _renderFilters(); }
+function _fltClear(){ const cfg=_fltCfg(_fltDraft.surface); cfg.groups.forEach(g=>{ _fltDraft[g.key]= g.multi?[]:'all'; }); _renderFilters(); }
+function _fltApply(){ const cfg=_fltCfg(_fltDraft.surface), st=cfg.state; cfg.groups.forEach(g=>{ st[g.key]= g.multi? _fltDraft[g.key].slice() : _fltDraft[g.key]; }); st.page=1; closeSlideout(); cfg.render(); }
 
 /* ── Routing ── */
 function navigate(route){ location.hash = '#/'+route; }
