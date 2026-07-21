@@ -1022,8 +1022,7 @@ html.theme-light .tb-search kbd{background:rgba(15,23,42,0.05)}
 .app{display:flex; padding-top:56px; min-height:100vh}
 .sidebar{position:fixed; top:64px; left:8px; bottom:8px; width:224px; background:var(--sb-bg); border:1px solid rgba(255,255,255,0.06);
   border-radius:16px; box-shadow:8px 8px 16px rgba(0,0,0,0.28); display:flex; flex-direction:column; padding:12px 10px; z-index:10}
-.sb-head{display:flex; align-items:center; justify-content:space-between; padding:6px 8px 10px}
-.sb-title{font-size:13px; font-weight:700; letter-spacing:-.01em; color:rgba(255,255,255,0.92)}
+.sb-head{display:flex; align-items:center; justify-content:flex-end; padding:2px 4px 8px}
 .sb-collapse{width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:none; background:transparent; color:rgba(255,255,255,0.45); border-radius:7px; cursor:pointer}
 .sb-collapse:hover{background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.85)}
 .sb-item{display:flex; align-items:center; gap:11px; width:100%; height:36px; padding:0 10px; border-radius:9px; border:none; background:transparent;
@@ -1159,9 +1158,14 @@ html.theme-light .elist{background:#fff}
 .placeholder-t{font-size:15px; font-weight:600; color:var(--t1); margin-bottom:6px}
 
 /* ── ENTITY DETAIL ── */
-.breadcrumb{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--t3); margin-bottom:14px}
-.breadcrumb a{color:var(--t2); text-decoration:none; cursor:pointer}
-.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb{font-size:12.5px; margin-bottom:14px}
+.breadcrumb ol{list-style:none; margin:0; padding:0; display:flex; align-items:center; gap:7px; flex-wrap:wrap}
+.breadcrumb li{display:flex; align-items:center; min-width:0}
+.breadcrumb a{color:var(--t3); text-decoration:none; cursor:pointer; border-radius:4px; transition:color .12s}
+.breadcrumb a:hover{color:var(--accent); text-decoration:underline; text-underline-offset:2px}
+.breadcrumb a:focus-visible{outline:2px solid var(--field-border-focus,var(--primary)); outline-offset:2px; color:var(--accent)}
+.crumb-sep{color:var(--field-placeholder); user-select:none}
+.crumb-current{color:var(--t2); font-weight:600; max-width:min(46vw,320px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .detail-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:18px}
 .dh-l{flex:1; min-width:0}
 .dh-title-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
@@ -1534,7 +1538,7 @@ html:not(.theme-light) .diag-hint-pill{background:var(--surface-raised,#131C2E)}
 <div class="app">
   <!-- Sidebar: Data Studio modules -->
   <nav class="sidebar">
-    <div class="sb-head"><span class="sb-title">Data Studio</span><button class="sb-collapse" title="Collapse sidebar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 3v10"/></svg></button></div>
+    <div class="sb-head"><button class="sb-collapse" title="Collapse sidebar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 3v10"/></svg></button></div>
     <button class="sb-item" onclick="toast('Home — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7L8 2.5 13.5 7M4 6.5V13h8V6.5"/></svg> Home</button>
     <button class="sb-item" onclick="toast('Inbox — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l1.5-6h9L14 9v3.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V9Z"/><path d="M2 9h3l1 1.5h4L11 9h3"/></svg> Inbox</button>
     <div class="sb-sep"></div>
@@ -1791,7 +1795,7 @@ function renderEntityDetail(id){
   const cnt = { tables:e.tables.length, relationships:(e.rels||[]).length, privileges:5+(e.cprivs||[]).length, api:endpoints.length };
   const tabs = [['tables','Tables'],['relationships','Relationships'],['privileges','Privileges'],['api','API contracts']];
   $('content').innerHTML = `
-    <div class="breadcrumb"><a onclick="navigate('models')">Data Studio</a> › <a onclick="navigate('entities')">Entities</a> › <span style="color:var(--t2)">${escapeHtml(e.name)}</span></div>
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:e.name}])}
     <div class="detail-head">
       <div class="dh-l">
         <div class="dh-title-row"><span class="lrow-ic" style="width:30px;height:30px">${_IC_ENTITY}</span><span class="dh-title">${escapeHtml(e.name)}</span>${_modelChip(e.model)}<span class="chip">${escapeHtml(e.domain)}</span>${_stPill(e.status)}</div>
@@ -2146,7 +2150,7 @@ function renderTableDetail(id){
   const tabs=[['columns','Columns'],['relationships','Relationships'],['data','Data']];
   const pending = t.status!=='Published';
   $('content').innerHTML=`
-    <div class="breadcrumb"><a onclick="navigate('models')">Data Studio</a> › <a onclick="navigate('tables')">Tables</a> › <span style="color:var(--field-text)">${escapeHtml(t.alias)}</span></div>
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Tables',href:'#/tables'},{label:t.alias}])}
     <div class="detail-head"><div class="dh-l">
       <div class="dh-title-row"><span class="lrow-ic ic-tbl" style="width:30px;height:30px">${_IC_TABLE}</span><span class="dh-title">${escapeHtml(t.alias)}</span>${_modelChip(t.model)}${_entityChip(t.entityId,t.entity)}<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_stPill(t.status)}</div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(t.desc)}</div>
@@ -2626,7 +2630,7 @@ function renderReferenceDetail(id){
   const tabs=[['data','Data'],['columns','Columns'],['relationships','Relationships']];
   const activeN=r.values.filter(v=>v.active).length;
   $('content').innerHTML=`
-    <div class="breadcrumb"><a onclick="navigate('models')">Data Studio</a> › <a onclick="navigate('reference')">Reference Data</a> › <span style="color:var(--field-text)">${escapeHtml(r.name)}</span></div>
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Reference Data',href:'#/reference'},{label:r.name}])}
     <div class="detail-head"><div class="dh-l">
       <div class="dh-title-row">${_catIcon(r.category)}<span class="dh-title">${escapeHtml(r.name)}</span>${_catBadge(r.category)}${_originBadge(r.origin)}${_stPill(r.status)}</div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(r.desc)}</div>
@@ -2916,10 +2920,18 @@ const MODELS=[
 function _model(id){ return MODELS.find(m=>m.id===id); }
 
 /* Persistent page header: breadcrumb + Models title + 4 tabs */
+function _crumbs(items){
+  return `<nav class="breadcrumb" aria-label="Breadcrumb"><ol>${items.map((it,i)=>{
+    const last=i===items.length-1;
+    return (i?`<li class="crumb-sep" aria-hidden="true">›</li>`:'')
+      + (last
+          ? `<li class="crumb-current" aria-current="page" title="${escapeHtml(it.label)}">${escapeHtml(it.label)}</li>`
+          : `<li><a href="${it.href}">${escapeHtml(it.label)}</a></li>`);
+  }).join('')}</ol></nav>`;
+}
 function pageShell(active){
   const tab=(id,label)=>`<button class="mtab ${active===id?'active':''}" onclick="navigate('${id}')">${label}</button>`;
-  return `<div class="breadcrumb"><a onclick="navigate('models')">Data Studio</a> › <span style="color:var(--t2)">Models</span></div>
-    <h1 class="page-h1">Models</h1>
+  return `<h1 class="page-h1">Models</h1>
     <div class="mtabs mtabs-lg">${tab('models','Models')}${tab('entities','Entities')}${tab('tables','Tables')}${tab('reference','Reference Data')}</div>`;
 }
 
@@ -3273,7 +3285,7 @@ function renderModelDetail(id){
     ${m.tags&&m.tags.length?`<div class="dsec"><div class="dsec-h"><div class="dsec-t">Tags</div></div><div style="display:flex;flex-wrap:wrap;gap:6px">${m.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div></div>`:''}
     ${vcallout('v2','Marketplace — publish this model to the marketplace, or clone / implement a pre-built one.')}`;
   $('content').innerHTML = `
-    <div class="breadcrumb"><a onclick="navigate('models')">Data Studio</a> › <a onclick="navigate('models')">Models</a> › <span style="color:var(--t2)">${escapeHtml(m.name)}</span></div>
+    ${_crumbs([{label:'Models',href:'#/models'},{label:m.name}])}
     <div class="detail-head"><div class="dh-l">
       <div class="dh-title-row"><span class="lrow-ic" style="width:30px;height:30px"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></span><span class="dh-title">${escapeHtml(m.name)}</span>${_origin(m.origin)}<span class="chip">${escapeHtml(m.category)}</span>${_stPill(m.status)}${m.version?`<span class="ver-chip">${m.version}</span>`:''}</div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(m.desc)}</div>
