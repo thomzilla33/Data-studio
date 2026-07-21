@@ -1036,7 +1036,7 @@ html.theme-light .tb-search kbd{background:rgba(15,23,42,0.05)}
 .sb-sep{height:1px; background:rgba(255,255,255,0.08); margin:8px 6px}
 .sb-foot{margin-top:auto; font-size:10.5px; color:rgba(255,255,255,0.3); padding:8px 8px 2px}
 
-.main{flex:1; margin-left:240px; padding:24px 32px 48px; max-width:1400px}
+.main{flex:1; min-width:0; margin-left:240px; padding:24px clamp(24px,3vw,56px) 48px; max-width:2400px}
 
 /* ── MODELS SUB-NAV ── */
 .mtabs{display:flex; gap:2px; margin-bottom:18px; border-bottom:1px solid var(--line)}
@@ -1366,8 +1366,7 @@ html.theme-light .vw-seg button.on{background:#fff}
 .av-more{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--muted); color:var(--t2); font-size:9px; font-weight:700; border:1.5px solid var(--bg2)}
 
 /* ── Model card grid ── */
-.mcard-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
-@media (max-width:1180px){.mcard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mcard-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px}
 .mcard{display:flex; flex-direction:column; gap:12px; padding:18px; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s}
 .mcard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 8px 24px rgba(0,0,0,0.16); transform:translateY(-1px)}
 .mcard-head{display:flex; align-items:flex-start; gap:8px}
@@ -1667,7 +1666,8 @@ function dsfDrop(id, placeholder, chip, options){
 }
 function setSearch(v){ listState.search=v; renderEntities(); setTimeout(()=>{const el=$('entSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function eSet(k,v){ listState[k]=v; renderEntities(); }
-function eView(v){ listState.view=v; renderEntities(); }
+function _saveView(s,v){ try{ localStorage.setItem('dsm-view-'+s, v); }catch(e){} }
+function eView(v){ listState.view=v; _saveView('entities',v); renderEntities(); }
 function clearFilters(){ listState.model='all'; listState.domain='all'; listState.status='all'; listState.owner='all'; listState.tags=[]; renderEntities(); }
 document.addEventListener('click', e=>{ if(_dsfOpen && !e.target.closest('.dsf-drop')){ _dsfOpen=null; _dsfRerender(); } });
 
@@ -2074,7 +2074,7 @@ function tlEntity(v){ tablesListState.entity=v; renderTablesList(); }
 function tlModel(v){ tablesListState.model=v; renderTablesList(); }
 function tlType(v){ tablesListState.type=v; renderTablesList(); }
 function tlStatus(v){ tablesListState.status=v; renderTablesList(); }
-function tlView(v){ tablesListState.view=v; renderTablesList(); }
+function tlView(v){ tablesListState.view=v; _saveView('tables',v); renderTablesList(); }
 function tlClear(){ tablesListState.model='all'; tablesListState.entity='all'; tablesListState.type='all'; tablesListState.status='all'; tablesListState.tags=[]; renderTablesList(); }
 function _tablesFiltered(){
   const q=tablesListState.search.toLowerCase();
@@ -2559,7 +2559,7 @@ function _refUsedBy(id){ const r=_ref(id); return (r&&r.usedBy)||[]; }
 const refListState = { search:'', category:'all', status:'all', origin:'all', view:'list' };
 function rlSearch(v){ refListState.search=v; renderReferenceList(); setTimeout(()=>{const el=$('refSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function rlSet(k,v){ refListState[k]=v; renderReferenceList(); }
-function rlView(v){ refListState.view=v; renderReferenceList(); }
+function rlView(v){ refListState.view=v; _saveView('reference',v); renderReferenceList(); }
 function rlClear(){ refListState.category='all'; refListState.status='all'; refListState.origin='all'; refListState.tags=[]; renderReferenceList(); }
 function _refFiltered(){
   const q=refListState.search.toLowerCase();
@@ -2936,7 +2936,7 @@ function viewToggle(state, fn){
 const modelsState={ search:'', category:'all', origin:'all', status:'all', owner:'all', view:'grid', page:1, perPage:9, sortCol:'name', sortDir:'asc', sel:new Set() };
 function mSearch(v){ modelsState.search=v; modelsState.page=1; renderModels(); setTimeout(()=>{const el=$('mdlSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function mSet(k,v){ modelsState[k]=v; modelsState.page=1; renderModels(); }
-function mView(v){ modelsState.view=v; renderModels(); }
+function mView(v){ modelsState.view=v; _saveView('models',v); renderModels(); }
 function mClear(){ modelsState.category='all'; modelsState.origin='all'; modelsState.status='all'; modelsState.owner='all'; modelsState.page=1; renderModels(); }
 function mSort(col){ if(modelsState.sortCol===col){ modelsState.sortDir=modelsState.sortDir==='asc'?'desc':'asc'; } else { modelsState.sortCol=col; modelsState.sortDir='asc'; } renderModels(); }
 function mPerPage(n){ modelsState.perPage=+n; modelsState.page=1; renderModels(); }
@@ -3442,6 +3442,11 @@ function route(){
 function tabsHtml(active){ return pageShell(active); }
 function toggleTheme(){ document.documentElement.classList.toggle('theme-light'); }
 window.addEventListener('hashchange', route);
+/* Restore the last-used view per surface (persisted across reloads/navigations) */
+try{
+  const _vw={models:modelsState, entities:listState, tables:tablesListState, reference:refListState};
+  Object.keys(_vw).forEach(s=>{ const v=localStorage.getItem('dsm-view-'+s); if(v) _vw[s].view=v; });
+}catch(e){}
 route();
 
 /* Re-apply scope after every dynamic re-render of the content area */
