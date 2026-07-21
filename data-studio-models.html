@@ -1516,6 +1516,53 @@ html:not(.theme-light) .diag-hint-pill{background:var(--surface-raised,#131C2E)}
 .mtbl-pg:hover:not([disabled]){color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
 .mtbl-pg[disabled]{opacity:.4; cursor:not-allowed}
 .mtbl-pgnum{font-weight:600; color:var(--t1)}
+
+/* ── Collapsible sidebar ── */
+.sidebar{transition:width .18s ease}
+.main{transition:margin-left .18s ease}
+.tb-search{cursor:pointer}
+.sb-item{white-space:nowrap; overflow:hidden}
+body.sb-collapsed .sidebar{width:64px; padding:12px 8px}
+body.sb-collapsed .sidebar .sb-item{justify-content:center; gap:0; font-size:0; padding:0}
+body.sb-collapsed .sidebar .sb-item .sb-ic{margin:0}
+body.sb-collapsed .sidebar .sb-sep{margin:8px 6px}
+body.sb-collapsed .main{margin-left:82px}
+
+/* ── Topbar / generic popover ── */
+.pop{position:fixed; z-index:96; min-width:240px; max-width:320px; background:var(--surface-floating-default,var(--bg2)); border:1px solid var(--line-strong,var(--line)); border-radius:12px; box-shadow:0 16px 42px rgba(0,0,0,0.42); padding:6px; backdrop-filter:blur(24px) saturate(1.4)}
+html.theme-light .pop{background:#fff}
+.pop-h{display:flex; align-items:center; justify-content:space-between; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--t3); padding:8px 10px 6px}
+.pop-h a{color:var(--primary); text-transform:none; letter-spacing:0; font-weight:600; font-size:11.5px; cursor:pointer}
+.pop-item{display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border:none; background:transparent; color:var(--t1); font-family:inherit; font-size:13px; text-align:left; border-radius:8px; cursor:pointer}
+.pop-item:hover{background:var(--hover)}
+.pop-item svg{color:var(--t3); flex-shrink:0}
+.pop-item.danger{color:var(--tag-error-fg,#f87171)} .pop-item.danger svg{color:var(--tag-error-fg,#f87171)}
+.pop-sep{height:1px; background:var(--line); margin:4px 6px}
+.pop-user{display:flex; align-items:center; gap:11px; padding:10px 10px 12px}
+.pop-user-n{font-size:13.5px; font-weight:700; color:var(--t1)}
+.pop-user-e{font-size:12px; color:var(--t3)}
+.notif{display:flex; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer}
+.notif:hover{background:var(--hover)}
+.notif-dot{width:7px; height:7px; border-radius:50%; margin-top:5px; flex-shrink:0; background:var(--primary)}
+.notif-dot.read{background:var(--field-placeholder)}
+.notif-b{font-size:12.5px; color:var(--t1); line-height:1.35}
+.notif-t{font-size:11px; color:var(--t3); margin-top:2px}
+
+/* ── Command palette (⌘K) ── */
+.cmdk-scrim{position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.42); display:flex; align-items:flex-start; justify-content:center; padding-top:12vh; opacity:0; pointer-events:none; transition:opacity .12s}
+.cmdk-scrim.open{opacity:1; pointer-events:auto}
+.cmdk{width:min(560px,92vw); background:var(--surface-floating-default,var(--bg2)); border:1px solid var(--line-strong,var(--line)); border-radius:14px; box-shadow:0 24px 64px rgba(0,0,0,0.5); overflow:hidden; backdrop-filter:blur(24px) saturate(1.4); transform:translateY(-6px); transition:transform .12s}
+.cmdk-scrim.open .cmdk{transform:none}
+html.theme-light .cmdk{background:#fff}
+.cmdk-in{display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line)}
+.cmdk-in svg{color:var(--t3); flex-shrink:0}
+.cmdk-in input{flex:1; background:transparent; border:none; outline:none; color:var(--t1); font-size:15px; font-family:inherit}
+.cmdk-list{max-height:min(48vh,360px); overflow:auto; padding:6px}
+.cmdk-item{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:9px; cursor:pointer; color:var(--t1); font-size:13.5px}
+.cmdk-item.sel{background:var(--hover)}
+.cmdk-item svg{color:var(--t3); flex-shrink:0}
+.cmdk-item .cmdk-cat{margin-left:auto; font-size:11px; color:var(--t3)}
+.cmdk-empty{padding:26px; text-align:center; color:var(--t3); font-size:13px}
 </style>
 </head>
 <body>
@@ -1525,31 +1572,32 @@ html:not(.theme-light) .diag-hint-pill{background:var(--surface-raised,#131C2E)}
   <div class="tb-left">
     <span class="tb-brand"><span class="tb-brand-logo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.4"/><path d="M2 6.5h12M2 9.5h12M5.5 3v10M10.5 3v10" stroke-width="1.1"/></svg></span><span class="tb-brand-name">Data Studio</span></span>
   </div>
-  <label class="tb-search"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search work, spaces, people…</span><kbd>⌘K</kbd></label>
+  <button class="tb-search" data-pop onclick="openSearch()" aria-label="Search"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search work, spaces, people…</span><kbd>⌘K</kbd></button>
   <div class="tb-right">
-    <button class="tb-ico tb-ai" onclick="toggleTheme()" title="AI · click to toggle theme"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z"/></svg></button>
-    <button class="tb-ico tb-bell" title="Notifications"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 6a4 4 0 0 1 8 0c0 3 1.5 4 1.5 4h-11S4 9 4 6Z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke-linecap="round"/></svg><span class="tb-badge">3</span></button>
-    <button class="tb-ico" title="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4M12.5 12.5l-1.4-1.4M4.9 4.9L3.5 3.5"/></svg></button>
-    <button class="tb-ws" title="Workspace"><span class="tb-ws-logo">A</span><span class="tb-ws-name">Aims</span></button>
-    <button class="tb-avatar" title="Account">SB</button>
+    <button class="tb-ico tb-ai" data-pop onclick="openAI(this)" title="Ask AI"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z"/></svg></button>
+    <button class="tb-ico" id="themeBtn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme"></button>
+    <button class="tb-ico tb-bell" data-pop onclick="openNotifs(this)" title="Notifications"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 6a4 4 0 0 1 8 0c0 3 1.5 4 1.5 4h-11S4 9 4 6Z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke-linecap="round"/></svg><span class="tb-badge">3</span></button>
+    <button class="tb-ico" data-pop onclick="openSettings(this)" title="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4M12.5 12.5l-1.4-1.4M4.9 4.9L3.5 3.5"/></svg></button>
+    <button class="tb-ws" data-pop onclick="openWorkspace(this)" title="Workspace"><span class="tb-ws-logo">A</span><span class="tb-ws-name">Aims</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+    <button class="tb-avatar" data-pop onclick="openAccount(this)" title="Account">SB</button>
   </div>
 </header>
 
 <div class="app">
   <!-- Sidebar: Data Studio modules -->
   <nav class="sidebar">
-    <div class="sb-head"><button class="sb-collapse" title="Collapse sidebar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 3v10"/></svg></button></div>
-    <button class="sb-item" onclick="toast('Home — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7L8 2.5 13.5 7M4 6.5V13h8V6.5"/></svg> Home</button>
-    <button class="sb-item" onclick="toast('Inbox — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l1.5-6h9L14 9v3.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V9Z"/><path d="M2 9h3l1 1.5h4L11 9h3"/></svg> Inbox</button>
+    <div class="sb-head"><button class="sb-collapse" id="sbToggle" onclick="toggleSidebar()" title="Collapse sidebar" aria-label="Collapse sidebar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 3v10"/></svg></button></div>
+    <button class="sb-item" onclick="toast('Home — coming soon')" title="Home"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7L8 2.5 13.5 7M4 6.5V13h8V6.5"/></svg> Home</button>
+    <button class="sb-item" onclick="toast('Inbox — coming soon')" title="Inbox"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l1.5-6h9L14 9v3.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V9Z"/><path d="M2 9h3l1 1.5h4L11 9h3"/></svg> Inbox</button>
     <div class="sb-sep"></div>
-    <button class="sb-item active" onclick="navigate('models')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg> Models</button>
-    <button class="sb-item" onclick="toast('Sources — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="8" r="2"/><path d="M6 4h2a2 2 0 0 1 2 2M6 12h2a2 2 0 0 0 2-2"/></svg> Sources</button>
-    <button class="sb-item" onclick="toast('Datasets — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 4.5 8 2l6 2.5L8 7 2 4.5Z"/><path d="M2 4.5v7L8 14l6-2.5v-7M8 7v7"/></svg> Datasets</button>
-    <button class="sb-item" onclick="toast('Catalog — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v10a1 1 0 0 0 1 1h9V3H4a1 1 0 0 0-1 1Z"/><path d="M6 6h4M6 8.5h4"/></svg> Catalog</button>
-    <button class="sb-item" onclick="toast('Identity — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M3 13a5 5 0 0 1 10 0"/></svg> Identity</button>
-    <button class="sb-item" onclick="toast('Analytics — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13V3M2 13h12M5 11V7M8.5 11V5M12 11V9" stroke-linecap="round"/></svg> Analytics</button>
+    <button class="sb-item active" onclick="navigate('models')" title="Models"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg> Models</button>
+    <button class="sb-item" onclick="toast('Sources — coming soon')" title="Sources"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="8" r="2"/><path d="M6 4h2a2 2 0 0 1 2 2M6 12h2a2 2 0 0 0 2-2"/></svg> Sources</button>
+    <button class="sb-item" onclick="toast('Datasets — coming soon')" title="Datasets"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 4.5 8 2l6 2.5L8 7 2 4.5Z"/><path d="M2 4.5v7L8 14l6-2.5v-7M8 7v7"/></svg> Datasets</button>
+    <button class="sb-item" onclick="toast('Catalog — coming soon')" title="Catalog"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v10a1 1 0 0 0 1 1h9V3H4a1 1 0 0 0-1 1Z"/><path d="M6 6h4M6 8.5h4"/></svg> Catalog</button>
+    <button class="sb-item" onclick="toast('Identity — coming soon')" title="Identity"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M3 13a5 5 0 0 1 10 0"/></svg> Identity</button>
+    <button class="sb-item" onclick="toast('Analytics — coming soon')" title="Analytics"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13V3M2 13h12M5 11V7M8.5 11V5M12 11V9" stroke-linecap="round"/></svg> Analytics</button>
     <div class="sb-sep"></div>
-    <button class="sb-item" onclick="toast('Control — coming soon')"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 1.8l5 2v3.4c0 3-2.1 5.4-5 6.9-2.9-1.5-5-3.9-5-6.9V3.8l5-2Z"/></svg> Control</button>
+    <button class="sb-item" onclick="toast('Control — coming soon')" title="Control"><svg class="sb-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 1.8l5 2v3.4c0 3-2.1 5.4-5 6.9-2.9-1.5-5-3.9-5-6.9V3.8l5-2Z"/></svg> Control</button>
   </nav>
 
   <!-- Main content -->
@@ -3452,13 +3500,116 @@ function route(){
   else { location.hash='#/models'; }
 }
 function tabsHtml(active){ return pageShell(active); }
-function toggleTheme(){ document.documentElement.classList.toggle('theme-light'); }
+/* ── Theme ── */
+const _SUN='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3.2"/><path d="M8 1v1.6M8 13.4V15M15 8h-1.6M2.6 8H1M12.7 3.3l-1.1 1.1M4.4 11.6l-1.1 1.1M12.7 12.7l-1.1-1.1M4.4 4.4L3.3 3.3"/></svg>';
+const _MOON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3c0-.6.1-1.2.3-1.7A5.5 5.5 0 1 0 14.7 9.2c-.5.2-1.1.3-1.7.3Z"/></svg>';
+function _themeIcon(){ const b=$('themeBtn'); if(b) b.innerHTML = document.documentElement.classList.contains('theme-light') ? _MOON : _SUN; }
+function setTheme(light){ document.documentElement.classList.toggle('theme-light', light); try{localStorage.setItem('dsm-theme', light?'light':'dark');}catch(e){} _themeIcon(); }
+function toggleTheme(){ setTheme(!document.documentElement.classList.contains('theme-light')); }
+
+/* ── Sidebar collapse ── */
+function toggleSidebar(){ const c=document.body.classList.toggle('sb-collapsed'); try{localStorage.setItem('dsm-collapsed', c?'1':'0');}catch(e){} const b=$('sbToggle'); if(b){ b.title=c?'Expand sidebar':'Collapse sidebar'; b.setAttribute('aria-label', b.title); } }
+
+/* ── Generic topbar popover ── */
+function _closePop(){ const p=$('tbpop'); if(p) p.remove(); document.removeEventListener('click',_popOut,true); document.removeEventListener('keydown',_popEsc,true); }
+function _popOut(e){ if(!e.target.closest('#tbpop') && !e.target.closest('[data-pop]')) _closePop(); }
+function _popEsc(e){ if(e.key==='Escape') _closePop(); }
+function _openPop(btn, html){
+  const existing=$('tbpop'); _closePop(); if(existing) return; // toggle off if same click cycle
+  const d=document.createElement('div'); d.id='tbpop'; d.className='pop'; d.innerHTML=html; document.body.appendChild(d);
+  const r=btn.getBoundingClientRect(), w=d.offsetWidth;
+  let left=Math.max(8, Math.min(r.right-w, window.innerWidth-w-10));
+  d.style.left=left+'px'; d.style.top=(r.bottom+8)+'px';
+  setTimeout(()=>{ document.addEventListener('click',_popOut,true); document.addEventListener('keydown',_popEsc,true); },0);
+}
+function openNotifs(btn){ _openPop(btn, `
+  <div class="pop-h"><span>Notifications</span><a onclick="_closePop();toast('All marked as read','ok')">Mark all read</a></div>
+  <div class="notif"><span class="notif-dot"></span><div><div class="notif-b"><b>General Ledger</b> was published by Eve Martin.</div><div class="notif-t">2h ago</div></div></div>
+  <div class="notif"><span class="notif-dot"></span><div><div class="notif-b"><b>Inventory &amp; Stock</b> has pending changes awaiting review.</div><div class="notif-t">5h ago</div></div></div>
+  <div class="notif"><span class="notif-dot read"></span><div><div class="notif-b">Diego Núñez added 4 columns to <b>CRM Core</b>.</div><div class="notif-t">1d ago</div></div></div>
+`); }
+function openSettings(btn){ _openPop(btn, `
+  <button class="pop-item" onclick="_closePop();toggleTheme()"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/></svg>Toggle theme</button>
+  <button class="pop-item" onclick="_closePop();toast('Preferences — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1"/></svg>Preferences</button>
+  <button class="pop-item" onclick="_closePop();toast('Members — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="2"/><path d="M2 13a4 4 0 0 1 8 0"/></svg>Members &amp; roles</button>
+  <div class="pop-sep"></div>
+  <button class="pop-item" onclick="_closePop();toast('Keyboard shortcuts — press ⌘K to search')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1.5"/><path d="M5 7h.01M8 7h.01M11 7h.01M5 9.5h6"/></svg>Keyboard shortcuts</button>
+`); }
+function openWorkspace(btn){ _openPop(btn, `
+  <div class="pop-h"><span>Workspace</span></div>
+  <button class="pop-item" onclick="_closePop();toast('Already in Aims')"><span class="tb-ws-logo">A</span>Aims <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--tag-success-fg,#34d399)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></button>
+  <button class="pop-item" onclick="_closePop();toast('Switched — demo only')"><span class="tb-ws-logo" style="background:linear-gradient(135deg,#00C2C2,#155DFC)">CL</span>Contoso Ltd</button>
+  <button class="pop-item" onclick="_closePop();toast('Switched — demo only')"><span class="tb-ws-logo" style="background:linear-gradient(135deg,#7c3aed,#db2777)">NW</span>Northwind</button>
+  <div class="pop-sep"></div>
+  <button class="pop-item" onclick="_closePop();toast('Workspace settings — coming soon')">Workspace settings</button>
+`); }
+function openAccount(btn){ _openPop(btn, `
+  <div class="pop-user"><span class="tb-avatar" style="cursor:default">SB</span><div><div class="pop-user-n">Sara Bell</div><div class="pop-user-e">sara.bell@aims.example</div></div></div>
+  <div class="pop-sep"></div>
+  <button class="pop-item" onclick="_closePop();toast('Profile — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13a5 5 0 0 1 10 0"/></svg>Profile</button>
+  <button class="pop-item" onclick="_closePop();toast('Account settings — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1"/></svg>Account settings</button>
+  <div class="pop-sep"></div>
+  <button class="pop-item danger" onclick="_closePop();toast('Signed out — demo only')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M10 11l3-3-3-3M13 8H6"/></svg>Sign out</button>
+`); }
+function openAI(btn){ _openPop(btn, `
+  <div class="pop-h"><span>Ask AI</span></div>
+  <div style="padding:4px 8px 10px"><div style="font-size:12.5px;color:var(--t2);line-height:1.45">Ask about your data model — e.g. <i>“which entities have PII?”</i> or <i>“generate a Fuel type reference list.”</i></div>
+  <div style="margin-top:10px;display:flex;gap:6px"><input class="minput" placeholder="Ask anything…" style="height:34px" onkeydown="if(event.key==='Enter'){_closePop();toast('AI assistant — coming soon');}"><button class="btn btn-primary" style="height:34px" onclick="_closePop();toast('AI assistant — coming soon')">Ask</button></div></div>
+`); }
+
+/* ── Command palette (⌘K) ── */
+let _cmdkSel=0, _cmdkItems=[];
+function _cmdkData(){ return [
+  {label:'Models', cat:'Go to', ic:'grid', act:"navigate('models')"},
+  {label:'Entities', cat:'Go to', ic:'grid', act:"navigate('entities')"},
+  {label:'Tables', cat:'Go to', ic:'grid', act:"navigate('tables')"},
+  {label:'Reference Data', cat:'Go to', ic:'grid', act:"navigate('reference')"},
+  {label:'New model', cat:'Create', ic:'plus', act:"openCreateModel()"},
+  {label:'New entity', cat:'Create', ic:'plus', act:"navigate('entities');setTimeout(openCreateEntity,60)"},
+  {label:'New table', cat:'Create', ic:'plus', act:"navigate('tables');setTimeout(openCreateTable,60)"},
+  {label:'New reference list', cat:'Create', ic:'plus', act:"navigate('reference');setTimeout(openCreateReference,60)"},
+  {label:'Toggle theme', cat:'Action', ic:'sun', act:"toggleTheme()"},
+].concat(MODELS.map(m=>({label:m.name, cat:'Model', ic:'grid', act:"navigate('models/"+m.id+"')"}))); }
+function openSearch(){
+  let sc=$('cmdkScrim');
+  if(!sc){ sc=document.createElement('div'); sc.id='cmdkScrim'; sc.className='cmdk-scrim'; sc.onclick=e=>{ if(e.target===sc) closeSearch(); };
+    sc.innerHTML=`<div class="cmdk"><div class="cmdk-in"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="cmdkIn" type="text" placeholder="Search or jump to…" autocomplete="off"><kbd>ESC</kbd></div><div class="cmdk-list" id="cmdkList"></div></div>`;
+    document.body.appendChild(sc);
+    $('cmdkIn').addEventListener('input', _cmdkRender);
+    $('cmdkIn').addEventListener('keydown', _cmdkKey);
+  }
+  sc.classList.add('open'); _cmdkSel=0; $('cmdkIn').value=''; _cmdkRender();
+  setTimeout(()=>$('cmdkIn').focus(),20);
+}
+function closeSearch(){ const sc=$('cmdkScrim'); if(sc) sc.classList.remove('open'); }
+function _cmdkRender(){
+  const q=($('cmdkIn').value||'').toLowerCase();
+  _cmdkItems=_cmdkData().filter(it=>!q||it.label.toLowerCase().includes(q)||it.cat.toLowerCase().includes(q));
+  if(_cmdkSel>=_cmdkItems.length) _cmdkSel=Math.max(0,_cmdkItems.length-1);
+  const gic={grid:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
+    plus:'<svg width="15" height="15" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2v8M2 6h8"/></svg>',
+    sun:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/></svg>'};
+  $('cmdkList').innerHTML = _cmdkItems.length
+    ? _cmdkItems.map((it,i)=>`<div class="cmdk-item ${i===_cmdkSel?'sel':''}" onmouseenter="_cmdkSel=${i};_cmdkPaint()" onclick="_cmdkRun(${i})">${gic[it.ic]||gic.grid}<span>${escapeHtml(it.label)}</span><span class="cmdk-cat">${escapeHtml(it.cat)}</span></div>`).join('')
+    : `<div class="cmdk-empty">No results.</div>`;
+}
+function _cmdkPaint(){ [...document.querySelectorAll('#cmdkList .cmdk-item')].forEach((el,i)=>el.classList.toggle('sel',i===_cmdkSel)); }
+function _cmdkKey(e){
+  if(e.key==='ArrowDown'){ e.preventDefault(); _cmdkSel=Math.min(_cmdkItems.length-1,_cmdkSel+1); _cmdkPaint(); const el=document.querySelectorAll('#cmdkList .cmdk-item')[_cmdkSel]; if(el)el.scrollIntoView({block:'nearest'}); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); _cmdkSel=Math.max(0,_cmdkSel-1); _cmdkPaint(); const el=document.querySelectorAll('#cmdkList .cmdk-item')[_cmdkSel]; if(el)el.scrollIntoView({block:'nearest'}); }
+  else if(e.key==='Enter'){ e.preventDefault(); _cmdkRun(_cmdkSel); }
+}
+function _cmdkRun(i){ const it=_cmdkItems[i]; if(!it) return; closeSearch(); try{ (new Function(it.act))(); }catch(e){} }
+document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); openSearch(); } });
 window.addEventListener('hashchange', route);
-/* Restore the last-used view per surface (persisted across reloads/navigations) */
+/* Restore persisted preferences (view per surface, theme, sidebar collapse) */
 try{
   const _vw={models:modelsState, entities:listState, tables:tablesListState, reference:refListState};
   Object.keys(_vw).forEach(s=>{ const v=localStorage.getItem('dsm-view-'+s); if(v) _vw[s].view=v; });
+  if(localStorage.getItem('dsm-theme')==='light') document.documentElement.classList.add('theme-light');
+  if(localStorage.getItem('dsm-collapsed')==='1'){ document.body.classList.add('sb-collapsed'); const b=$('sbToggle'); if(b){ b.title='Expand sidebar'; b.setAttribute('aria-label','Expand sidebar'); } }
 }catch(e){}
+_themeIcon();
 route();
 
 /* Re-apply scope after every dynamic re-render of the content area */
