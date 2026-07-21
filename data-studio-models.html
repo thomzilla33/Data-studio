@@ -508,6 +508,7 @@
   --r6:6px; --r8:8px; --r10:10px; --r12:12px; --r14:16px;
   --grad-ds:linear-gradient(135deg,#10B981 0%,#0E7490 100%);
   --topbar-bg:rgba(10,14,26,0.72);
+  --tb-pill-bd:rgba(128,175,255,0.22);   /* Border/Primary/Subtle — topbar pills (dark) */
 }
 html.theme-light{
     --canvas:              #E4ECF7;   /* richer blue-gray base for visible gradient */
@@ -543,11 +544,13 @@ html.theme-light{
     --sidebar-border:      rgba(33,115,255,0.12);
     --sidebar-ring:        #2173ff;
     --field-bg:              #ffffff;                 /* Surface/Neutral/White light  */
-    --field-border:          #5c5c5c;                 /* Border/Neutral/Default light */
+    --field-border:          rgba(15,23,42,0.14);     /* Border/Neutral/Default light — softened from Gray/600 */
+    --card-bg:               #FFFFFF;                  /* white cards pop on the blue-gray canvas */
+    --card-border:           rgba(15,23,42,0.08);      /* subtle card/divider border */
     --ctrl-inactive-bg:      rgba(0,0,0,0.07);        /* CtrlGroup pill inactive — light          */
     --row-alt-bg:            rgba(0,0,0,0.03);         /* Table/list alternating row  — light     */
     --code-bg:               rgba(0,0,0,0.08);        /* Inline code + icon preview boxes — light */
-    --field-border-hover:    #2a2a2a;                 /* Border/Neutral/Darker light  */
+    --field-border-hover:    rgba(15,23,42,0.26);     /* Border/Neutral/Darker light — softened */
     --field-border-focus:    #2173ff;                 /* Border/Primary/Default light */
     --field-text:            #2a2a2a;                 /* Text/Subtitle light          */
     --field-placeholder:     #bababa;                 /* Text/Disabled light          */
@@ -802,6 +805,7 @@ html.theme-light{
     --ab-cta-text:      rgba(0,0,0,0.55);         /* Text/Label light — CTA + close btn              */
     --sb-bg:               rgba(15,23,43,1);          /* Dark navy rail kept in light mode → #0F172B   */
     --topbar-bg:           rgba(255,255,255,0.85);    /* White translucent topbar in light (AI Workers std) */
+    --tb-pill-bd:          #e9f1ff;                   /* Border/Primary/Subtle — topbar pills (light, Figma) */
     --sb-icon-default:     rgba(128,175,255,1);       /* Icon/Primary/Lighter light   → #80AFFF       */
     --sb-icon-active:      rgba(255,255,255,1);       /* Icon/Neutral/Light light     → White/100     */
     --sb-text:             rgba(255,255,255,1);       /* Text/Negative light          → White/100     */
@@ -998,30 +1002,46 @@ html,body{height:100%}
 body{background:var(--bg); color:var(--t1); font-family:'Inter','SF Pro Text',system-ui,sans-serif; font-size:14px; line-height:1.5}
 
 /* ── TOPBAR ── */
-.topbar{position:fixed; top:0; left:0; right:0; height:56px; z-index:20; display:flex; align-items:center; gap:8px;
-  padding:0 16px; background:var(--topbar-bg); border-bottom:1px solid var(--line); backdrop-filter:blur(20px) saturate(1.8)}
+.topbar{position:fixed; top:0; left:0; right:0; height:44px; z-index:20; display:flex; align-items:center; gap:8px;
+  padding:0 8px; background:var(--topbar-bg); border-bottom:1px solid var(--line); backdrop-filter:blur(20px) saturate(1.8)}
 .tb-left{flex:1; display:flex; align-items:center; gap:8px}
 .tb-right{flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end}
 .tb-brand{display:flex; align-items:center; gap:10px; color:var(--t1)}
 .tb-brand-logo{width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; background:var(--grad-ds)}
 .tb-brand-name{font-size:15px; font-weight:700; letter-spacing:-.01em}
-.tb-search{display:flex; align-items:center; gap:9px; width:min(560px,44vw); height:38px; padding:0 14px; border-radius:10px;
-  background:rgba(255,255,255,0.06); border:1px solid var(--line); color:var(--t3); font-size:13px; cursor:text}
-html.theme-light .tb-search{background:rgba(15,23,42,0.04)}
+.tb-search{display:flex; align-items:center; gap:4px; width:250px; height:24px; padding:0 4px; border-radius:8px;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(92,92,92,0.5); color:var(--t3); font-size:14px; font-weight:500; cursor:text}
+.tb-search>svg{color:var(--t3); flex-shrink:0}
+.tb-search>span{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:20px}
+html.theme-light .tb-search{background:#fff}
 .tb-search kbd{margin-left:auto; font-size:11px; font-weight:600; padding:2px 6px; border-radius:5px; background:rgba(255,255,255,0.08); border:1px solid var(--line)}
 html.theme-light .tb-search kbd{background:rgba(15,23,42,0.05)}
-.tb-ico{position:relative; width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:9px; border:none; background:transparent; color:var(--t2); cursor:pointer}
+.tb-ico{position:relative; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:4px; border:none; background:transparent; color:var(--t2); cursor:pointer}
 .tb-ico:hover{background:var(--hover-strong); color:var(--t1)}
-.tb-ai{color:var(--primary)}
-.tb-badge{position:absolute; top:2px; right:2px; min-width:15px; height:15px; padding:0 3px; border-radius:8px; background:#ef4444; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--topbar-bg)}
+.tb-actions{display:flex; align-items:center; gap:4px}
+.tb-ai{width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border:none; border-radius:8px; cursor:pointer; color:#fff; background:radial-gradient(120% 140% at 50% 12%, #002F80 0%, #1151BF 24%, #2173FF 44%, #15ABD5 70%, #09E2AB 100%); box-shadow:8px 8px 10px rgba(0,201,79,0.35)}
+.tb-ai:hover{filter:brightness(1.07)}
+.tb-ai svg{width:16px; height:16px}
+.tb-badge{position:absolute; top:2px; right:2px; width:8px; height:8px; border-radius:50%; background:#d32f2f; border:1.5px solid var(--topbar-bg)}
+.tb-divider{width:1px; height:20px; background:var(--line); flex-shrink:0}
+.tb-studio{display:flex; align-items:center; gap:8px; height:24px; padding:0 4px; border:1px solid var(--tb-pill-bd); border-radius:8px; background:transparent; cursor:pointer; font-family:inherit}
+.tb-studio:hover{background:var(--hover-strong)}
+.tb-studio-av{width:16px; height:16px; border-radius:50%; border:1px solid #80afff; background:#fff; display:inline-flex; align-items:center; justify-content:center; color:var(--primary); flex-shrink:0}
+.tb-studio-name{font-size:10px; font-weight:600; color:var(--t1); white-space:nowrap}
+.tb-studio-chev{color:var(--t3); flex-shrink:0; width:14px; height:14px}
+.tb-company{display:flex; align-items:center; gap:8px; height:24px; padding:0 4px; border:1px solid var(--tb-pill-bd); border-radius:8px; background:transparent; cursor:pointer; font-family:inherit}
+.tb-company:hover{background:var(--hover-strong)}
+.tb-company-av{width:16px; height:16px; border-radius:50%; border:1px solid #80afff; background:#fff; color:#0e9f6e; font-size:8px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0}
+.tb-company-name{font-size:10px; font-weight:600; color:var(--t1); white-space:nowrap}
+.tb-user-av{width:16px; height:16px; border-radius:50%; background:#2173ff; border:1px solid #80afff; color:#fff; font-size:7.5px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0}
 .tb-ws{display:flex; align-items:center; gap:8px; height:34px; padding:0 11px 0 8px; border-radius:9px; border:1px solid var(--line); background:transparent; cursor:pointer; color:var(--t1)}
 .tb-ws-logo{width:20px; height:20px; border-radius:6px; background:var(--grad-ds); color:#fff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center}
 .tb-ws-name{font-size:13px; font-weight:600}
 .tb-avatar{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#155DFC); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; cursor:pointer}
 
 /* ── SHELL LAYOUT ── */
-.app{display:flex; padding-top:56px; min-height:100vh}
-.sidebar{position:fixed; top:64px; left:8px; bottom:8px; width:224px; background:var(--sb-bg); border:1px solid rgba(255,255,255,0.06);
+.app{display:flex; padding-top:44px; min-height:100vh}
+.sidebar{position:fixed; top:52px; left:8px; bottom:8px; width:224px; background:var(--sb-bg); border:1px solid rgba(255,255,255,0.06);
   border-radius:16px; box-shadow:8px 8px 16px rgba(0,0,0,0.28); display:flex; flex-direction:column; padding:12px 10px; z-index:10}
 .sb-head{display:flex; align-items:center; justify-content:flex-end; padding:2px 4px 8px}
 .sb-collapse{width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:none; background:transparent; color:rgba(255,255,255,0.45); border-radius:7px; cursor:pointer}
@@ -1057,6 +1077,7 @@ html.theme-light .tb-search kbd{background:rgba(15,23,42,0.05)}
 .btn:hover{background:var(--btn-secondary-hover-bg); border-color:var(--btn-secondary-hover-bd)}
 .btn-primary{background:var(--btn-primary-bg); border-color:transparent; color:#fff}
 .btn-primary:hover{background:var(--btn-primary-hover-bg)}
+.btn:disabled, .btn[disabled]{opacity:.45; cursor:not-allowed; pointer-events:none; box-shadow:none}
 
 /* ── DS FILTERS COMPONENT (.dsf-*) — from settings.html ── */
 .dsf-bar{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px}
@@ -1373,6 +1394,9 @@ html.theme-light .vw-seg button.on{background:#fff}
 /* ── Model card grid ── */
 .mcard-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px}
 .mcard{display:flex; flex-direction:column; gap:12px; padding:18px; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s}
+/* Light mode: soft resting shadow so white cards float on the blue-gray canvas */
+html.theme-light .mcard, html.theme-light .lrow, html.theme-light .md-ecard, html.theme-light .md-trow, html.theme-light .md-ccard, html.theme-light .md-tile, html.theme-light .md-sec, html.theme-light .mtbl-wrap{box-shadow:0 1px 2px rgba(15,23,42,0.04), 0 2px 6px rgba(15,23,42,0.05)}
+html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .md-ecard:hover, html.theme-light .md-trow:hover, html.theme-light .md-ccard:hover{box-shadow:0 4px 14px rgba(15,23,42,0.10)}
 .mcard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 8px 24px rgba(0,0,0,0.16); transform:translateY(-1px)}
 .mcard-head{display:flex; align-items:flex-start; gap:8px}
 .mcard-title{font-size:16px; font-weight:700; color:var(--t1); letter-spacing:-.01em}
@@ -1573,15 +1597,16 @@ html.theme-light .cmdk{background:#fff}
   .tb-burger{display:inline-flex}
   .topbar{gap:6px; padding:0 10px}
   .tb-left{flex:0 0 auto}
-  .tb-brand-name{display:none}
-  .tb-right{flex:1; gap:3px}
+  .tb-brand-name, .tb-studio-name, .tb-company-name{display:none}
+  .tb-right{flex:1; gap:6px}
   .tb-hide-sm{display:none}
   .tb-search{width:36px; padding:0; justify-content:center; margin-left:auto}
   .tb-search span, .tb-search kbd{display:none}
-  .tb-ws{padding:0; width:34px; justify-content:center}
-  .tb-ws-name, .tb-ws svg{display:none}
+  .tb-studio{padding:0 4px}
+  .tb-company{padding:0 4px}
+  .tb-divider{display:none}
 
-  .sidebar{position:fixed; top:56px; left:0; bottom:0; width:250px; border-radius:0 16px 16px 0; z-index:30; transform:translateX(-108%); box-shadow:8px 0 28px rgba(0,0,0,0.4); transition:transform .2s ease}
+  .sidebar{position:fixed; top:44px; left:0; bottom:0; width:250px; border-radius:0 16px 16px 0; z-index:30; transform:translateX(-108%); box-shadow:8px 0 28px rgba(0,0,0,0.4); transition:transform .2s ease}
   body.sb-open .sidebar{transform:none}
   body.sb-open .sb-scrim{display:block}
   .main{margin-left:0 !important; padding:18px 16px 44px}
@@ -1772,6 +1797,203 @@ html:not(.theme-light) .diag-legend{background:var(--surface-raised,#131C2E)}
   .md-tiles .md-tile{min-width:120px}
   .md-tabs{overflow-x:auto}
 }
+
+/* ══ NEW MODEL FLOW ══ */
+.mkt-sub{font-size:14px; color:var(--t2); margin:-6px 0 22px; max-width:640px}
+.mkt-layout{display:grid; grid-template-columns:232px 1fr; gap:28px; align-items:start}
+.mkt-rail{display:flex; flex-direction:column; gap:2px; position:sticky; top:56px}
+.mkt-cat{display:flex; align-items:center; gap:10px; width:100%; padding:8px 10px; border:none; background:transparent; color:var(--t2); font-family:inherit; font-size:13px; font-weight:500; text-align:left; border-radius:9px; cursor:pointer}
+.mkt-cat:hover{background:var(--hover); color:var(--t1)}
+.mkt-cat.on{background:var(--tag-informative-bg,rgba(37,99,235,0.1)); color:var(--primary); font-weight:600}
+.mkt-cat-ic{display:inline-flex; color:currentColor; flex-shrink:0}
+.mkt-cat-n{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mkt-cat-c{font-size:11px; font-weight:700; color:var(--t3)}
+.mkt-cat.on .mkt-cat-c{color:var(--primary)}
+.mkt-rail-label{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); padding:14px 10px 6px}
+.mkt-main{min-width:0}
+.mkt-toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:22px}
+.mkt-sec-h{display:flex; align-items:baseline; gap:10px; margin:8px 0 14px}
+.mkt-sec-t{font-size:15px; font-weight:700; color:var(--t1)}
+.mkt-sec-sub{font-size:13px; color:var(--t3)}
+.mkt-featured{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; margin-bottom:30px}
+.mkt-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px}
+
+.tpl-card{display:flex; flex-direction:column; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); overflow:hidden; cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .1s}
+.tpl-card:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 8px 24px rgba(15,23,42,0.10); transform:translateY(-1px)}
+.tpl-card-f{flex-direction:row}
+.tpl-thumb-wrap{position:relative; background:var(--muted,#eef1f6); border-bottom:1px solid var(--line); flex-shrink:0}
+.tpl-card-f .tpl-thumb-wrap{width:150px; border-bottom:none; border-right:1px solid var(--line)}
+html:not(.theme-light) .tpl-thumb-wrap{background:rgba(255,255,255,0.03)}
+.tpl-thumb{display:block; width:100%; height:120px; background-image:radial-gradient(rgba(120,132,156,0.20) 1px, transparent 1px); background-size:16px 16px}
+.tpl-card-f .tpl-thumb{height:100%; min-height:150px}
+.tt-edges line{stroke:var(--line-strong,#c3ccd8); stroke-width:1.2}
+.tt-nodes rect{fill:var(--card-bg,#fff); stroke:var(--border-primary-lighter,#80afff); stroke-width:0.9}
+html:not(.theme-light) .tt-nodes rect{fill:var(--surface-raised,#131C2E)}
+.tt-nodes .tt-top{fill:var(--primary); stroke:none}
+.tpl-featured-badge{position:absolute; top:10px; left:10px; z-index:1; display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#fff; background:var(--primary); border-radius:6px; padding:3px 7px}
+.tpl-chip-abs{position:absolute; top:10px; left:10px; z-index:1}
+.tpl-badge{position:absolute; top:10px; right:10px; z-index:1; font-size:10.5px; font-weight:700; color:var(--t2); background:var(--card-bg,#fff); border:1px solid var(--line); border-radius:6px; padding:3px 7px}
+.tpl-badge.is-new{color:var(--tag-success-fg,#16a34a); border-color:var(--tag-success-bd,rgba(16,185,129,0.4)); background:var(--tag-success-bg,rgba(16,185,129,0.1))}
+.tpl-body{display:flex; flex-direction:column; gap:8px; padding:16px; flex:1; min-width:0}
+.tpl-cat-chip{display:inline-flex; align-items:center; font-size:11px; font-weight:600; color:var(--t2); background:var(--muted,var(--hover)); border-radius:6px; padding:2px 8px}
+.tpl-name{font-size:15.5px; font-weight:700; color:var(--t1)}
+.tpl-desc{font-size:12.5px; line-height:1.5; color:var(--t2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.tpl-stats{display:flex; flex-wrap:wrap; gap:12px; margin-top:2px}
+.tpl-stats span{display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--t2)}
+.tpl-foot{display:flex; align-items:center; gap:10px; margin-top:auto; padding-top:12px; border-top:1px solid var(--line)}
+.cx-badge{font-size:10.5px; font-weight:700; border-radius:6px; padding:2px 8px}
+.cx-int{color:var(--tag-informative-fg,#2563eb); background:var(--tag-informative-bg,rgba(37,99,235,0.1))}
+.cx-adv{color:var(--tag-alert-fg,#d08700); background:var(--tag-alert-bg,rgba(208,135,0,0.12))}
+.cx-sim{color:var(--tag-success-fg,#16a34a); background:var(--tag-success-bg,rgba(16,185,129,0.1))}
+.tpl-tenants{display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--t3)}
+.tpl-view{margin-left:auto; display:inline-flex; align-items:center; gap:4px; font-size:12.5px; font-weight:600; color:var(--primary); white-space:nowrap}
+.tpl-meta{margin-left:auto; font-size:11.5px; color:var(--t3); white-space:nowrap}
+
+/* From scratch */
+.fs-wrap{max-width:940px}
+.fs-sec{border-top:1px solid var(--line); padding:22px 0}
+.fs-sec:first-of-type{border-top:none}
+.fs-sec-h{margin-bottom:16px}
+.fs-sec-t{font-size:15px; font-weight:700; color:var(--t1)}
+.fs-sec-d{font-size:13px; color:var(--t3); margin-top:2px}
+.fs-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:16px}
+.fs-field{display:flex; flex-direction:column; min-width:0}
+.fs-l{font-size:13px; font-weight:600; color:var(--t1); margin-bottom:6px}
+.fs-l-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+.fs-l-row .fs-l{margin-bottom:0}
+.fs-req{color:var(--field-text-error,#dc2626)}
+.fs-in{height:42px; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); color:var(--t1); font-family:inherit; font-size:14px; padding:0 12px; outline:none}
+.fs-in:focus{border-color:var(--primary)}
+.fs-sel{cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M4 6l4 4 4-4'/></svg>"); background-repeat:no-repeat; background-position:right 12px center}
+.fs-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.fs-name-in{display:flex; align-items:center; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); overflow:hidden}
+.fs-name-in:focus-within{border-color:var(--primary)}
+.fs-name-pre{padding:0 2px 0 12px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:var(--t3)}
+.fs-name-in .fs-in{border:none; background:transparent; padding-left:0; flex:1}
+.fs-help{font-size:12px; color:var(--t3); margin-top:6px}
+.fs-ai-link{display:inline-flex; align-items:center; gap:5px; border:none; background:transparent; color:var(--primary); font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer}
+.fs-ai-link:hover{text-decoration:underline}
+.fs-ta{min-height:96px; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); color:var(--t1); font-family:inherit; font-size:14px; line-height:1.55; padding:11px 12px; outline:none; resize:vertical}
+.fs-ta:focus{border-color:var(--primary)}
+.fs-ta-foot{display:flex; align-items:center; justify-content:space-between; margin-top:6px}
+.fs-tagbox{display:flex; flex-wrap:wrap; align-items:center; gap:6px; min-height:42px; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); padding:7px 10px}
+.fs-owner{display:flex; align-items:center; gap:8px; height:42px; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); padding:0 12px}
+.fs-owner-n{font-size:14px; color:var(--t1)}
+.fs-you{font-size:10.5px; font-weight:700; color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.1)); border-radius:5px; padding:1px 6px}
+.fs-foot{display:flex; align-items:center; gap:14px; border-top:1px solid var(--line); padding:16px 0 8px; margin-top:8px}
+.fs-foot-hint{font-size:12.5px; color:var(--t3)}
+.fs-foot-hint.ok{color:var(--tag-success-fg,#16a34a)}
+
+/* AI assist */
+.ai-head-row{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px}
+.ai-head-tag{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--primary)}
+.ai-layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:stretch; min-height:calc(100vh - 230px)}
+.ai-pane{border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); display:flex; flex-direction:column; overflow:hidden}
+.ai-chat-pane{min-height:420px}
+.ai-chat{flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px}
+.ai-row{display:flex; gap:9px; max-width:100%}
+.ai-row-me{justify-content:flex-end}
+.ai-av{width:24px; height:24px; border-radius:50%; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.12))}
+.ai-bub{font-size:13.5px; line-height:1.5; border-radius:12px; padding:10px 13px; max-width:78%}
+.ai-bub-ai{background:var(--muted,var(--hover)); color:var(--t1); border-top-left-radius:4px}
+.ai-bub-me{background:var(--primary); color:#fff; border-top-right-radius:4px}
+.ai-chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.ai-chip{font-size:12.5px; font-weight:600; color:var(--primary); background:var(--card-bg,#fff); border:1px solid var(--primary); border-radius:8px; padding:5px 11px; cursor:pointer}
+.ai-chip:hover{background:var(--tag-informative-bg,rgba(37,99,235,0.08))}
+.ai-input{display:flex; align-items:center; gap:8px; padding:12px; border-top:1px solid var(--line)}
+.ai-input input{flex:1; height:40px; border:1px solid var(--primary); border-radius:10px; background:var(--field-bg); color:var(--t1); font-family:inherit; font-size:14px; padding:0 12px; outline:none}
+.ai-send{width:36px; height:36px; flex-shrink:0; border:none; border-radius:9px; background:var(--muted,var(--hover)); color:var(--t2); cursor:pointer; display:inline-flex; align-items:center; justify-content:center}
+.ai-send:hover{background:var(--primary); color:#fff}
+.ai-prev-pane{padding:18px; overflow-y:auto}
+.ai-prev-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px}
+.ai-prev-title{font-size:16px; font-weight:800; color:var(--t1)}
+.ai-prev-head .md-code{margin-top:4px; display:inline-block}
+.ai-prev-tag{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.1)); border-radius:7px; padding:3px 9px; white-space:nowrap}
+.ai-prev-desc{font-size:13px; line-height:1.55; color:var(--t2); margin:0 0 14px}
+.ai-diag{height:200px; margin:0 0 12px}
+.ai-diag-hint{right:auto; width:auto; max-width:70%}
+.ai-prev-counts{font-size:12.5px; color:var(--t3); margin-bottom:16px}
+.ai-prev-lbl{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); margin-bottom:8px}
+.ai-ent-list{display:flex; flex-direction:column; gap:8px}
+.ai-ent{display:flex; align-items:center; gap:10px; border:1px solid var(--card-border,var(--line)); border-radius:10px; background:var(--card-bg,var(--bg2)); padding:11px 13px; cursor:pointer; transition:border-color .12s}
+.ai-ent:hover{border-color:var(--field-border-hover,var(--line-strong))}
+.ai-ent-ic{display:inline-flex; color:var(--t2)}
+.ai-ent-n{flex:1; font-size:14px; font-weight:600; color:var(--t1)}
+.ai-ent-c{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--t3)}
+.ai-foot, .fs-foot{}
+.ai-foot{display:flex; align-items:center; gap:16px; border-top:1px solid var(--line); padding:16px 0 8px; margin-top:18px}
+.ai-foot-link{display:inline-flex; align-items:center; gap:6px; border:none; background:transparent; color:var(--t2); font-family:inherit; font-size:13px; cursor:pointer}
+.ai-foot-link:hover{color:var(--t1)}
+.ai-foot-or{font-size:13px; color:var(--t3)}
+
+@media (max-width:1000px){
+  .mkt-layout{grid-template-columns:1fr}
+  .mkt-rail{position:static; flex-direction:row; flex-wrap:wrap; margin-bottom:8px}
+  .mkt-rail-label{display:none}
+  .ai-layout{grid-template-columns:1fr}
+  .fs-grid{grid-template-columns:1fr}
+}
+
+
+/* ══ New-model marketplace MODAL ══ */
+.modal.modal-lg{width:min(1080px,95vw); max-width:none; max-height:88vh; display:flex; flex-direction:column; padding:0}
+.mkt-modal-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:20px 22px 14px; border-bottom:1px solid var(--line); flex-shrink:0}
+.mkt-modal-head .modal-title{font-size:18px}
+.mkt-modal-sub{font-size:13px; color:var(--t2); margin-top:3px}
+.mkt-modal-body{flex:1; overflow-y:auto; padding:20px 22px; min-height:0}
+.mkt-modal-foot{display:flex; align-items:center; gap:12px; padding:14px 22px; border-top:1px solid var(--line); flex-shrink:0}
+.mkt-foot-lbl{font-size:12.5px; color:var(--t3)}
+.mkt-modal .mkt-rail{position:static; top:auto}
+.mkt-modal .mkt-layout{gap:22px}
+.mkt-modal .mkt-sub{display:none}
+.mktp{display:grid; grid-template-columns:320px 1fr; gap:26px; align-items:start}
+.mktp-hero{border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--muted,#eef1f6); overflow:hidden; height:230px}
+html:not(.theme-light) .mktp-hero{background:rgba(255,255,255,0.03)}
+.mktp-hero .tpl-thumb{height:100%}
+.mktp-info{min-width:0}
+.mktp-chips{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+.mktp-chips .tpl-featured-badge{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#fff; background:var(--primary); border-radius:6px; padding:3px 7px}
+.mktp-name{font-size:22px; font-weight:800; color:var(--t1); letter-spacing:-.01em}
+.mktp-desc{font-size:14px; line-height:1.6; color:var(--t2); margin:8px 0 18px}
+.mktp-stats{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px}
+.mktp-stat{flex:1; min-width:104px; border:1px solid var(--card-border,var(--line)); border-radius:10px; background:var(--card-bg,var(--bg2)); padding:12px 14px}
+.mktp-stat-v{display:block; font-size:20px; font-weight:800; color:var(--t1); line-height:1}
+.mktp-stat-l{font-size:12px; color:var(--t3); margin-top:5px; display:block}
+.mktp-lbl{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); margin-bottom:10px}
+.mktp-ents{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px}
+.mktp-ent{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--t2); border:1px solid var(--line); border-radius:8px; padding:5px 10px; background:var(--card-bg,var(--bg2))}
+.mktp-meta{font-size:12px; color:var(--t3)}
+@media (max-width:820px){ .mktp{grid-template-columns:1fr} .mktp-hero{height:170px} }
+
+/* AI assist — empty state · build progress · typing */
+.ai-prev-empty{height:100%; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px}
+.ai-prev-empty-ic{width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.1)); margin-bottom:16px}
+.ai-prev-empty-t{font-size:16px; font-weight:700; color:var(--t1); margin-bottom:8px}
+.ai-prev-empty-d{font-size:13px; line-height:1.6; color:var(--t2); max-width:320px}
+.ai-tag-building{color:var(--primary)!important; background:var(--tag-informative-bg,rgba(37,99,235,0.1))!important; display:inline-flex; align-items:center; gap:6px}
+.ai-build-bar{height:6px; border-radius:99px; background:var(--muted,var(--hover)); overflow:hidden; margin:6px 0 18px}
+.ai-build-bar>span{display:block; height:100%; background:var(--primary); border-radius:99px; transition:width .5s ease}
+.ai-build-steps{display:flex; flex-direction:column; gap:11px; margin-bottom:22px}
+.ai-build-step{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--t3)}
+.ai-build-step.done{color:var(--t2)}
+.ai-build-step.active{color:var(--t1); font-weight:600}
+.ai-build-dot{width:20px; height:20px; border-radius:50%; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; border:1.5px solid var(--line-strong,var(--line)); color:var(--t3)}
+.ai-build-step.done .ai-build-dot{background:var(--tag-success-bg,rgba(16,185,129,0.14)); border-color:transparent; color:var(--tag-success-fg,#16a34a)}
+.ai-build-step.active .ai-build-dot{border-color:var(--primary)}
+.ai-spin{width:12px; height:12px; border-radius:50%; border:2px solid var(--primary); border-top-color:transparent; display:inline-block; animation:aiSpin .7s linear infinite}
+.ai-spin-sm{width:10px; height:10px; border-width:1.6px}
+@keyframes aiSpin{to{transform:rotate(360deg)}}
+.ai-skel-diag{position:relative; height:150px; border-radius:12px; background:var(--muted,#eef1f6); overflow:hidden; margin-bottom:12px}
+html:not(.theme-light) .ai-skel-diag{background:rgba(255,255,255,0.03)}
+.ai-skel-node{position:absolute; width:56px; height:20px; border-radius:5px; background:linear-gradient(90deg,var(--hover-strong) 25%,var(--muted,rgba(255,255,255,0.08)) 37%,var(--hover-strong) 63%); background-size:400% 100%; animation:aiShimmer 1.3s ease infinite}
+.ai-skel-rows{display:flex; flex-direction:column; gap:8px}
+.ai-skel-row{height:44px; border-radius:10px; background:linear-gradient(90deg,var(--hover-strong) 25%,var(--muted,rgba(255,255,255,0.08)) 37%,var(--hover-strong) 63%); background-size:400% 100%; animation:aiShimmer 1.3s ease infinite}
+@keyframes aiShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.ai-typing{display:inline-flex; gap:4px; align-items:center; padding:12px 14px}
+.ai-typing span{width:6px; height:6px; border-radius:50%; background:var(--t3); animation:aiBlink 1.2s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes aiBlink{0%,60%,100%{opacity:.3}30%{opacity:1}}
 </style>
 </head>
 <body>
@@ -1780,16 +2002,26 @@ html:not(.theme-light) .diag-legend{background:var(--surface-raised,#131C2E)}
 <header class="topbar">
   <div class="tb-left">
     <button class="tb-burger" onclick="openSidebarDrawer()" aria-label="Open menu"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
-    <span class="tb-brand"><span class="tb-brand-logo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.4"/><path d="M2 6.5h12M2 9.5h12M5.5 3v10M10.5 3v10" stroke-width="1.1"/></svg></span><span class="tb-brand-name">Data Studio</span></span>
+    <button class="tb-studio" data-pop onclick="openWorkspace(this)" title="Switch studio">
+      <span class="tb-studio-av"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.4"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span>
+      <span class="tb-studio-name">Data Studio</span>
+      <svg class="tb-studio-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+    </button>
   </div>
-  <button class="tb-search" data-pop onclick="openSearch()" aria-label="Search"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search work, spaces, people…</span><kbd>⌘K</kbd></button>
+  <button class="tb-search" data-pop onclick="openSearch()" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search</span></button>
   <div class="tb-right">
-    <button class="tb-ico tb-ai" data-pop onclick="openAI(this)" title="Ask AI"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z"/></svg></button>
-    <button class="tb-ico" id="themeBtn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme"></button>
-    <button class="tb-ico tb-bell" data-pop onclick="openNotifs(this)" title="Notifications"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 6a4 4 0 0 1 8 0c0 3 1.5 4 1.5 4h-11S4 9 4 6Z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke-linecap="round"/></svg><span class="tb-badge">3</span></button>
-    <button class="tb-ico tb-hide-sm" data-pop onclick="openSettings(this)" title="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4M12.5 12.5l-1.4-1.4M4.9 4.9L3.5 3.5"/></svg></button>
-    <button class="tb-ws" data-pop onclick="openWorkspace(this)" title="Workspace"><span class="tb-ws-logo">A</span><span class="tb-ws-name">Aims</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--t3)"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
-    <button class="tb-avatar" data-pop onclick="openAccount(this)" title="Account">SB</button>
+    <div class="tb-actions">
+      <button class="tb-ai" data-pop onclick="openAI(this)" title="Ask AI" aria-label="Ask AI"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z"/></svg></button>
+      <button class="tb-ico tb-bell" data-pop onclick="openNotifs(this)" title="Notifications" aria-label="Notifications"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 6a4 4 0 0 1 8 0c0 3 1.5 4 1.5 4h-11S4 9 4 6Z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke-linecap="round"/></svg><span class="tb-badge" aria-hidden="true"></span></button>
+      <button class="tb-ico tb-hide-sm" data-pop onclick="openSettings(this)" title="Settings" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4M12.5 12.5l-1.4-1.4M4.9 4.9L3.5 3.5"/></svg></button>
+      <button class="tb-ico tb-hide-sm" id="themeBtn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme"></button>
+    </div>
+    <span class="tb-divider" aria-hidden="true"></span>
+    <button class="tb-company" data-pop onclick="openAccount(this)" title="Account">
+      <span class="tb-company-av">A</span>
+      <span class="tb-company-name">Aims</span>
+      <span class="tb-user-av">SB</span>
+    </button>
   </div>
 </header>
 
@@ -3143,6 +3375,7 @@ const PEOPLE={
   sc:{i:'SC',n:'Sarah Chen',c:'teal'}, em:{i:'EM',n:'Eve Martin',c:'amber'}, dn:{i:'DN',n:'Diego Núñez',c:'green'},
   jc:{i:'JC',n:'Julia Cruz',c:'green'}, mr:{i:'MR',n:'Marcus Reed',c:'blue'}, pl:{i:'PL',n:'Priya Lal',c:'purple'},
   dp:{i:'DP',n:'Data Platform',c:'blue'}, sm:{i:'SM',n:'Sam Ortiz',c:'cyan'}, tk:{i:'TK',n:'Tom Kane',c:'indigo'},
+  sb:{i:'SB',n:'Sebastian Blandon',c:'blue'},
 };
 function P(k){ return PEOPLE[k]||{i:'?',n:'Unknown',c:'slate'}; }
 function av(p,size){ const c=AV_COLORS[p.c]||AV_COLORS.slate; return `<span class="av av-${size||'sm'}" style="background:${c}" title="${escapeHtml(p.n||p.i)}">${escapeHtml(p.i)}</span>`; }
@@ -3255,7 +3488,7 @@ function renderModels(){
       ${filtering?`<button class="dsf-clear" onclick="mClear()">Clear filters</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(modelsState,'mView')}
-      <button class="btn btn-primary" onclick="openCreateModel()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New model</button>
+      <button class="btn btn-primary" onclick="navigate('models/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New model</button>
     </div>
     ${body}`;
 }
@@ -4001,11 +4234,422 @@ function _rowDelete(surface,id){ const cfg=_surfCfg(surface), i=cfg.arr.findInde
 
 /* ── Routing ── */
 function navigate(route){ location.hash = '#/'+route; }
+/* ══════════════════════════════════════════════════════════════
+   NEW MODEL FLOW — Marketplace · From scratch · AI assist
+   ══════════════════════════════════════════════════════════════ */
+const TPL_CATS=[
+  {id:'sales',name:'Sales'},{id:'marketing',name:'Marketing'},{id:'service',name:'Customer Service'},
+  {id:'finance',name:'Finance'},{id:'hr',name:'HR'},{id:'inventory',name:'Inventory'},
+  {id:'logistics',name:'Logistics'},{id:'compliance',name:'Compliance'},{id:'operations',name:'Operations'},
+  {id:'itsec',name:'IT & Security'},{id:'projects',name:'Projects'},
+];
+const TEMPLATES=[
+  {id:'sales_pipeline',name:'Sales Pipeline',cat:'sales',cx:'Advanced',e:12,r:19,c:13,tenants:'1,284',ver:'v4.1',updated:'May 22, 2026',featured:true,badge:null,desc:'Leads, accounts, opportunities, quotes and stage history with forecast roll-ups. The full revenue engine.'},
+  {id:'general_ledger_t',name:'General Ledger',cat:'finance',cx:'Advanced',e:13,r:21,c:14,tenants:'760',ver:'v5.0',updated:'May 18, 2026',featured:true,badge:null,desc:'Chart of accounts, journals, cost centers and fiscal periods — the accounting backbone for finance teams.'},
+  {id:'people_org',name:'People & Org',cat:'hr',cx:'Intermediate',e:11,r:16,c:10,tenants:'921',ver:'v3.4',updated:'May 16, 2026',featured:true,badge:null,desc:'Employees, positions, departments and reporting lines with the org chart and tenure history.'},
+  {id:'account_360',name:'Account 360',cat:'sales',cx:'Intermediate',e:9,r:14,c:9,tenants:'1,102',ver:'v3.1',updated:'May 21, 2026',badge:'Most used',desc:'Accounts, contacts, activities and the relationship timeline that powers a single customer view across teams.'},
+  {id:'support_desk',name:'Support Desk',cat:'service',cx:'Intermediate',e:10,r:15,c:12,tenants:'998',ver:'v3.0',updated:'May 20, 2026',badge:'Most used',desc:'Cases, queues, SLAs and CSAT survey responses tracking the full support lifecycle from intake to resolution.'},
+  {id:'inventory_stock_t',name:'Inventory & Stock',cat:'inventory',cx:'Intermediate',e:10,r:14,c:11,tenants:'640',ver:'v3.3',updated:'May 19, 2026',badge:'Most used',desc:'Warehouses, SKUs, lots and stock movements with reorder thresholds and cycle counts.'},
+  {id:'product_catalog',name:'Product Catalog',cat:'inventory',cx:'Intermediate',e:10,r:15,c:10,tenants:'712',ver:'v2.5',updated:'May 13, 2026',badge:null,desc:'Products, variants, categories and pricing tiers with attributes and media for the storefront.'},
+  {id:'accounts_payable',name:'Accounts Payable',cat:'finance',cx:'Advanced',e:11,r:17,c:12,tenants:'430',ver:'v2.2',updated:'May 11, 2026',badge:null,desc:'Vendors, bills, payment runs and approvals with the full three-way match against purchase orders.'},
+  {id:'project_delivery',name:'Project Delivery',cat:'projects',cx:'Intermediate',e:9,r:13,c:8,tenants:'275',ver:'v1.4',updated:'May 24, 2026',badge:'New',desc:'Projects, tasks, milestones and time entries with resourcing and budget burn-down.'},
+  {id:'campaign_hub',name:'Campaign Hub',cat:'marketing',cx:'Intermediate',e:8,r:12,c:9,tenants:'318',ver:'v1.2',updated:'May 23, 2026',badge:'New',desc:'Campaigns, segments, touchpoints and attribution with UTM capture and conversion tracking.'},
+  {id:'fulfillment',name:'Fulfillment & Routing',cat:'logistics',cx:'Advanced',e:11,r:18,c:11,tenants:'204',ver:'v2.0',updated:'May 9, 2026',badge:null,desc:'Shipments, routes, carriers and delivery events connected to the partner-network fulfillment layer.'},
+  {id:'gdpr_records',name:'Privacy & Consent',cat:'compliance',cx:'Advanced',e:9,r:14,c:10,tenants:'187',ver:'v1.9',updated:'May 7, 2026',badge:null,desc:'Data subjects, consent purposes, requests and audit evidence mapped to GDPR lawful bases.'},
+  {id:'recruiting',name:'Recruiting',cat:'hr',cx:'Intermediate',e:9,r:13,c:9,tenants:'356',ver:'v2.1',updated:'May 6, 2026',badge:null,desc:'Candidates, requisitions, interviews and offers with the full hiring funnel and scorecards.'},
+  {id:'time_attendance',name:'Time & Attendance',cat:'hr',cx:'Simple',e:6,r:8,c:6,tenants:'488',ver:'v1.6',updated:'May 4, 2026',badge:null,desc:'Shifts, clock events, leave requests and balances feeding payroll and scheduling.'},
+  {id:'revenue_rec',name:'Revenue Recognition',cat:'finance',cx:'Advanced',e:12,r:20,c:13,tenants:'241',ver:'v2.7',updated:'May 3, 2026',badge:null,desc:'Contracts, performance obligations and schedules that recognize revenue under ASC 606.'},
+  {id:'asset_mgmt',name:'Asset Management',cat:'operations',cx:'Intermediate',e:9,r:12,c:9,tenants:'163',ver:'v1.3',updated:'May 2, 2026',badge:null,desc:'Physical and digital assets, custody chains and depreciation schedules for operations.'},
+  {id:'access_governance',name:'Access Governance',cat:'itsec',cx:'Advanced',e:10,r:16,c:11,tenants:'129',ver:'v1.1',updated:'Apr 30, 2026',badge:null,desc:'Users, roles, entitlements and access reviews with segregation-of-duties checks.'},
+  {id:'quote_to_cash',name:'Quote to Cash',cat:'sales',cx:'Advanced',e:13,r:22,c:14,tenants:'352',ver:'v2.4',updated:'Apr 28, 2026',badge:null,desc:'Quotes, orders, invoices and payments spanning the full commercial lifecycle.'},
+  {id:'warehouse_ops',name:'Warehouse Ops',cat:'inventory',cx:'Intermediate',e:8,r:11,c:8,tenants:'198',ver:'v1.5',updated:'Apr 26, 2026',badge:null,desc:'Bins, picks, packs and replenishment tasks that drive day-to-day warehouse execution.'},
+  {id:'field_service',name:'Field Service',cat:'service',cx:'Intermediate',e:9,r:13,c:10,tenants:'174',ver:'v1.7',updated:'Apr 24, 2026',badge:null,desc:'Work orders, technicians, assets and visits with scheduling and parts consumption.'},
+  {id:'sox_controls',name:'SOX Controls',cat:'compliance',cx:'Advanced',e:8,r:12,c:9,tenants:'96',ver:'v1.0',updated:'Apr 22, 2026',badge:null,desc:'Controls, tests, findings and remediation mapped to financial reporting risks.'},
+  {id:'change_mgmt',name:'Change Management',cat:'operations',cx:'Simple',e:6,r:8,c:6,tenants:'88',ver:'v1.0',updated:'Apr 20, 2026',badge:null,desc:'Change requests, approvals and release windows with impact and rollback plans.'},
+];
+function _catName(id){ const c=TPL_CATS.find(x=>x.id===id); return c?c.name:id; }
+function _cxTone(cx){ return cx==='Advanced'?'adv':cx==='Simple'?'sim':'int'; }
+
+/* mini ER thumbnail — deterministic, static */
+function _tplThumb(seed){
+  const n=7, W=190, H=104, cx=W/2, cy=H/2, pts=[];
+  for(let i=0;i<n;i++){ const a=(i/n)*Math.PI*2 + seed*0.7; pts.push([cx+Math.cos(a)*(W*0.30)+(((i*17+seed*5)%18)-9), cy+Math.sin(a)*(H*0.30)+(((i*11+seed*3)%12)-6)]); }
+  let edges=''; for(let i=0;i<n;i++){ const j=(i+1)%n; edges+=`<line x1="${pts[i][0].toFixed(0)}" y1="${pts[i][1].toFixed(0)}" x2="${pts[j][0].toFixed(0)}" y2="${pts[j][1].toFixed(0)}"/>`; if(i%2===0){ const k=(i+2)%n; edges+=`<line x1="${pts[i][0].toFixed(0)}" y1="${pts[i][1].toFixed(0)}" x2="${pts[k][0].toFixed(0)}" y2="${pts[k][1].toFixed(0)}"/>`; } }
+  const nodes=pts.map(p=>`<g transform="translate(${p[0].toFixed(0)},${p[1].toFixed(0)})"><rect x="-16" y="-6.5" width="32" height="13" rx="3"/><rect x="-16" y="-6.5" width="32" height="2.5" rx="1.2" class="tt-top"/></g>`).join('');
+  return `<svg class="tpl-thumb" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g class="tt-edges">${edges}</g><g class="tt-nodes">${nodes}</g></svg>`;
+}
+
+/* ── Marketplace ── */
+let mktState={ cat:'all', q:'', cx:'all', sort:'popular' };
+function mktCat(id){ mktState.cat=id; _renderMktBody(); }
+function mktSet(k,v){ mktState[k]=v; _renderMktBody(); }
+function mktSearch(v){ mktState.q=v; _renderMktBody(); setTimeout(()=>{const el=$('mktSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function _mktFiltered(){
+  const q=mktState.q.toLowerCase();
+  let a=TEMPLATES.filter(t=>{
+    if(mktState.cat!=='all' && mktState.cat!=='featured' && mktState.cat!=='recent' && t.cat!==mktState.cat) return false;
+    if(mktState.cat==='featured' && !t.featured) return false;
+    if(mktState.cx!=='all' && t.cx!==mktState.cx) return false;
+    if(q && !(t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||_catName(t.cat).toLowerCase().includes(q))) return false;
+    return true;
+  });
+  if(mktState.cat==='recent') a=a.slice().sort((x,y)=>Date.parse(y.updated)-Date.parse(x.updated)).slice(0,6);
+  if(mktState.sort==='popular') a=a.slice().sort((x,y)=>(+String(y.tenants).replace(/,/g,''))-(+String(x.tenants).replace(/,/g,'')));
+  else if(mktState.sort==='recent') a=a.slice().sort((x,y)=>Date.parse(y.updated)-Date.parse(x.updated));
+  else if(mktState.sort==='az') a=a.slice().sort((x,y)=>x.name.localeCompare(y.name));
+  return a;
+}
+function renderMarketplace(){
+  _dsfRerender=renderMarketplace;
+  const featured=TEMPLATES.filter(t=>t.featured);
+  const all=_mktFiltered();
+  const showFeatured = mktState.cat==='all' && !mktState.q && mktState.cx==='all';
+  const total=TEMPLATES.length;
+  const catCount=id=> id==='all'?total : id==='featured'?featured.length : id==='recent'?Math.min(6,total) : TEMPLATES.filter(t=>t.cat===id).length;
+  const railItem=(id,name,ic)=>`<button class="mkt-cat ${mktState.cat===id?'on':''}" onclick="mktCat('${id}')"><span class="mkt-cat-ic">${ic}</span><span class="mkt-cat-n">${escapeHtml(name)}</span><span class="mkt-cat-c">${catCount(id)}</span></button>`;
+  const IC_ALL='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>';
+  const IC_STAR='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 13.5l.8-4.2L2 6.4l4.2-.5L8 2Z"/></svg>';
+  const IC_CLOCK='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.2" stroke-linecap="round"/></svg>';
+  const IC_CAT='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h6"/></svg>';
+  const cxOpts=[{label:'Any complexity',v:'all'},{label:'Simple',v:'Simple'},{label:'Intermediate',v:'Intermediate'},{label:'Advanced',v:'Advanced'}];
+  const sortOpts=[{label:'Most popular',v:'popular'},{label:'Recently updated',v:'recent'},{label:'A–Z',v:'az'}];
+  const cxLabel=(cxOpts.find(o=>o.v===mktState.cx)||{}).label;
+  const sortLabel=(sortOpts.find(o=>o.v===mktState.sort)||{}).label;
+  $('content').innerHTML=`
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'New model'}])}
+    <h1 class="page-h1">Model marketplace</h1>
+    <p class="mkt-sub">Browse a proven reference model from the AIMS OS catalog, or start your own from scratch.</p>
+    <div class="mkt-layout">
+      <aside class="mkt-rail">
+        ${railItem('all','All categories',IC_ALL)}
+        ${railItem('featured','Featured',IC_STAR)}
+        ${railItem('recent','Recently added',IC_CLOCK)}
+        <div class="mkt-rail-label">Categories</div>
+        ${TPL_CATS.map(c=>railItem(c.id,c.name,IC_CAT)).join('')}
+      </aside>
+      <div class="mkt-main">
+        <div class="mkt-toolbar">
+          <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="mktSearch" type="text" placeholder="Search the catalog…" value="${escapeHtml(mktState.q)}" oninput="mktSearch(this.value)" autocomplete="off"></label>
+          ${dsfDrop('mktCx','Complexity', mktState.cx!=='all'?{label:cxLabel,onremove:"mktSet('cx','all')"}:null, cxOpts.map(o=>({label:o.label,selected:mktState.cx===o.v,onclick:`dsfPickSingle();mktSet('cx','${o.v}')`})))}
+          ${dsfDrop('mktSort','Sort: '+sortLabel, null, sortOpts.map(o=>({label:o.label,selected:mktState.sort===o.v,onclick:`dsfPickSingle();mktSet('sort','${o.v}')`})))}
+          <span class="tbar-spring"></span>
+          <button class="btn" onclick="navigate('models/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+          <button class="btn btn-primary" onclick="navigate('models/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>
+        </div>
+        ${showFeatured?`<div class="mkt-sec-h"><span class="mkt-sec-t">Featured by AIMS OS</span><span class="mkt-sec-sub">Curated reference models to get a new tenant productive fast</span></div>
+          <div class="mkt-featured">${featured.map(_tplFeaturedCard).join('')}</div>`:''}
+        <div class="mkt-sec-h"><span class="mkt-sec-t">${showFeatured?'All models':(mktState.cat==='all'?'All models':_catName(mktState.cat)+' models')}</span><span class="mkt-sec-sub">${all.length} model${all.length===1?'':'s'}</span></div>
+        ${all.length? `<div class="mkt-grid">${all.map(_tplCard).join('')}</div>` : `<div class="empty" style="margin-top:0"><div class="empty-t">No templates match</div>Try a different search or category.</div>`}
+      </div>
+    </div>`;
+}
+function _tplFeaturedCard(t){
+  return `<div class="tpl-card tpl-card-f" onclick="mktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap"><span class="tpl-featured-badge"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>${_tplThumb(t.id.length+3)}</div>
+    <div class="tpl-body">
+      <div class="tpl-cat"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span></div>
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      <div class="tpl-stats"><span>${_TSI.e}${t.e} entities</span><span>${_TSI.r}${t.r} relations</span><span>${_TSI.c}${t.c} components</span></div>
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span><span class="tpl-view">View model <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>
+    </div>
+  </div>`;
+}
+function _tplCard(t){
+  return `<div class="tpl-card" onclick="mktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap tpl-thumb-sm"><span class="tpl-cat-chip tpl-chip-abs">${escapeHtml(_catName(t.cat))}</span>${t.badge?`<span class="tpl-badge ${t.badge==='New'?'is-new':''}">${t.badge==='New'?'+ New':'⚡ '+t.badge}</span>`:''}${_tplThumb(t.id.length+t.e)}</div>
+    <div class="tpl-body">
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      <div class="tpl-stats"><span>${_TSI.e}${t.e} entities</span><span>${_TSI.r}${t.r} relations</span><span>${_TSI.c}${t.c} components</span></div>
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-meta">${t.ver} · updated ${escapeHtml(t.updated)}</span></div>
+    </div>
+  </div>`;
+}
+const _TSI={
+  e:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
+  r:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 10a3 3 0 0 1 0-4l1-1a3 3 0 0 1 4 4M10 6a3 3 0 0 1 0 4l-1 1a3 3 0 0 1-4-4"/></svg>',
+  c:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4.5 8 2l6 2.5L8 7 2 4.5Z"/><path d="M2 4.5v7L8 14l6-2.5v-7"/></svg>',
+  t:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="6" width="12" height="8" rx="1.4"/><path d="M5 6V4a3 3 0 0 1 6 0v2"/></svg>',
+};
+function _tplUse(id){
+  const t=TEMPLATES.find(x=>x.id===id); if(!t) return;
+  let base=_slug(t.name), u=base, k=2; while(_model(u)) u=base+'_'+(k++);
+  MODELS.unshift({id:u, name:t.name, origin:'Implemented', category:_catName(t.cat), status:'Draft', entities:t.e, version:t.ver, owner:'sb', collab:[], updated:'just now', tags:[t.cat], desc:t.desc});
+  _mdReset&&_mdReset(u);
+  toast('Created “'+t.name+'” from template','ok');
+  navigate('models/'+u);
+}
+
+/* ── New-model MODAL (marketplace chooser → preview → hand off) ── */
+function openMarketplaceModal(){
+  mktState.preview=null;
+  $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Model marketplace">
+    <div class="mkt-modal-head">
+      <div><div class="modal-title">Model marketplace</div><div class="mkt-modal-sub">Browse a proven reference model from the AIMS OS catalog, or start your own.</div></div>
+      <button class="so-close" onclick="closeModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="mkt-modal-body" id="mktBody"></div>
+    <div class="mkt-modal-foot" id="mktFoot"></div>
+  </div>`;
+  $('modalScrim').classList.add('open');
+  _dsfRerender=_renderMktBody;
+  _renderMktBody();
+}
+function _renderMktBody(){
+  const body=$('mktBody'), foot=$('mktFoot'); if(!body) return;
+  if(mktState.preview){
+    const t=TEMPLATES.find(x=>x.id===mktState.preview);
+    body.innerHTML=_mktPreviewHTML(t);
+    foot.innerHTML=`<button class="btn" onclick="mktBack()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Back to catalog</button><span class="tbar-spring"></span><span class="mkt-foot-lbl">Creates a Draft you can edit and publish</span><button class="btn btn-primary" onclick="_tplUse('${t.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg> Use this template</button>`;
+    body.scrollTop=0; return;
+  }
+  body.innerHTML=_mktChooserHTML();
+  foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
+    <button class="btn" onclick="navigate('models/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="navigate('models/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+}
+function mktPreview(id){ mktState.preview=id; _renderMktBody(); }
+function mktBack(){ mktState.preview=null; _renderMktBody(); }
+function _mktChooserHTML(){
+  const featured=TEMPLATES.filter(t=>t.featured);
+  const all=_mktFiltered();
+  const showFeatured = mktState.cat==='all' && !mktState.q && mktState.cx==='all';
+  const total=TEMPLATES.length;
+  const catCount=id=> id==='all'?total : id==='featured'?featured.length : id==='recent'?Math.min(6,total) : TEMPLATES.filter(t=>t.cat===id).length;
+  const IC_ALL='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>';
+  const IC_STAR='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 13.5l.8-4.2L2 6.4l4.2-.5L8 2Z"/></svg>';
+  const IC_CLOCK='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.2" stroke-linecap="round"/></svg>';
+  const IC_CAT='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h6"/></svg>';
+  const railItem=(id,name,ic)=>`<button class="mkt-cat ${mktState.cat===id?'on':''}" onclick="mktCat('${id}')"><span class="mkt-cat-ic">${ic}</span><span class="mkt-cat-n">${escapeHtml(name)}</span><span class="mkt-cat-c">${catCount(id)}</span></button>`;
+  const cxOpts=[{label:'Any complexity',v:'all'},{label:'Simple',v:'Simple'},{label:'Intermediate',v:'Intermediate'},{label:'Advanced',v:'Advanced'}];
+  const sortOpts=[{label:'Most popular',v:'popular'},{label:'Recently updated',v:'recent'},{label:'A–Z',v:'az'}];
+  const cxLabel=(cxOpts.find(o=>o.v===mktState.cx)||{}).label;
+  const sortLabel=(sortOpts.find(o=>o.v===mktState.sort)||{}).label;
+  return `<div class="mkt-layout">
+    <aside class="mkt-rail">
+      ${railItem('all','All categories',IC_ALL)}${railItem('featured','Featured',IC_STAR)}${railItem('recent','Recently added',IC_CLOCK)}
+      <div class="mkt-rail-label">Categories</div>
+      ${TPL_CATS.map(c=>railItem(c.id,c.name,IC_CAT)).join('')}
+    </aside>
+    <div class="mkt-main">
+      <div class="mkt-toolbar">
+        <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="mktSearch" type="text" placeholder="Search the catalog…" value="${escapeHtml(mktState.q)}" oninput="mktSearch(this.value)" autocomplete="off"></label>
+        ${dsfDrop('mktCx','Complexity', mktState.cx!=='all'?{label:cxLabel,onremove:"mktSet('cx','all')"}:null, cxOpts.map(o=>({label:o.label,selected:mktState.cx===o.v,onclick:`dsfPickSingle();mktSet('cx','${o.v}')`})))}
+        ${dsfDrop('mktSort','Sort: '+sortLabel, null, sortOpts.map(o=>({label:o.label,selected:mktState.sort===o.v,onclick:`dsfPickSingle();mktSet('sort','${o.v}')`})))}
+      </div>
+      ${showFeatured?`<div class="mkt-sec-h"><span class="mkt-sec-t">Featured by AIMS OS</span><span class="mkt-sec-sub">Curated reference models to get a new tenant productive fast</span></div>
+        <div class="mkt-featured">${featured.map(_tplFeaturedCard).join('')}</div>`:''}
+      <div class="mkt-sec-h"><span class="mkt-sec-t">${showFeatured?'All models':(mktState.cat==='all'?'All models':_catName(mktState.cat)+' models')}</span><span class="mkt-sec-sub">${all.length} model${all.length===1?'':'s'}</span></div>
+      ${all.length? `<div class="mkt-grid">${all.map(_tplCard).join('')}</div>` : `<div class="empty" style="margin-top:0"><div class="empty-t">No templates match</div>Try a different search or category.</div>`}
+    </div>
+  </div>`;
+}
+function _mktPreviewHTML(t){
+  const ents=['Record','Category','Owner','Activity','Attachment','Status','Event','Tag','Reference'].slice(0,Math.min(9,t.e));
+  return `<div class="mktp">
+    <div class="mktp-hero">${_tplThumb(t.id.length+t.e)}</div>
+    <div class="mktp-info">
+      <div class="mktp-chips"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span>${t.featured?`<span class="tpl-featured-badge" style="position:static"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>`:''}<span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span></div>
+      <div class="mktp-name">${escapeHtml(t.name)}</div>
+      <div class="mktp-desc">${escapeHtml(t.desc)}</div>
+      <div class="mktp-stats">
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.e}</span><span class="mktp-stat-l">Entities</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.r}</span><span class="mktp-stat-l">Relations</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.c}</span><span class="mktp-stat-l">Components</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.tenants}</span><span class="mktp-stat-l">Tenants</span></div>
+      </div>
+      <div class="mktp-lbl">Included entities</div>
+      <div class="mktp-ents">${ents.map(e=>`<span class="mktp-ent">${_TSI.e}${escapeHtml(e)}</span>`).join('')}</div>
+      <div class="mktp-meta">${t.ver} · updated ${escapeHtml(t.updated)}</div>
+    </div>
+  </div>`;
+}
+
+/* ── From scratch ── */
+let fsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', tags:[], owner:'sb', stewards:[] };
+function _fsReset(){ fsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', tags:[], owner:'sb', stewards:[] }; }
+function fsSet(k,v){ fsState[k]=v; if(k==='display'&&!fsState.nameEdited){ fsState.name=_slug(v); } _fsSync(); }
+function fsName(v){ fsState.name=_slug(v); fsState.nameEdited=true; _fsSync(); }
+function _fsSync(){
+  const nm=$('fsName'); if(nm && document.activeElement!==nm) nm.value=fsState.name;
+  const ok=fsState.display.trim() && fsState.desc.trim();
+  const btn=$('fsCreateBtn'); if(btn){ btn.disabled=!ok; }
+  const hint=$('fsHint'); if(hint){ hint.textContent = ok?'Ready to create':'Complete the required fields to continue'; hint.className='fs-foot-hint'+(ok?' ok':''); }
+  const cc=$('fsDescCount'); if(cc){ cc.textContent=fsState.desc.length+' / 60'; cc.classList.toggle('over',fsState.desc.length>60); }
+}
+function fsTagAdd(v){ v=(v||'').trim(); if(v && !fsState.tags.includes(v)){ fsState.tags.push(v); renderFromScratch(); } }
+function fsTagDel(v){ fsState.tags=fsState.tags.filter(t=>t!==v); renderFromScratch(); }
+function fsSuggestTags(){ ['sales','customer-360','pipeline'].forEach(t=>{ if(!fsState.tags.includes(t)) fsState.tags.push(t); }); renderFromScratch(); toast('Suggested tags added','ok'); }
+function fsHelpDesc(){ const ta=$('fsDesc'); const txt='Models the full sales funnel from lead to closed deal, including accounts, contacts, opportunities and quotes. Excludes post-sale support.'; fsState.desc=txt; if(ta){ ta.value=txt; } _fsSync(); toast('Draft description generated','ok'); }
+function fsCreate(){
+  const name=fsState.display.trim(); if(!name){ toast('Enter a display name'); return; }
+  if(!fsState.desc.trim()){ toast('Add a description'); return; }
+  let base=fsState.name||_slug(name), u=base, k=2; while(_model(u)) u=base+'_'+(k++);
+  MODELS.unshift({id:u, name, origin:'Custom', category:fsState.cat||'Custom', status:'Draft', entities:0, owner:fsState.owner, collab:[], updated:'just now', tags:fsState.tags.slice(), desc:fsState.desc.trim()});
+  _mdReset&&_mdReset(u);
+  toast('“'+name+'” created','ok');
+  navigate('models/'+u);
+}
+function renderFromScratch(){
+  const cats=['CRM','Finance','Operations','Compliance','IoT','HR','Marketing'];
+  $('content').innerHTML=`
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'New model',href:'#/models/new'},{label:'From scratch'}])}
+    <div class="fs-wrap">
+      <h1 class="page-h1">Create a new model from scratch</h1>
+      <p class="mkt-sub">Define the basic information. You’ll add entities and structure in the next step.</p>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Identity</div><div class="fs-sec-d">The minimum needed to create the model.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Display name <span class="fs-req">*</span></label><input class="fs-in" id="fsDisplay" placeholder="Customer Relations" value="${escapeHtml(fsState.display)}" oninput="fsSet('display',this.value)" autocomplete="off"><div class="fs-help">Human-readable name shown across the app.</div></div>
+          <div class="fs-field"><label class="fs-l">Name <span class="fs-req">*</span></label><div class="fs-name-in"><span class="fs-name-pre">model.</span><input class="fs-in fs-mono" id="fsName" placeholder="customer_relations" value="${escapeHtml(fsState.name)}" oninput="fsName(this.value)" autocomplete="off"></div><div class="fs-help">Internal identifier · snake_case · unique in tenant.</div></div>
+        </div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Description <span class="fs-req">*</span></label><button class="fs-ai-link" onclick="fsHelpDesc()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Help me write this</button></div>
+          <textarea class="fs-ta" id="fsDesc" placeholder="Models the full sales funnel from lead to closed deal, including accounts, contacts, opportunities and quotes. Excludes post-sale support…" oninput="fsSet('desc',this.value)">${escapeHtml(fsState.desc)}</textarea>
+          <div class="fs-ta-foot"><span class="fs-help">Feeds the catalog and agent context. Be specific about what’s included and excluded.</span><span class="md-count ${fsState.desc.length>60?'over':''}" id="fsDescCount">${fsState.desc.length} / 60</span></div>
+        </div>
+      </section>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Organization</div><div class="fs-sec-d">Helps classify, discover and govern the model. All optional except owner.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Category</label><select class="fs-in fs-sel" onchange="fsSet('cat',this.value)"><option value="" ${fsState.cat?'':'selected'} disabled hidden>Select a category</option>${cats.map(c=>`<option ${fsState.cat===c?'selected':''}>${c}</option>`).join('')}</select><div class="fs-help">Business domain. Create a custom one if needed.</div></div>
+          <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Tags</label><button class="fs-ai-link" onclick="fsSuggestTags()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Suggest tags</button></div><div class="fs-tagbox">${fsState.tags.map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="fsTagDel('${escapeHtml(t)}')" aria-label="Remove">×</button></span>`).join('')}<input class="md-tag-in" placeholder="Add tags…" onkeydown="if(event.key==='Enter'){event.preventDefault();fsTagAdd(this.value);this.value='';}"></div><div class="fs-help">Free-form labels for classification.</div></div>
+        </div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Owner <span class="fs-req">*</span></label><div class="fs-owner">${av(P(fsState.owner),'sm')}<span class="fs-owner-n">${escapeHtml(P(fsState.owner).n)}</span><span class="fs-you">You</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;color:var(--t3)"><path d="M4 6l4 4 4-4"/></svg></div><div class="fs-help">Responsible person or team. Defaults to you.</div></div>
+          <div class="fs-field"><label class="fs-l">Stewards</label><button class="md-add-steward" onclick="toast('Add stewards')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add stewards</button><div class="fs-help">People who review quality and approve changes.</div></div>
+        </div>
+      </section>
+      <div class="fs-foot">
+        <button class="btn" onclick="navigate('models/new')">Cancel</button>
+        <span class="tbar-spring"></span>
+        <span class="fs-foot-hint" id="fsHint">${fsState.display.trim()&&fsState.desc.trim()?'Ready to create':'Complete the required fields to continue'}</span>
+        <button class="btn btn-primary" id="fsCreateBtn" ${fsState.display.trim()&&fsState.desc.trim()?'':'disabled'} onclick="fsCreate()">Create model <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+    </div>`;
+}
+
+/* ── AI assist — empty start · one question at a time · build progress ── */
+const AI_PROPOSAL={ name:'Custom Model', slug:'custom_model',
+  desc:'A starting structure for your domain — a core record with its categories, owners, related activity and attachments. We’ll refine the entities together as you describe more.',
+  ents:[{n:'Record',c:9},{n:'Category',c:4},{n:'Owner',c:6},{n:'Activity',c:6},{n:'Attachment',c:5}], rel:4, refs:2 };
+const AI_QUESTIONS=[
+  {q:'Hi! I’ll help you design a model. In a sentence or two — what domain do you want to capture?'},
+  {q:'Got it. What’s the main thing you’ll be tracking, and who works with it day to day?'},
+  {q:'Are there any key events or milestones in its lifecycle I should capture as their own records?', chips:['Yes, there are','Not really']},
+  {q:'Last one — any notes, files or attachments the team adds that we should model?', chips:['Yes','No']},
+];
+const AI_BUILD_STEPS=['Analyzing your answers','Proposing entities','Wiring relationships','Adding reference data','Finalizing preview'];
+const _AI_SPARK='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg>';
+const _AI_CHK='<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>';
+let aiState={ step:0, msgs:[], phase:'asking', build:0 };
+function _aiReset(){ aiState={ step:0, phase:'asking', build:0, msgs:[{who:'ai', t:AI_QUESTIONS[0].q, chips:AI_QUESTIONS[0].chips}] }; }
+function aiSend(v){
+  v=(v||'').trim(); if(!v || aiState.phase!=='asking') return;
+  aiState.msgs.push({who:'me', t:v});
+  aiState.step++;
+  if(aiState.step < AI_QUESTIONS.length){
+    const nq=AI_QUESTIONS[aiState.step];
+    aiState.msgs.push({who:'ai', t:nq.q, chips:nq.chips});
+    renderAIAssist();
+  } else {
+    aiState.msgs.push({who:'ai', t:'Perfect — I have enough. Building your model now…'});
+    aiState.phase='building'; aiState.build=0;
+    renderAIAssist();
+    setTimeout(_aiBuildTick, 500);
+  }
+}
+function aiChip(v){ aiSend(v); }
+function _aiBuildTick(){
+  aiState.build++;
+  const prev=$('aiPrev'); if(prev) prev.innerHTML=_aiPrevHTML();
+  if(aiState.build < AI_BUILD_STEPS.length){ setTimeout(_aiBuildTick, 650); }
+  else { setTimeout(()=>{ aiState.phase='ready'; aiState.msgs.push({who:'ai', t:'Done! Here’s your proposed model on the right — tell me what to adjust, or accept and create.'}); renderAIAssist(); }, 750); }
+}
+function aiStartOver(){ _aiReset(); renderAIAssist(); toast('Started over'); }
+function aiCreate(){
+  if(aiState.phase!=='ready'){ toast('Answer a few questions first — your model is still being designed'); return; }
+  let base=AI_PROPOSAL.slug, u=base, k=2; while(_model(u)) u=base+'_'+(k++);
+  MODELS.unshift({id:u, name:AI_PROPOSAL.name, origin:'Custom', category:'Custom', status:'Draft', entities:AI_PROPOSAL.ents.length, owner:'sb', collab:[], updated:'just now', tags:['ai-generated'], desc:AI_PROPOSAL.desc});
+  _mdReset&&_mdReset(u);
+  toast('“'+AI_PROPOSAL.name+'” created with AI','ok');
+  navigate('models/'+u);
+}
+function renderAIAssist(){
+  if(!aiState.msgs.length) _aiReset();
+  const asking=aiState.phase==='asking', building=aiState.phase==='building', ready=aiState.phase==='ready';
+  const last=aiState.msgs[aiState.msgs.length-1];
+  const bubbles=aiState.msgs.map(m=> m.who==='ai'
+    ? `<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai">${escapeHtml(m.t)}${m.chips&&asking&&m===last?`<div class="ai-chips">${m.chips.map(c=>`<button class="ai-chip" onclick="aiChip('${escapeHtml(c)}')">${escapeHtml(c)}</button>`).join('')}</div>`:''}</div></div>`
+    : `<div class="ai-row ai-row-me"><div class="ai-bub ai-bub-me">${escapeHtml(m.t)}</div></div>`
+  ).join('');
+  const typing = building?`<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai ai-typing"><span></span><span></span><span></span></div></div>`:'';
+  $('content').innerHTML=`
+    <div class="ai-head-row">${_crumbs([{label:'Models',href:'#/models'},{label:'New model',href:'#/models/new'},{label:'AI Assist'}])}<span class="ai-head-tag">${_AI_SPARK}Designing your model with AI</span></div>
+    <div class="ai-layout">
+      <div class="ai-pane ai-chat-pane">
+        <div class="ai-chat" id="aiChat">${bubbles}${typing}</div>
+        <div class="ai-input"><input id="aiInput" type="text" placeholder="${ready?'Ask for changes, or accept the proposal…':building?'Building your model…':'Type your answer…'}" ${building?'disabled':''} onkeydown="if(event.key==='Enter'){aiSend(this.value);this.value='';}" autocomplete="off"><button class="ai-send" ${building?'disabled':''} onclick="var i=$('aiInput');aiSend(i.value);i.value='';" aria-label="Send"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h10M8 4l4 4-4 4"/></svg></button></div>
+      </div>
+      <div class="ai-pane ai-prev-pane" id="aiPrev">${_aiPrevHTML()}</div>
+    </div>
+    <div class="ai-foot">
+      <button class="btn" onclick="navigate('models/new')">Cancel</button>
+      <span class="tbar-spring"></span>
+      <button class="ai-foot-link" onclick="aiStartOver()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a5 5 0 1 1 1.5 3.5M3 8V5M3 8h3"/></svg> Start over</button>
+      <span class="ai-foot-or">${ready?'Or accept the current proposal':'Answer the questions to generate a model'}</span>
+      <button class="btn btn-primary" ${ready?'':'disabled'} onclick="aiCreate()">Accept and create <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></button>
+    </div>`;
+  setTimeout(()=>{const c=$('aiChat'); if(c)c.scrollTop=c.scrollHeight;},0);
+}
+function _aiPrevHTML(){
+  if(aiState.phase==='building') return _aiPrevBuilding();
+  if(aiState.phase==='ready') return _aiPrevReady();
+  return _aiPrevEmpty();
+}
+function _aiPrevEmpty(){
+  return `<div class="ai-prev-empty">
+    <div class="ai-prev-empty-ic"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5.5-1.4Z"/></svg></div>
+    <div class="ai-prev-empty-t">Your model will take shape here</div>
+    <div class="ai-prev-empty-d">Answer a few questions on the left and I’ll propose a structure — entities, relationships and reference data — that you can refine and create.</div>
+  </div>`;
+}
+function _aiPrevBuilding(){
+  const n=AI_BUILD_STEPS.length;
+  const steps=AI_BUILD_STEPS.map((s,i)=>{ const done=i<aiState.build-1; const active=i===aiState.build-1;
+    return `<div class="ai-build-step ${done?'done':''} ${active?'active':''}"><span class="ai-build-dot">${done?_AI_CHK:active?'<span class="ai-spin"></span>':''}</span><span class="ai-build-lbl">${escapeHtml(s)}</span></div>`; }).join('');
+  const pct=Math.round(Math.min(aiState.build,n)/n*100);
+  const skelNodes=Array.from({length:5},(_,i)=>`<div class="ai-skel-node" style="left:${8+i*19}%; top:${28+(i%2?34:0)}%"></div>`).join('');
+  const skelRows=Array.from({length:4},()=>`<div class="ai-skel-row"></div>`).join('');
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">Building your model</div><code class="md-code">model.custom_model</code></div><span class="ai-prev-tag ai-tag-building"><span class="ai-spin ai-spin-sm"></span> Generating…</span></div>
+    <div class="ai-build-bar"><span style="width:${pct}%"></span></div>
+    <div class="ai-build-steps">${steps}</div>
+    <div class="ai-skel-diag">${skelNodes}</div>
+    <div class="ai-skel-rows">${skelRows}</div>`;
+}
+function _aiPrevReady(){
+  const p=AI_PROPOSAL;
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">${escapeHtml(p.name)}</div><code class="md-code">model.${escapeHtml(p.slug)}</code></div><span class="ai-prev-tag">● Preview · not saved yet</span></div>
+    <p class="ai-prev-desc">${escapeHtml(p.desc)}</p>
+    ${_aiDiagram(p)}
+    <div class="ai-prev-counts">${p.ents.length} entities · ${p.rel} relations · ${p.refs} reference lists</div>
+    <div class="ai-prev-lbl">Entities</div>
+    <div class="ai-ent-list">${p.ents.map(e=>`<div class="ai-ent"><span class="ai-ent-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.4"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span><span class="ai-ent-n">${escapeHtml(e.n)}</span><span class="ai-ent-c">${e.c} cols <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>`).join('')}</div>`;
+}
+function _aiDiagram(p){
+  const n=p.ents.length, W=560, H=190, mx=70, my=44;
+  const nodes=p.ents.map((e,i)=>{ const t=n>1?i/(n-1):0.5; return {label:e.n, x:mx+t*(W-2*mx), y:H/2+Math.sin(t*Math.PI*1.6)*(H/2-my)*0.7}; });
+  let edges=''; for(let i=0;i<n-1;i++) edges+=`<line class="diag-edge" x1="${nodes[i].x.toFixed(0)}" y1="${nodes[i].y.toFixed(0)}" x2="${nodes[i+1].x.toFixed(0)}" y2="${nodes[i+1].y.toFixed(0)}"/>`;
+  const g=nodes.map(nd=>`<g class="diag-node" transform="translate(${nd.x.toFixed(0)},${nd.y.toFixed(0)})"><rect class="diag-box" x="-34" y="-12" width="68" height="24" rx="5"/><rect class="diag-top" x="-34" y="-12" width="68" height="3" rx="1.5"/><text class="diag-label" x="0" y="1">${escapeHtml(nd.label)}</text></g>`).join('');
+  return `<div class="diag-wrap ai-diag"><svg class="diag-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><g>${edges}${g}</g></svg><div class="diag-hint ai-diag-hint"><span class="diag-hint-txt">Hover an entity to trace its relations · click to inspect · drag to pan</span></div><div class="diag-legend"><span><span class="lg-line"></span>Relation</span><span><span class="lg-line lg-dash"></span>Cross-model</span></div></div>`;
+}
+
 function route(){
   _dsfOpen = null; closeSlideout(); closeModal();
   const parts = (location.hash.replace(/^#\/?/,'') || 'models').split('/');
   const r = parts[0];
-  if(r==='models' && parts[1]){ if(modelDetailState.id!==parts[1]) modelDetailState.tab='overview'; modelDetailState.id=parts[1]; renderModelDetail(parts[1]); }
+  if(r==='models' && parts[1]==='new'){ if(parts[2]==='scratch') renderFromScratch(); else if(parts[2]==='ai'){ _aiReset(); renderAIAssist(); } else { renderModels(); openMarketplaceModal(); } }
+  else if(r==='models' && parts[1]){ if(modelDetailState.id!==parts[1]) modelDetailState.tab='overview'; modelDetailState.id=parts[1]; renderModelDetail(parts[1]); }
   else if(r==='models'){ renderModels(); }
   else if(r==='entities' && parts[1]){
     if(detailState.id !== parts[1]) detailState.tab = 'tables';
@@ -4089,7 +4733,7 @@ function _cmdkData(){ return [
   {label:'Entities', cat:'Go to', ic:'grid', act:"navigate('entities')"},
   {label:'Tables', cat:'Go to', ic:'grid', act:"navigate('tables')"},
   {label:'Reference Data', cat:'Go to', ic:'grid', act:"navigate('reference')"},
-  {label:'New model', cat:'Create', ic:'plus', act:"openCreateModel()"},
+  {label:'New model', cat:'Create', ic:'plus', act:"navigate('models/new')"},
   {label:'New entity', cat:'Create', ic:'plus', act:"navigate('entities');setTimeout(openCreateEntity,60)"},
   {label:'New table', cat:'Create', ic:'plus', act:"navigate('tables');setTimeout(openCreateTable,60)"},
   {label:'New reference list', cat:'Create', ic:'plus', act:"navigate('reference');setTimeout(openCreateReference,60)"},
