@@ -2588,13 +2588,14 @@ function renderEntityDetail(id){
     <div class="detail-head">
       <div class="dh-l">
         <div class="dh-title-row"><span class="lrow-ic" style="width:30px;height:30px">${_IC_ENTITY}</span><span class="dh-title">${escapeHtml(e.name)}</span>${_modelChip(e.model)}<span class="chip">${escapeHtml(e.domain)}</span>${_stPill(e.status)}</div>
+        <div class="rfd-internal"><code>${escapeHtml((e.id||_slug(e.name)))}</code><span class="rfd-lock" title="Internal name — cannot be changed after creation"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span></div>
         <div class="dh-desc" style="margin-top:8px">${escapeHtml(e.desc)}</div>
         <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="lrow-sep">·</span><span class="lrow-metric">${e.tables.length} tables</span><span class="lrow-sep">·</span><span class="lrow-metric">${e.external} external</span><span class="lrow-sep">·</span><span class="lrow-metric">${escapeHtml(e.records)} records</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(e.updated)}</span></div>
       </div>
       <div class="dh-actions">
         ${pending
           ? `<span class="publish-hint"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5M8 11h.01" stroke-linecap="round"/></svg>Unpublished changes</span><button class="btn btn-primary" onclick="openPublish('${id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10"/></svg>Publish</button>`
-          : `<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}
+          : `<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}<button class="btn" style="width:40px;padding:0" aria-label="More actions" onclick="_detailKebab(this)"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
       </div>
     </div>
     <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setDetailTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--t3);background:var(--hover);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
@@ -2965,9 +2966,10 @@ function renderTableDetail(id){
     ${_crumbs([{label:'Models',href:'#/models'},{label:'Tables',href:'#/tables'},{label:t.alias}])}
     <div class="detail-head"><div class="dh-l">
       <div class="dh-title-row"><span class="lrow-ic ic-tbl" style="width:30px;height:30px">${_IC_TABLE}</span><span class="dh-title">${escapeHtml(t.alias)}</span>${_modelChip(t.model)}${_entityChip(t.entityId,t.entity)}<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_stPill(t.status)}</div>
+      <div class="rfd-internal"><code>${escapeHtml(t.code||t.id)}</code><span class="rfd-lock" title="Internal name — cannot be changed after creation"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span></div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(t.desc)}</div>
       <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span><span class="lrow-sep">·</span><span>entity <a onclick="navigate('entities/${t.entityId}')" style="color:var(--primary);cursor:pointer">${escapeHtml(t.entity)}</a></span><span class="lrow-sep">·</span><span class="lrow-metric">${t.cols.length} columns</span><span class="lrow-sep">·</span><span class="lrow-metric">${escapeHtml(t.rows)} rows</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(t.updated)}</span></div>
-    </div><div class="dh-actions">${pending?`<span class="publish-hint"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5M8 11h.01" stroke-linecap="round"/></svg>Unpublished changes</span><button class="btn btn-primary" onclick="openPublishTable('${id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10"/></svg>Publish</button>`:`<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}</div></div>
+    </div><div class="dh-actions">${pending?`<span class="publish-hint"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5M8 11h.01" stroke-linecap="round"/></svg>Unpublished changes</span><button class="btn btn-primary" onclick="openPublishTable('${id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10"/></svg>Publish</button>`:`<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}<button class="btn" style="width:40px;padding:0" aria-label="More actions" onclick="_detailKebab(this)"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></div></div>
     <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setTableTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--field-placeholder);background:var(--muted);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
     <div id="tpanel">${tab==='overview'?tableOverviewTab(t):tab==='columns'?columnsTab(t):tab==='relationships'?relationshipsTab(t):tab==='data'?dataTab(t):tab==='indexes'?tableIndexesTab(t):_historyTab('table',t)}</div>`;
 }
@@ -3268,25 +3270,51 @@ function _fmtVal(c,v){
 function dataSearchInput(tid,v){ dataState.search=v; dataState.page=1; renderTableDetail(tid); setTimeout(()=>{const el=$('dataSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
 function dataSetPage(tid,p){ dataState.page=p; renderTableDetail(tid); }
 function dataRefresh(tid){ toast('Data refreshed','ok'); renderTableDetail(tid); }
+function dataSort(tid,col){ const s=dataState; if(s.sortCol===col){ s.sortDir=s.sortDir==='asc'?'desc':'asc'; } else { s.sortCol=col; s.sortDir='asc'; } renderTableDetail(tid); }
+function dataPerPage(tid,n){ dataState.perPage=+n; dataState.page=1; renderTableDetail(tid); }
+function dataSelToggle(tid,id){ const s=dataState; s.sel=s.sel||new Set(); s.sel.has(id)?s.sel.delete(id):s.sel.add(id); renderTableDetail(tid); }
+function dataSelAll(tid,ids){ const s=dataState; s.sel=s.sel||new Set(); const all=ids.length&&ids.every(i=>s.sel.has(i)); ids.forEach(i=>all?s.sel.delete(i):s.sel.add(i)); renderTableDetail(tid); }
+function dataSelClear(tid){ dataState.sel=new Set(); renderTableDetail(tid); }
 function dataTab(t){
-  const rows=_mockRows(t);
-  const q=(dataState.search||'').toLowerCase();
+  const s=dataState; const rows=_mockRows(t); const q=(s.search||'').toLowerCase(); const per=s.perPage||25;
   const cols=t.cols.slice(0,6);
-  const filtered=q?rows.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):rows;
-  const PS=8; const pages=Math.max(1,Math.ceil(filtered.length/PS)); const page=Math.min(Math.max(1,dataState.page),pages);
-  const vis=filtered.slice((page-1)*PS,(page-1)*PS+PS);
-  const gt=`grid-template-columns:150px ${cols.map(()=>'minmax(0,1fr)').join(' ')} 40px`;
-  return `<div class="data-toolbar">
-     <label class="dsf-search" style="max-width:280px;height:36px"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="dataSearch" type="text" placeholder="Search records…" value="${escapeHtml(dataState.search)}" oninput="dataSearchInput('${t.id}',this.value)" autocomplete="off"></label>
-     <span style="flex:1"></span>
-     <button class="btn" style="height:36px" onclick="dataRefresh('${t.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3v3h-3M3 13v-3h3M13 6A5 5 0 0 0 4 4.5M3 10a5 5 0 0 0 9 1.5"/></svg> Refresh</button>
-     <button class="btn" style="height:36px" onclick="toast('Exported ${filtered.length} rows to CSV','ok')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg> Export</button>
-     <button class="btn btn-primary" style="height:36px" onclick="openAddRecord('${t.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add record</button></div>
-   <div class="dtable"><div class="dtable-h" style="${gt}"><span>ID</span>${cols.map(c=>`<span>${escapeHtml(c.d)}</span>`).join('')}<span></span></div>
-     ${vis.length?vis.map(r=>`<div class="dtable-r" style="${gt}" onclick="openRecord('${t.id}',${rows.indexOf(r)})"><span class="dcell mono">${escapeHtml(r.__id)}</span>${cols.map(c=>`<span class="dcell">${_fmtVal(c,r[c.n])}</span>`).join('')}<div class="erow-chev"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>`).join(''):`<div class="empty" style="padding:40px">${dataState.search?`No records match “${escapeHtml(dataState.search)}”.`:(t.cols.length?'No records yet.':'Add columns to this table, then add records.')}</div>`}
+  let filtered=q?rows.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):rows.slice();
+  if(s.sortCol){ const c=s.sortCol; filtered.sort((a,b)=>{ const va=(''+(c==='__id'?a.__id:(a[c]||''))).toLowerCase(), vb=(''+(c==='__id'?b.__id:(b[c]||''))).toLowerCase(); const cmp=va<vb?-1:va>vb?1:0; return s.sortDir==='desc'?-cmp:cmp; }); }
+  const total=filtered.length, pages=Math.max(1,Math.ceil(total/per)), page=Math.min(Math.max(1,s.page||1),pages);
+  const start=(page-1)*per, end=Math.min(start+per,total), vis=filtered.slice(start,end);
+  s.sel=s.sel||new Set(); const ids=vis.map(r=>r.__id); const allSel=ids.length&&ids.every(i=>s.sel.has(i)); const selN=s.sel.size;
+  const gt=`grid-template-columns:38px 150px ${cols.map(()=>'minmax(0,1fr)').join(' ')}`;
+  const HCOLS=[{key:'__id',disp:'ID',name:'__id'}].concat(cols.map(c=>({key:c.n,disp:c.d,name:c.n})));
+  const cb=(ck,onc)=>`<button class="mv-check ${ck?'on':''}" onclick="event.stopPropagation();${onc}" role="checkbox" aria-checked="${ck}">${ck?'<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>':''}</button>`;
+  const sortIc=(col)=>{ if(s.sortCol!==col) return '<svg class="ttd-sort" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3" opacity=".5"/></svg>'; return s.sortDir==='asc'?'<svg class="ttd-sort on" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9.5L8 5.5l4 4"/></svg>':'<svg class="ttd-sort on" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6.5L8 10.5l4-4"/></svg>'; };
+  return `<div class="ttd-head">
+     <div class="ttd-head-l">
+       <label class="dsf-search" style="max-width:250px;height:34px"><svg class="dsf-search-ic" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="dataSearch" type="text" placeholder="Search records…" value="${escapeHtml(s.search||'')}" oninput="dataSearchInput('${t.id}',this.value)" autocomplete="off"></label>
+       <button class="btn ttd-tool" style="height:34px" onclick="toast('Advanced filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg> Filters</button>
+     </div>
+     <div class="ttd-head-r">
+       <span class="ttd-fresh">Updated ${escapeHtml(t.updated)}</span>
+       <button class="tb-ico ttd-iconbtn" title="Refresh data" aria-label="Refresh" onclick="dataRefresh('${t.id}')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3v3h-3M3 13v-3h3M13 6A5 5 0 0 0 4 4.5M3 10a5 5 0 0 0 9 1.5"/></svg></button>
+       <button class="tb-ico ttd-iconbtn" title="More" aria-label="More" onclick="toast('Import · Export · Columns — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
+       <button class="btn btn-primary" style="height:34px" onclick="openAddRecord('${t.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add record</button>
+     </div>
    </div>
-   ${_pagination({page, total:filtered.length, per:PS, id:'pgn-data', pageCall:p=>`dataSetPage('${t.id}',${p})`})}
-   ${cols.length<t.cols.length?`<div class="pgn"><span>Showing ${cols.length} of ${t.cols.length} columns</span></div>`:''}`;
+   ${selN?`<div class="ttd-bulk"><span class="ttd-bulk-n">${selN} selected</span><button class="ttd-bulk-x" onclick="dataSelClear('${t.id}')">Deselect all</button><span class="ttd-bulk-sep"></span><button class="ttd-bulk-a" onclick="toast('Exported ${selN} rows','ok')">Export selected</button><button class="ttd-bulk-a danger" onclick="toast('Delete — coming soon')">Delete</button></div>`:''}
+   <div class="ttd-table">
+     <div class="ttd-thead" style="${gt}">
+       ${cb(allSel,`dataSelAll('${t.id}',${JSON.stringify(ids).replace(/"/g,'&quot;')})`)}
+       ${HCOLS.map(c=>`<button class="ttd-th" onclick="dataSort('${t.id}','${c.key}')"><span class="ttd-th-labels"><span class="ttd-th-disp">${escapeHtml(c.disp)}</span><span class="ttd-th-name">${escapeHtml(c.name)}</span></span>${sortIc(c.key)}</button>`).join('')}
+     </div>
+     ${vis.length?vis.map(r=>`<div class="ttd-tr ${s.sel.has(r.__id)?'is-sel':''}" style="${gt}" onclick="openRecord('${t.id}',${rows.indexOf(r)})">
+        ${cb(s.sel.has(r.__id),`dataSelToggle('${t.id}','${escapeHtml(r.__id)}')`)}
+        <span class="ttd-td mono">${escapeHtml(r.__id)}</span>
+        ${cols.map(c=>`<span class="ttd-td">${_fmtVal(c,r[c.n])}</span>`).join('')}
+      </div>`).join(''):`<div class="empty" style="padding:44px">${s.search?`No records match “${escapeHtml(s.search||'')}”.`:(t.cols.length?'No records yet.':'Add columns to this table, then add records.')}</div>`}
+   </div>
+   <div class="ttd-foot">
+     <div class="ttd-foot-l"><span class="ttd-foot-lbl">Rows per page</span><select class="ttd-per" onchange="dataPerPage('${t.id}',this.value)">${[10,25,50,100].map(n=>`<option ${n===per?'selected':''}>${n}</option>`).join('')}</select><span class="ttd-foot-count">Showing ${total?start+1:0}–${end} of ${total} rows${cols.length<t.cols.length?` · ${cols.length} of ${t.cols.length} columns`:''}</span></div>
+     <div class="ttd-pager"><button class="ttd-pg-btn" ${page<=1?'disabled':''} onclick="dataSetPage('${t.id}',${page-1})"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Previous</button><span class="ttd-pg-ind">Page ${page} of ${pages}</span><button class="ttd-pg-btn" ${page>=pages?'disabled':''} onclick="dataSetPage('${t.id}',${page+1})">Next <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button></div>
+   </div>`;
 }
 function openRecord(tid, idx){
   const t=_table(tid); const rows=_mockRows(t); const r=rows[idx]; if(!r) return;
@@ -3602,6 +3630,11 @@ function refDataTab(r){
      <div class="ttd-pager"><button class="ttd-pg-btn" ${page<=1?'disabled':''} onclick="refSetPage('${r.id}',${page-1})"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Previous</button><span class="ttd-pg-ind">Page ${page} of ${pages}</span><button class="ttd-pg-btn" ${page>=pages?'disabled':''} onclick="refSetPage('${r.id}',${page+1})">Next <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button></div>
    </div>`;
 }
+function _detailKebab(btn){ _openPop(btn, `
+  <button class="pop-item" onclick="_closePop();toast('Duplicate — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Duplicate</button>
+  <button class="pop-item" onclick="_closePop();toast('Exported definition','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>Export definition</button>
+  <div class="pop-sep"></div>
+  <button class="pop-item danger" onclick="_closePop();toast('Delete — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M6 4V2.5h4V4M4.5 4l.5 9h6l.5-9"/></svg>Delete</button>`); }
 function _refInternal(r){ if(r.internal) return r.internal; let s=_slug(r.name); if(/ies$/.test(s)) s=s.slice(0,-3)+'y'; else if(/s$/.test(s)&&!/ss$/.test(s)) s=s.slice(0,-1); return 'ref_'+s; }
 function _refKebab(btn,id){ _openPop(btn, `
   <button class="pop-item" onclick="_closePop();toast('Duplicate — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Duplicate reference list</button>
@@ -4484,9 +4517,10 @@ function renderModelDetail(id){
     <div class="md-crumbrow">${_crumbs([{label:'Models',href:'#/models'},{label:m.name}])}<div class="md-pageacts">${acts}</div></div>
     <div class="detail-head md-head"><div class="dh-l">
       <div class="dh-title-row"><span class="dh-title">${escapeHtml(m.name)}</span>${_stPill(m.status)}<span class="chip md-origin-chip">${escapeHtml(m.origin)}</span></div>
+      <div class="rfd-internal"><code>model.${escapeHtml(_slug(m.name))}</code><span class="rfd-lock" title="Internal name — cannot be changed after creation"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span></div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(m.desc)}</div>
       <div class="md-meta"><span class="lrow-owner">${av(P(m.owner),'sm')}${escapeHtml(P(m.owner).n)}</span><span class="md-dot">·</span><span>${escapeHtml(m.origin)}</span>${m.tags&&m.tags.length?`<span class="md-dot">·</span>${m.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}`:''}</div>
-    </div><div class="dh-actions"><button class="btn md-settings" onclick="toast('Model settings')">${_MDIC.gear} Settings</button></div></div>
+    </div><div class="dh-actions"><button class="btn md-settings" onclick="toast('Model settings')">${_MDIC.gear} Settings</button><button class="btn" style="width:40px;padding:0" aria-label="More actions" onclick="_detailKebab(this)"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></div></div>
     <div class="mtabs md-tabs">${tabs.map(([tid,label,c])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setModelTab('${tid}')">${label}${c!=null?`<span class="mtab-c">${c}</span>`:''}</button>`).join('')}</div>
     <div id="mpanel">${body}</div>`;
   if(tab==='overview' && modelDetailState.sec.diagram && md.counts.entities) _diagInit();
