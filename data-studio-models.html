@@ -2388,7 +2388,9 @@ function openPreview(id){ navigate('entities/'+id); return;
   $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false');
   $('scrim').classList.add('open');
 }
-function closeSlideout(){ $('slideout').classList.remove('open'); $('slideout').setAttribute('aria-hidden','true'); $('scrim').classList.remove('open'); }
+let _soClearTimer;
+function closeSlideout(){ const so=$('slideout'); so.classList.remove('open'); so.setAttribute('aria-hidden','true'); $('scrim').classList.remove('open');
+  clearTimeout(_soClearTimer); _soClearTimer=setTimeout(()=>{ if(!so.classList.contains('open')) so.innerHTML=''; },340); }
 
 /* ── Entity detail data now lives on each entity (e.rels / e.cperms / e.cprivs / e.ceps) ── */
 function _defaultEndpoints(e){
