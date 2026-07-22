@@ -2211,7 +2211,7 @@ html.theme-light .tb-tip{background:#fff}
     <button class="tb-company" data-pop onclick="openAccount(this)" aria-label="Account"><span class="tb-tip tb-tip-r"><b>Account</b><i>Profile &amp; workspace</i></span>
       <span class="tb-company-av">A</span>
       <span class="tb-company-name">Aims</span>
-      <span class="tb-user-av">SB</span>
+      <span class="tb-user-av">TG</span>
     </button>
   </div>
 </header>
@@ -3805,7 +3805,7 @@ const PEOPLE={
   sc:{i:'SC',n:'Sarah Chen',c:'teal'}, em:{i:'EM',n:'Eve Martin',c:'amber'}, dn:{i:'DN',n:'Diego Núñez',c:'green'},
   jc:{i:'JC',n:'Julia Cruz',c:'green'}, mr:{i:'MR',n:'Marcus Reed',c:'blue'}, pl:{i:'PL',n:'Priya Lal',c:'purple'},
   dp:{i:'DP',n:'Data Platform',c:'blue'}, sm:{i:'SM',n:'Sam Ortiz',c:'cyan'}, tk:{i:'TK',n:'Tom Kane',c:'indigo'},
-  sb:{i:'SB',n:'Sebastian Blandon',c:'blue'}, svc:{i:'IS',n:'Ingestion Service',c:'slate'},
+  sb:{i:'TG',n:'Thomas González',c:'blue'}, svc:{i:'IS',n:'Ingestion Service',c:'slate'},
 };
 /* Role labels shown in the compliance audit log */
 const _HROLE={sc:'Schema Admin',mr:'Data Platform Lead',jc:'Product Steward',dn:'Operations Lead',em:'Compliance Analyst',pl:'Data Steward',sb:'Tenant Admin',svc:'Service Principal',dp:'Data Platform',sm:'Analyst',tk:'Engineer'};
@@ -6218,7 +6218,7 @@ function openWorkspace(btn){ _openPop(btn, `
   <button class="pop-item" onclick="_closePop();toast('Workspace settings — coming soon')">Workspace settings</button>
 `); }
 function openAccount(btn){ const tm=_themeMode(); _openPop(btn, `<div style="width:308px;max-width:88vw">
-  <div class="pop-user"><span class="acct-av">SB</span><div><div class="pop-user-n">Sebastian Blandon</div><div class="pop-user-e">sebastian.blandon@aims-os.ai</div></div></div>
+  <div class="pop-user"><span class="acct-av">TG</span><div><div class="pop-user-n">Thomas González</div><div class="pop-user-e">thomas@aimsos.ai</div></div></div>
   <div class="pop-sep"></div>
   <button class="acct-ws" onclick="_closePop();toast('Switch workspace — coming soon')"><span class="acct-ws-av">A</span><span class="acct-ws-b"><span class="acct-ws-lbl">Workspace</span><span class="acct-ws-name">Aims OS Production</span></span><svg class="acct-ws-chev" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></button>
   <div class="pop-sep"></div>
