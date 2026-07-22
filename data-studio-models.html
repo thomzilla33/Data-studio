@@ -2035,6 +2035,94 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .mktp-ents .rvr-code{margin-right:2px}
 .refai-lbl{flex:1; font-size:13px; color:var(--t2); margin-left:10px}
 .refai-def{font-size:10px; font-weight:700; color:var(--tag-success-fg,#16a34a); background:var(--tag-success-bg,rgba(16,185,129,0.1)); border-radius:5px; padding:1px 7px}
+
+/* ── Detail Overview (stat tiles reuse md-tile) + shared sub-sections ── */
+.ov-sub{margin-top:18px}
+.ov-preview-foot{display:flex; justify-content:flex-end; margin-top:10px}
+.ov-empty{padding:26px; text-align:center; color:var(--t3); font-size:12.5px}
+.ref-preview{width:100%; border-collapse:collapse; font-size:12.5px}
+.ref-preview th{text-align:left; font-weight:600; color:var(--t3); padding:7px 10px; border-bottom:1px solid var(--card-border); font-size:11px; text-transform:uppercase; letter-spacing:.03em}
+.ref-preview td{padding:8px 10px; border-bottom:1px solid var(--card-border); color:var(--t1)}
+.ref-preview .ref-preview-key{font-family:ui-monospace,Menlo,monospace; color:var(--t2)}
+.ref-preview .ref-preview-num{text-align:right; font-variant-numeric:tabular-nums}
+.ref-preview tr:last-child td{border-bottom:none}
+
+/* ── History (compliance audit log) ── */
+.hist-bar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+.hchips{display:inline-flex; gap:2px; background:var(--muted); border:1px solid var(--card-border); border-radius:8px; padding:2px}
+.hchip{border:none; background:transparent; color:var(--t2); font-weight:600; font-size:11.5px; padding:5px 9px; border-radius:6px; cursor:pointer}
+.hchip:hover{color:var(--t1)}
+.hchip.on{background:var(--card-bg); color:var(--t1); box-shadow:0 1px 2px rgba(15,23,42,.10)}
+.hist-compliance{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--tag-success-fg,#16a34a)}
+.hist-retain{font-size:11.5px; color:var(--t3)}
+.hist-tbl .dtable-r{cursor:pointer; align-items:center}
+.hist-tbl .dtable-r:hover{background:var(--hover)}
+.hist-when{font-size:12px; color:var(--t2); white-space:nowrap}
+.hist-user{display:flex; align-items:center; gap:8px; min-width:0}
+.hist-user-b{display:flex; flex-direction:column; min-width:0}
+.hist-user-n{font-size:12.5px; font-weight:600; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.hist-user-r{font-size:10.5px; color:var(--t3)}
+.hist-desc{font-size:12.5px; color:var(--t1); min-width:0; line-height:1.4}
+.hist-err{display:block; margin-top:3px; font-size:11px; color:var(--field-text-error,#dc2626); border-left:2px solid var(--field-text-error,#dc2626); padding-left:7px}
+.hist-r.is-fail{background:rgba(220,38,38,.05)}
+.hbadge{display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:20px; letter-spacing:.02em; white-space:nowrap}
+.ha-create{background:var(--tag-success-bg,rgba(16,185,129,.12)); color:var(--tag-success-fg,#16a34a)}
+.ha-update{background:var(--tag-informative-bg,rgba(59,130,246,.12)); color:var(--tag-informative-fg,#2563eb)}
+.ha-delete{background:rgba(220,38,38,.12); color:var(--field-text-error,#dc2626)}
+.ha-publish{background:rgba(139,92,246,.15); color:#7c3aed}
+.ha-perm{background:rgba(217,119,6,.15); color:#b45309}
+.ha-export{background:var(--muted); color:var(--t2)}
+.ha-sens{background:rgba(219,39,119,.14); color:#be185d}
+.ha-neutral{background:var(--muted); color:var(--t2)}
+.hres{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600}
+.hres-dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+.hr-ok{color:var(--tag-success-fg,#16a34a)}
+.hr-fail{color:var(--field-text-error,#dc2626)}
+.hr-warn{color:#b45309}
+.hsrc{display:inline-flex; align-items:center; gap:4px; font-size:11.5px; color:var(--t2)}
+.hist-so-err{background:rgba(220,38,38,.07); border:1px solid rgba(220,38,38,.24); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--field-text-error,#dc2626); margin-bottom:16px; line-height:1.45}
+.hist-so-err-h{font-weight:700; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px}
+.hist-immutable{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--t3); margin-top:16px; padding-top:14px; border-top:1px solid var(--card-border)}
+.mono{font-family:ui-monospace,Menlo,monospace}
+
+/* ── Table Indexes tab ── */
+.idx-list{display:flex; flex-direction:column; gap:10px}
+.idx-card{border:1px solid var(--card-border); background:var(--card-bg); border-radius:12px; padding:14px 16px}
+.idx-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.idx-ic{color:var(--t3); display:inline-flex}
+.idx-name{font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:600; color:var(--t1)}
+.idx-type{font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:20px; letter-spacing:.02em}
+.idx-type--unique{background:rgba(139,92,246,.15); color:#7c3aed}
+.idx-type--regular{background:var(--tag-informative-bg,rgba(59,130,246,.12)); color:var(--tag-informative-fg,#2563eb)}
+.idx-type--partial{background:rgba(217,119,6,.15); color:#b45309}
+.idx-flag{font-size:10px; font-weight:700; padding:1px 7px; border-radius:5px; background:var(--muted); color:var(--t2)}
+.idx-row{display:flex; align-items:center; gap:8px; margin-top:10px; font-size:12px; color:var(--t2); flex-wrap:wrap}
+.idx-row-l{color:var(--t3); font-size:11px; min-width:74px}
+.idx-colchip{display:inline-flex; align-items:center; gap:5px; background:var(--muted); border:1px solid var(--card-border); border-radius:6px; padding:3px 8px; font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:var(--t1)}
+.idx-colord{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:4px; background:var(--card-bg); font-family:inherit; font-size:9.5px; font-weight:700; color:var(--t3)}
+.idx-sep{color:var(--t3)}
+.idx-where{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; background:var(--muted); border-radius:6px; padding:2px 7px; color:var(--t1)}
+.idx-desc{font-size:12px; color:var(--t2); margin-top:8px; line-height:1.45}
+.idx-meta{display:flex; gap:14px; margin-top:9px; font-size:11px; color:var(--t3)}
+
+/* ── Reference "Referenced by" tab ── */
+.rfb-list{display:flex; flex-direction:column; gap:10px}
+.rfb-card{border:1px solid var(--card-border); background:var(--card-bg); border-radius:12px; padding:14px 16px; cursor:pointer; transition:border-color .12s,box-shadow .12s}
+.rfb-card:hover{border-color:var(--primary); box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.rfb-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.rfb-col{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:600; color:var(--t1)}
+.rfb-path{display:inline-flex; align-items:center; gap:4px; font-size:11.5px; color:var(--t3)}
+.rfb-path b{color:var(--t2); font-weight:600}
+.rfb-reqchip{font-size:10px; font-weight:700; padding:1px 7px; border-radius:5px}
+.rfb-req{background:var(--tag-informative-bg,rgba(59,130,246,.12)); color:var(--tag-informative-fg,#2563eb)}
+.rfb-opt{background:var(--muted); color:var(--t3)}
+.rfb-desc{font-size:12px; color:var(--t2); margin-top:8px; line-height:1.45}
+.rfb-foot{display:flex; align-items:center; gap:16px; margin-top:10px; font-size:11.5px; color:var(--t3); flex-wrap:wrap}
+.rfb-stat{display:inline-flex; align-items:center; gap:5px}
+.rfb-foot .lrow-owner{margin-left:auto; display:inline-flex; align-items:center; gap:6px; color:var(--t2)}
+.rfb-usage{display:flex; flex-direction:column; gap:2px}
+.rfb-usage-v{font-size:17px; font-weight:700; color:var(--t1)}
+.rfb-usage-l{font-size:11px; color:var(--t3)}
 </style>
 </head>
 <body>
@@ -2314,7 +2402,7 @@ function _defaultEndpoints(e){
   ];
 }
 
-let detailState = { id:null, tab:'tables' };
+let detailState = { id:null, tab:'overview' };
 const _ARROW = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--t3)" stroke-width="1.5"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const _CHK = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>';
 
@@ -2324,8 +2412,8 @@ function renderEntityDetail(id){
   const endpoints = _defaultEndpoints(e).concat(e.ceps||[]);
   const tab = detailState.tab;
   const pending = e.status==='Draft'||e.status==='Pending changes';
-  const cnt = { tables:e.tables.length, relationships:(e.rels||[]).length, privileges:5+(e.cprivs||[]).length, api:endpoints.length };
-  const tabs = [['tables','Tables'],['relationships','Relationships'],['privileges','Privileges'],['api','API contracts']];
+  const cnt = { overview:null, tables:e.tables.length, relationships:(e.rels||[]).length, privileges:5+(e.cprivs||[]).length, api:endpoints.length, history:null };
+  const tabs = [['overview','Overview'],['tables','Tables'],['relationships','Relationships'],['privileges','Privileges'],['api','API contracts'],['history','History']];
   $('content').innerHTML = `
     ${_crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:e.name}])}
     <div class="detail-head">
@@ -2340,16 +2428,38 @@ function renderEntityDetail(id){
           : `<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}
       </div>
     </div>
-    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setDetailTab('${tid}')">${label} <span style="font-size:11px;font-weight:700;color:var(--t3);background:var(--hover);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span></button>`).join('')}</div>
+    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setDetailTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--t3);background:var(--hover);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
     <div id="dpanel">${renderDetailTab(e,tab,endpoints)}</div>`;
 }
 function setDetailTab(t){ detailState.tab=t; renderEntityDetail(detailState.id); }
 
 function renderDetailTab(e,tab,endpoints){
+  if(tab==='overview') return entityOverviewTab(e);
   if(tab==='relationships') return relsTab(e);
   if(tab==='privileges') return privTab(e);
   if(tab==='api') return apiTab(e,endpoints);
+  if(tab==='history') return _historyTab('entity',e);
   return tablesTab(e);
+}
+function entityOverviewTab(e){
+  const tbls=e.tables||[]; const prim=tbls.filter(t=>t.role==='Primary').length; const sec=tbls.length-prim;
+  const rels=e.rels||[]; const out=rels.filter(r=>!/many-to-one/.test(r.k||'')).length; const inc=rels.length-out;
+  const custPriv=(e.cprivs||[]).length; const priv=5+custPriv;
+  const KEY='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3"/><path d="M8 8l5 5M11 11l1.5-1.5M12.5 12.5L14 11" stroke-linecap="round"/></svg>';
+  const tiles=[
+    _ovTile(tbls.length,'Tables', prim?`${prim} primary · ${sec} secondary`:'none yet', _ICO_COLS),
+    _ovTile(rels.length,'External relationships', rels.length?`${out} outgoing · ${inc} incoming`:'none yet', _HIC.link),
+    _ovTile(priv,'Privileges', `5 standard · ${custPriv} custom`, KEY),
+    _ovTile(escapeHtml(e.records||'—'),'Records', 'Updated '+(e.updated||'—'), _HIC.db),
+  ];
+  const tblPrev=tbls.length?_mdMiniTable(['Table','Role','Columns','Rows'], tbls.map(t=>[
+     `<span class="mtbl-name">${escapeHtml(t.alias)}</span>`, `<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>`, t.cols, escapeHtml(t.rows)
+  ])):`<div class="ov-empty">No tables yet.</div>`;
+  const def=`The ${escapeHtml(e.name)} entity represents the canonical business concept used across the ${escapeHtml(e.model||'model')} model. It groups the tables, relationships and privileges that downstream teams rely on when they reason about ${escapeHtml((e.name||'').toLowerCase())} records, and acts as the contract between the data platform and the products that consume it.`;
+  return `<div class="md-tiles">${tiles.join('')}</div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Business definition</div></div><div style="font-size:13px;color:var(--t2);line-height:1.6">${def}</div></div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${tbls.length} table${tbls.length===1?'':'s'} · exactly one primary</span></div><a class="md-sec-link" onclick="setDetailTab('tables')">Manage tables →</a></div>${tblPrev}</div>
+    ${_ovActivity('entity',e)}`;
 }
 function tablesTab(e){
   return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${e.tables.length} tables · exactly one primary required</span></div><button class="btn" style="height:34px" onclick="openCreateTable()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add table</button></div>
@@ -2674,12 +2784,13 @@ function tableRow(t){
 }
 
 /* Table DETAIL */
-let tableDetailState = { id:null, tab:'columns', showSys:false };
+let tableDetailState = { id:null, tab:'overview', showSys:false };
 function renderTableDetail(id){
   const t=_table(id); if(!t){ location.hash='#/tables'; return; }
   const tab=tableDetailState.tab;
-  const cnt={ columns:t.cols.length, relationships:(t.rels?t.rels.length:0), data:(t._rows?t._rows.length:(t.cols.length?18:0)) };
-  const tabs=[['columns','Columns'],['relationships','Relationships'],['data','Data']];
+  const _idxList=_tblIndexes(t);
+  const cnt={ overview:null, columns:t.cols.length, relationships:(t.rels?t.rels.length:0), data:(t._rows?t._rows.length:(t.cols.length?18:0)), indexes:_idxList.length, history:null };
+  const tabs=[['overview','Overview'],['columns','Columns'],['relationships','Relationships'],['data','Data'],['indexes','Indexes'],['history','History']];
   const pending = t.status!=='Published';
   $('content').innerHTML=`
     ${_crumbs([{label:'Models',href:'#/models'},{label:'Tables',href:'#/tables'},{label:t.alias}])}
@@ -2688,10 +2799,102 @@ function renderTableDetail(id){
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(t.desc)}</div>
       <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span><span class="lrow-sep">·</span><span>entity <a onclick="navigate('entities/${t.entityId}')" style="color:var(--primary);cursor:pointer">${escapeHtml(t.entity)}</a></span><span class="lrow-sep">·</span><span class="lrow-metric">${t.cols.length} columns</span><span class="lrow-sep">·</span><span class="lrow-metric">${escapeHtml(t.rows)} rows</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(t.updated)}</span></div>
     </div><div class="dh-actions">${pending?`<span class="publish-hint"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5M8 11h.01" stroke-linecap="round"/></svg>Unpublished changes</span><button class="btn btn-primary" onclick="openPublishTable('${id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10"/></svg>Publish</button>`:`<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}</div></div>
-    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setTableTab('${tid}')">${label} <span style="font-size:11px;font-weight:700;color:var(--field-placeholder);background:var(--muted);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span></button>`).join('')}</div>
-    <div id="tpanel">${tab==='columns'?columnsTab(t):tab==='relationships'?relationshipsTab(t):dataTab(t)}</div>`;
+    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setTableTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--field-placeholder);background:var(--muted);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
+    <div id="tpanel">${tab==='overview'?tableOverviewTab(t):tab==='columns'?columnsTab(t):tab==='relationships'?relationshipsTab(t):tab==='data'?dataTab(t):tab==='indexes'?tableIndexesTab(t):_historyTab('table',t)}</div>`;
 }
 function setTableTab(t){ tableDetailState.tab=t; renderTableDetail(tableDetailState.id); }
+
+/* ── shared Overview primitives (tiles + recent activity) ── */
+const _ICO_COLS='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="1.6"/><path d="M6.5 2.5v11M10 2.5v11"/></svg>';
+const _PLUS='<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+function _ovTile(v,l,sub,ic){ return `<div class="md-tile"><div class="md-tile-top"><span class="md-tile-v">${v}</span><span class="md-tile-ic">${ic}</span></div><div class="md-tile-l">${escapeHtml(l)}</div>${sub?`<div class="md-tile-sub" style="font-size:11px;color:var(--t3);margin-top:4px">${escapeHtml(sub)}</div>`:''}</div>`; }
+function _ovActivity(kind,o){
+  const ev=_histEvents(kind,o).slice(0,4);
+  const fn=kind==='table'?'setTableTab':kind==='entity'?'setDetailTab':'setRefTab';
+  return `<div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Recent activity</div><a class="md-sec-link" onclick="${fn}('history')">View full history →</a></div>
+    <div class="md-timeline">${ev.map((a,i)=>`<div class="md-tl-item ${i===ev.length-1?'last':''}"><span class="md-tl-dot"></span><div class="md-tl-b"><div class="md-tl-t">${escapeHtml(a.d)}</div><div class="md-tl-m">${escapeHtml(P(a.who).n)} · ${escapeHtml(a.w)}</div></div></div>`).join('')}</div></div>`;
+}
+
+/* ── Table Overview tab ── */
+function tableOverviewTab(t){
+  const cols=t.cols||[]; const pii=cols.filter(c=>c.sens).length; const idx=_tblIndexes(t);
+  const uniq=idx.filter(i=>i.type==='unique').length;
+  const rels=(t.rels||[]); const out=rels.filter(r=>!/many-to-one|one-to-one/.test(r.k||'')).length; const inc=rels.length-out;
+  const tiles=[
+    _ovTile(cols.length,'Columns', pii?`${pii} PII · ${cols.length-pii} standard`:'all standard', _ICO_COLS),
+    _ovTile(rels.length,'Relationships', rels.length?`${out} outgoing · ${inc} incoming`:'none yet', _HIC.link),
+    _ovTile(escapeHtml(t.rows||'0'),'Sample rows', 'Last update '+(t.updated||'—'), _HIC.db),
+    _ovTile(idx.length,'Indexes', idx.length?`${uniq} unique · ${idx.length-uniq} other`:'none yet', _HIC.hash),
+  ];
+  const preCols=cols.slice(0,6);
+  const preview=preCols.length?_mdMiniTable(['Column','Type','Constraints'], preCols.map(c=>[
+     `<span class="mtbl-name">${escapeHtml(c.d||c.n)}</span>`,
+     `<span class="col-type ${_typeCls(c.t)}">${c.t}</span>`,
+     [c.pk&&'PK',c.uq&&'UQ',c.req&&'REQ',c.idx&&'IDX'].filter(Boolean).map(f=>`<span class="flag on">${f}</span>`).join(' ')||'<span style="color:var(--field-placeholder)">—</span>'
+  ])):`<div class="ov-empty">No columns yet.</div>`;
+  return `<div class="md-tiles">${tiles.join('')}</div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Columns preview<span class="dsec-sub">showing ${Math.min(6,cols.length)} of ${cols.length}</span></div><a class="md-sec-link" onclick="setTableTab('columns')">View all columns →</a></div>${preview}</div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">About this table</div></div><div style="font-size:13px;color:var(--t2);line-height:1.6">${escapeHtml(t.desc||'No description yet.')}</div>
+       <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span><span class="lrow-sep">·</span><span>entity ${escapeHtml(t.entity||'—')}</span><span class="lrow-sep">·</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role||'Secondary')}</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(t.updated||'—')}</span></div></div>
+    ${_ovActivity('table',t)}`;
+}
+
+/* ── Table Indexes tab ── */
+function _tblIndexes(t){
+  if(t._idx) return t._idx;
+  const cols=t.cols||[];
+  const pk=cols.find(c=>c.pk)||cols[0]||{n:'id',d:'ID'};
+  const code=t.code||_slug(t.alias||t.name||'table');
+  const fks=cols.filter(c=>c.t==='Reference'||/(_id|_ref)$/.test(c.n||'')).slice(0,3);
+  const enumCol=cols.find(c=>c.t==='Enum'||/status|state|type/i.test(c.n||''));
+  const rel=(t.rels?t.rels.length:0); const owner=t.owner||'sb';
+  const MOD=['2h ago','5d ago','May 18, 2026','Apr 30, 2026','just now'];
+  const idx=[{name:code+'_pkey',type:'unique',cols:[pk],method:'BTree',where:null,desc:'Primary key index. Enforces uniqueness of the surrogate identifier.',status:'Published',by:owner,mod:'May 18, 2026',created:'May 12, 2026'}];
+  fks.forEach((c,i)=>idx.push({name:'idx_'+code+'_'+(c.n||('fk'+i)),type:'regular',cols:[c],method:'BTree',where:null,desc:'Speeds up joins and lookups on '+(c.d||c.n)+'.',status:'Published',by:owner,mod:MOD[i%MOD.length],created:'May 12, 2026'}));
+  if(enumCol && rel>=2) idx.push({name:'idx_'+code+'_active',type:'partial',cols:[enumCol],method:'BTree',where:(enumCol.n||'status')+" = 'active'",desc:'Partial index limited to active rows for hot-path reads.',status:'Published',by:owner,mod:'May 18, 2026',created:'May 14, 2026'});
+  t._idx=idx; return idx;
+}
+function _idxCard(t,i){
+  const typeLbl={unique:'Unique',regular:'Regular',partial:'Partial'}[i.type]||'Regular';
+  const cols=i.cols.map((c,n)=>`<span class="idx-colchip"><span class="idx-colord">${n+1}</span>${escapeHtml(c.n||c.d||'col')}</span>`).join('<span class="idx-sep">›</span>');
+  return `<div class="idx-card">
+    <div class="idx-top"><span class="idx-ic">${_HIC.hash}</span><span class="idx-name">${escapeHtml(i.name)}</span><span class="idx-type idx-type--${i.type}">${typeLbl}</span>${_stPill(i.status)}</div>
+    <div class="idx-row"><span class="idx-row-l">Columns</span>${cols}</div>
+    <div class="idx-row"><span class="idx-row-l">Config</span><span class="hsrc">${_HIC.db}${escapeHtml(i.method)}</span>${i.where?`<span class="idx-where">WHERE ${escapeHtml(i.where)}</span>`:''}</div>
+    ${i.desc?`<div class="idx-desc">${escapeHtml(i.desc)}</div>`:''}
+    <div class="idx-meta"><span>Modified ${escapeHtml(i.mod)} · ${escapeHtml(P(i.by).n)}</span><span>Created ${escapeHtml(i.created)}</span></div>
+  </div>`;
+}
+function tableIndexesTab(t){
+  const idx=_tblIndexes(t); const uniq=idx.filter(i=>i.type==='unique').length; const other=idx.length-uniq;
+  return `<div class="cols-toolbar"><div class="dsec-t">Indexes<span class="dsec-sub">${idx.length} index${idx.length===1?'':'es'} · ${uniq} unique · ${other} other</span></div>
+      <button class="btn btn-primary" style="height:36px" onclick="openCreateIndex('${t.id}')">${_PLUS} Add index</button></div>
+    ${idx.length?`<div class="idx-list">${idx.map(i=>_idxCard(t,i)).join('')}</div>`:`<div class="placeholder" style="padding:28px">No indexes yet. Add your first index to speed up queries.</div>`}
+    ${vcallout('v1.5','Index advisor — AIMS suggests missing indexes from slow-query telemetry and flags unused ones for removal.')}`;
+}
+function openCreateIndex(tableId){
+  const t=_table(tableId); if(!t) return;
+  const colOpts=(t.cols||[]).map(c=>`<option value="${escapeHtml(c.n)}">${escapeHtml(c.d||c.n)}</option>`).join('');
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_HIC.hash}</div><div class="modal-title">New index</div></div>
+    <div class="modal-body"><div class="mform">
+      <div class="mfield"><label class="mfield-l">Index name</label><input class="minput" id="niName" placeholder="e.g. idx_${escapeHtml(t.code||'table')}_email" autocomplete="off"></div>
+      <div class="mrow"><div class="mfield"><label class="mfield-l">Type</label><select class="mselect" id="niType"><option value="regular">Regular</option><option value="unique">Unique</option><option value="partial">Partial</option></select></div>
+        <div class="mfield"><label class="mfield-l">Method</label><select class="mselect" id="niMethod"><option>BTree</option><option>Hash</option><option>GIN</option><option>GiST</option></select></div></div>
+      <div class="mfield"><label class="mfield-l">Column</label><select class="mselect" id="niCol">${colOpts}</select></div>
+      <div class="mfield"><label class="mfield-l">WHERE clause <span style="color:var(--field-placeholder);font-weight:400">· partial index only</span></label><input class="minput" id="niWhere" placeholder="status = 'active'" autocomplete="off"></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveNewIndex('${tableId}')">Add index</button></div></div>`;
+  $('modalScrim').classList.add('open'); setTimeout(()=>{const el=$('niName'); if(el)el.focus();},50);
+}
+function saveNewIndex(tableId){
+  const t=_table(tableId); if(!t) return; _tblIndexes(t);
+  const name=($('niName').value||'').trim(); if(!name){ toast('Enter an index name'); return; }
+  if(t._idx.find(i=>i.name===name)){ toast('An index with that name already exists'); return; }
+  const colN=$('niCol').value; const c=(t.cols||[]).find(x=>x.n===colN)||{n:colN,d:colN};
+  const type=$('niType').value; const where=type==='partial'?($('niWhere').value||'').trim():'';
+  t._idx.unshift({name,type,cols:[c],method:$('niMethod').value,where:where||null,desc:'',status:'Draft',by:t.owner||'sb',mod:'just now',created:'just now'});
+  if(t.status==='Published') t.status='Draft'; closeModal(); toast('Index “'+name+'” added','ok'); renderTableDetail(tableId);
+}
 function toggleSysCols(){ tableDetailState.showSys=!tableDetailState.showSys; renderTableDetail(tableDetailState.id); }
 function columnsTab(t){
   const showSys=tableDetailState.showSys;
@@ -3151,15 +3354,15 @@ function refRow(r){
 }
 
 /* Reference DETAIL */
-let refDetailState = { id:null, tab:'data', search:'', page:1, showInactive:true };
+let refDetailState = { id:null, tab:'overview', search:'', page:1, showInactive:true };
 function renderReferenceDetail(id){
   _dsfRerender = function(){ renderReferenceDetail(refDetailState.id); };
   const r=_ref(id); if(!r){ location.hash='#/reference'; return; }
   const tab=refDetailState.tab;
   const used=_refUsedBy(id);
   const pending = r.status!=='Published';
-  const cnt={ data:r.values.length, columns:r.fields, relationships:r.referencedBy||used.length };
-  const tabs=[['data','Data'],['columns','Columns'],['relationships','Relationships']];
+  const cnt={ overview:null, data:r.values.length, columns:r.fields, refby:(r.referencedBy||used.length), history:null };
+  const tabs=[['overview','Overview'],['data','Data'],['columns','Columns'],['refby','Referenced by'],['history','History']];
   const activeN=r.values.filter(v=>v.active).length;
   $('content').innerHTML=`
     ${_crumbs([{label:'Models',href:'#/models'},{label:'Reference Data',href:'#/reference'},{label:r.name}])}
@@ -3168,8 +3371,8 @@ function renderReferenceDetail(id){
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(r.desc)}</div>
       <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(r.owner),'sm')}${escapeHtml(P(r.owner).n)}</span><span class="lrow-sep">·</span><span class="lrow-metric">${r.values.length} items · ${activeN} active</span><span class="lrow-sep">·</span><span class="lrow-metric">${r.fields} fields</span><span class="lrow-sep">·</span><span class="lrow-metric">${r.referencedBy} referenced by</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(r.updated)}</span></div>
     </div><div class="dh-actions">${pending?`<span class="publish-hint"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5M8 11h.01" stroke-linecap="round"/></svg>Unpublished changes</span><button class="btn btn-primary" onclick="publishReference('${id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V3M4.5 6.5L8 3l3.5 3.5M3 13h10"/></svg>Publish</button>`:`<button class="btn" onclick="toast('No pending changes')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>Published</button>`}</div></div>
-    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setRefTab('${tid}')">${label} <span style="font-size:11px;font-weight:700;color:var(--field-placeholder);background:var(--muted);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span></button>`).join('')}</div>
-    <div id="rpanel">${tab==='data'?refDataTab(r):tab==='columns'?refColumnsTab(r):refRelationshipsTab(r,used)}</div>`;
+    <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setRefTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--field-placeholder);background:var(--muted);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
+    <div id="rpanel">${tab==='overview'?refOverviewTab(r):tab==='data'?refDataTab(r):tab==='columns'?refColumnsTab(r):tab==='refby'?refReferencedByTab(r):_historyTab('reference',r)}</div>`;
 }
 function setRefTab(t){ refDetailState.tab=t; refDetailState.page=1; renderReferenceDetail(refDetailState.id); }
 function toggleRefInactive(){ refDetailState.showInactive=!refDetailState.showInactive; refDetailState.page=1; renderReferenceDetail(refDetailState.id); }
@@ -3223,6 +3426,96 @@ function refRelationshipsTab(r,used){
     ${vcallout('v1.5','Lookup ER diagram — a visual map of every table and column that references this list.')}`;
 }
 function publishReference(id){ const r=_ref(id); if(r) r.status='Published'; toast('“'+(r?r.name:'Reference data')+'” published','ok'); renderReferenceDetail(id); }
+
+/* ── Reference Overview tab ── */
+function refOverviewTab(r){
+  const vals=r.values||[]; const activeN=vals.filter(v=>v.active).length;
+  const refBy=r.referencedBy||0; const refTables=2+(((r.id||'').length*7)%6);
+  const LIST='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 4h9M5 8h9M5 12h9M2.5 4h.01M2.5 8h.01M2.5 12h.01"/></svg>';
+  const tiles=[
+    _ovTile(vals.length,'Items', `${activeN} active · updated ${r.updated||'—'}`, LIST),
+    _ovTile(refBy,'Referenced by', `${refBy} column${refBy===1?'':'s'} across ${refTables} tables`, _HIC.link),
+  ];
+  const preRows=vals.slice(0,8);
+  const preview=preRows.length?`<table class="ref-preview"><thead><tr><th>Code</th><th>Label</th><th>Status</th></tr></thead><tbody>${preRows.map(v=>`<tr><td class="ref-preview-key">${escapeHtml(v.code)}</td><td>${escapeHtml(v.label)}</td><td><span class="rstat ${v.active?'on':'off'}"><span class="rstat-dot"></span>${v.active?'Active':'Inactive'}</span></td></tr>`).join('')}</tbody></table>`:`<div class="ov-empty">No items yet.</div>`;
+  return `<div class="md-tiles">${tiles.join('')}</div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Items preview<span class="dsec-sub">showing ${Math.min(8,vals.length)} of ${vals.length}</span></div><a class="md-sec-link" onclick="setRefTab('data')">View all data →</a></div>${preview}</div>
+    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">About this reference list</div></div><div style="font-size:13px;color:var(--t2);line-height:1.6">${escapeHtml(r.desc||'No description yet.')}</div>
+       <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(r.owner),'sm')}${escapeHtml(P(r.owner).n)}</span><span class="lrow-sep">·</span><span>${escapeHtml(r.category||'Reference')}</span><span class="lrow-sep">·</span><span>${escapeHtml(r.origin||'Custom')}</span><span class="lrow-sep">·</span><span>Updated ${escapeHtml(r.updated||'—')}</span></div></div>
+    ${_ovActivity('reference',r)}`;
+}
+
+/* ── Reference "Referenced by" tab ── */
+function _refByRows(r){
+  if(r._refby) return r._refby;
+  const used=_refUsedBy(r.id)||[];
+  const MODELS_V=['CRM Core','Billing & Revenue','Asset Registry','General Ledger','People & Org','Support Tickets'];
+  const ENT=['Customer','Account','Order','Invoice','Contact','Product','Employee','Ticket','Shipment','Address'];
+  const TBL=['customer','account','order','invoice','contact','product','employee','ticket','shipment','address','line_item','payment'];
+  const PRE=['','billing_','shipping_','primary_','default_','home_','origin_'];
+  const STAMPS=['2h ago','5h ago','1d ago','3d ago','1w ago','May 22, 2026','Apr 30, 2026'];
+  const OWN=['sc','mr','jc','dn','em','pl']; const SENS=['Public','Internal','Confidential','Restricted'];
+  const TAGS=['pii','core','lookup','billing','address','reporting','gold','crm','audit'];
+  const noun=_slug(r.name||'value'); const nItems=(r.values?r.values.length:12);
+  const total=Math.max(used.length, Math.min(r.referencedBy||used.length||3, 8));
+  const rows=[];
+  for(let i=0;i<total;i++){
+    const u=used[i]; const table=u?u.table:TBL[i%TBL.length]; const t=_table(table)||{};
+    const col=u?u.col:(PRE[i%PRE.length]+noun); const req=(i%3!==0);
+    const totalRows=400+((i*8237)%60000); const cov=req?(78+((i*7)%22)):(24+((i*11)%60));
+    rows.push({ model:MODELS_V[i%MODELS_V.length], entity:t.entity||ENT[i%ENT.length], table:t.alias||table, tableId:table,
+      col, type:i%3===0?'lookup':i%3===1?'enum':'reference', req, sens:SENS[i%SENS.length], last:STAMPS[i%STAMPS.length], owner:OWN[i%OWN.length],
+      totalRows, rowsWithValue:Math.round(totalRows*cov/100), cov, itemsUsed:Math.max(2,Math.round(nItems*(0.4+((i*13)%50)/100))),
+      tags:[TAGS[i%TAGS.length],TAGS[(i+3)%TAGS.length]],
+      desc:`Normalizes ${(t.entity||ENT[i%ENT.length])} ${noun.replace(/_/g,' ')} against the ${r.name} reference list.${req?' Required on every record, constrained to the published value set.':' Optional; falls back to null when unmapped.'}` });
+  }
+  r._refby=rows; return rows;
+}
+function _rfbCard(r,x,i){
+  return `<div class="rfb-card" onclick="openRefByDetail('${r.id}',${i})">
+    <div class="rfb-top"><span class="idx-ic">${_ICO_COLS}</span><span class="rfb-col">${escapeHtml(x.col)}</span>
+      <span class="rfb-path"><b>${escapeHtml(x.model)}</b> › <b>${escapeHtml(x.entity)}</b> › ${escapeHtml(x.table)}</span>
+      <span class="card-badge">${escapeHtml(x.type)}</span>
+      <span class="rfb-reqchip ${x.req?'rfb-req':'rfb-opt'}">${x.req?'Required':'Optional'}</span>
+      <span style="flex:1"></span><span style="font-size:11px;color:var(--t3)">Last used ${escapeHtml(x.last)}</span></div>
+    <div class="rfb-desc">${escapeHtml(x.desc)}</div>
+    <div class="rfb-foot"><span class="rfb-stat">${_HIC.db}${x.rowsWithValue.toLocaleString()} rows have a value</span><span class="rfb-stat">${_HIC.tag}${x.itemsUsed} of ${r.values?r.values.length:'—'} items used</span>${x.tags.map(tg=>`<span class="chip" style="font-size:10.5px">${escapeHtml(tg)}</span>`).join('')}<span class="lrow-owner">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span></div>
+  </div>`;
+}
+function refReferencedByTab(r){
+  const rows=_refByRows(r); const totalTables=new Set(rows.map(x=>x.tableId)).size;
+  return `<div class="data-toolbar">
+     <label class="dsf-search" style="max-width:260px;height:36px">${_HIC.search}<input type="text" placeholder="Search references…" oninput="toast('Reference search — prototype')" autocomplete="off"></label>
+     <span style="flex:1"></span>
+     <span style="font-size:12px;color:var(--t3)">${rows.length} reference${rows.length===1?'':'s'} across ${totalTables} table${totalTables===1?'':'s'}</span>
+     <button class="btn" style="height:36px" onclick="toast('Exported references to CSV','ok')">${_HIC.export} Export</button></div>
+   ${rows.length?`<div class="rfb-list">${rows.map((x,i)=>_rfbCard(r,x,i)).join('')}</div>`:`<div class="placeholder" style="padding:28px">Not referenced yet. Set a column's type to <b>Reference</b> and point it at <code>${escapeHtml(r.id)}</code>.</div>`}
+   ${vcallout('v1.5','Lookup ER diagram — a visual map of every table and column that references this list.')}`;
+}
+function openRefByDetail(refId,i){
+  const r=_ref(refId); if(!r) return; const x=_refByRows(r)[i]; if(!x) return;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${escapeHtml(x.col)}</div><div class="so-internal">${escapeHtml(x.model)} · ${escapeHtml(x.entity)} · ${escapeHtml(x.table)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap"><span class="card-badge">${escapeHtml(x.type)}</span><span class="rfb-reqchip ${x.req?'rfb-req':'rfb-opt'}">${x.req?'Required':'Optional'}</span><span class="sens ${x.sens==='Confidential'||x.sens==='Restricted'?'conf':'none'}">${escapeHtml(x.sens)}</span></div>
+      <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:16px">${escapeHtml(x.desc)}</div>
+      <div class="so-sec"><div class="so-sec-h">Column properties</div><div class="so-fields">
+        ${F('Type',escapeHtml(x.type))}
+        ${F('Required',x.req?'<span style="color:var(--tag-success-fg)">Yes</span>':'No')}
+        ${F('Sensitivity',escapeHtml(x.sens))}
+        ${F('References',escapeHtml(r.name))}
+        ${F('Last used',escapeHtml(x.last))}
+      </div></div>
+      <div class="so-sec"><div class="so-sec-h">Usage</div><div class="md-tiles" style="margin-bottom:0">
+        <div class="rfb-usage"><span class="rfb-usage-v">${x.rowsWithValue.toLocaleString()}</span><span class="rfb-usage-l">Rows with a value</span></div>
+        <div class="rfb-usage"><span class="rfb-usage-v">${x.itemsUsed}</span><span class="rfb-usage-l">Items used</span></div>
+        <div class="rfb-usage"><span class="rfb-usage-v">${x.cov}%</span><span class="rfb-usage-l">Coverage</span></div>
+      </div></div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Close</button><button class="btn btn-primary" onclick="closeSlideout();navigate('tables/${x.tableId}')">Open table</button></div>`;
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
 
 /* Reference value — slide-out + create/edit */
 function openRefValue(refId, code){
@@ -3416,8 +3709,10 @@ const PEOPLE={
   sc:{i:'SC',n:'Sarah Chen',c:'teal'}, em:{i:'EM',n:'Eve Martin',c:'amber'}, dn:{i:'DN',n:'Diego Núñez',c:'green'},
   jc:{i:'JC',n:'Julia Cruz',c:'green'}, mr:{i:'MR',n:'Marcus Reed',c:'blue'}, pl:{i:'PL',n:'Priya Lal',c:'purple'},
   dp:{i:'DP',n:'Data Platform',c:'blue'}, sm:{i:'SM',n:'Sam Ortiz',c:'cyan'}, tk:{i:'TK',n:'Tom Kane',c:'indigo'},
-  sb:{i:'SB',n:'Sebastian Blandon',c:'blue'},
+  sb:{i:'SB',n:'Sebastian Blandon',c:'blue'}, svc:{i:'IS',n:'Ingestion Service',c:'slate'},
 };
+/* Role labels shown in the compliance audit log */
+const _HROLE={sc:'Schema Admin',mr:'Data Platform Lead',jc:'Product Steward',dn:'Operations Lead',em:'Compliance Analyst',pl:'Data Steward',sb:'Tenant Admin',svc:'Service Principal',dp:'Data Platform',sm:'Analyst',tk:'Engineer'};
 function P(k){ return PEOPLE[k]||{i:'?',n:'Unknown',c:'slate'}; }
 function av(p,size){ const c=AV_COLORS[p.c]||AV_COLORS.slate; return `<span class="av av-${size||'sm'}" style="background:${c}" title="${escapeHtml(p.n||p.i)}">${escapeHtml(p.i)}</span>`; }
 function avStack(keys,max){ max=max||3; const list=keys.map(P); const shown=list.slice(0,max); const extra=list.length-shown.length; return `<span class="av-stack">${shown.map(p=>av(p,'sm')).join('')}${extra>0?`<span class="av-more">+${extra}</span>`:''}</span>`; }
@@ -4000,6 +4295,141 @@ function _mdAbout(m){
 function _mdCount(el){ const c=$('mdDescCount'); if(c){ const n=el.value.length; c.textContent=n+' / 180'; c.classList.toggle('over',n>180); } }
 function _mdActivity(m,md){
   return `<div class="md-timeline">${md.activity.map((a,i)=>`<div class="md-tl-item ${a.major?'major':''} ${i===md.activity.length-1?'last':''}"><span class="md-tl-dot"></span><div class="md-tl-b"><div class="md-tl-t">${escapeHtml(a.t)}</div><div class="md-tl-m">${escapeHtml(P(a.who).n)} · ${escapeHtml(a.when)}</div></div></div>`).join('')}</div>`;
+}
+
+/* ══════════════ Shared: History — compliance audit log ══════════════ */
+let _histState={q:'',res:'all',src:'all'};
+const _HACT={create:['New','ha-create'],update:['Update','ha-update'],delete:['Delete','ha-delete'],publish:['Publish','ha-publish'],unpublish:['Unpublish','ha-neutral'],permission:['Access','ha-perm'],export:['Export','ha-export'],sensitive:['PII','ha-sens'],attach:['Attach','ha-neutral'],detach:['Detach','ha-neutral'],sync:['Sync','ha-neutral']};
+const _HABS=['2026-07-22 14:24','2026-07-22 13:41','2026-07-22 09:12','2026-07-21 17:55','2026-07-20 11:08','2026-07-18 16:32','2026-07-15 10:20','2026-07-11 08:47','2026-07-04 15:03','2026-06-28 12:15','2026-06-19 09:38','2026-06-02 14:50','2026-05-18 10:05','2026-05-02 16:22'];
+const _HIC={
+  search:'<svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>',
+  export:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>',
+  shield:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.2-2.3 5.6-5.5 6.5-3.2-.9-5.5-3.3-5.5-6.5v-4L8 1.5Z"/><path d="M5.8 8l1.6 1.6L10.4 6" fill="none"/></svg>',
+  cmd:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 3.5v9M11 3.5v9M3.5 5h9M3.5 11h9" stroke-linecap="round"/></svg>',
+  users:'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="5.5" r="2"/><path d="M2.5 13a3.5 3.5 0 0 1 7 0" stroke-linecap="round"/><path d="M10.5 4.2a2 2 0 0 1 0 3.6M11 13a3.5 3.5 0 0 0-1.6-2.9" stroke-linecap="round"/></svg>',
+  hash:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2.5L4.5 13.5M11.5 2.5L10 13.5M3 6h11M2 10h11"/></svg>',
+  db:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="4" rx="5" ry="2"/><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/></svg>',
+  tag:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2.5 2.5h5l6 6-5 5-6-6v-5Z"/><circle cx="5.5" cy="5.5" r="1"/></svg>',
+  link:'<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6.5 9.5l3-3M7 4.5l1-1a2.5 2.5 0 0 1 3.5 3.5l-1 1M9 11.5l-1 1a2.5 2.5 0 0 1-3.5-3.5l1-1"/></svg>',
+};
+function _reRenderDetail(kind,id){ if(kind==='entity') renderEntityDetail(id); else if(kind==='table') renderTableDetail(id); else if(kind==='reference') renderReferenceDetail(id); }
+function histQuery(kind,id,v){ _histState.q=v; _reRenderDetail(kind,id); setTimeout(()=>{const el=$('histSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function histRes(kind,id,v){ _histState.res=v; _reRenderDetail(kind,id); }
+function histSrc(kind,id,v){ _histState.src=v; _reRenderDetail(kind,id); }
+function _hActBadge(act){ const a=_HACT[act]||['Event','ha-neutral']; return `<span class="hbadge ${a[1]}">${a[0]}</span>`; }
+function _hRes(res){ const m={ok:['Success','hr-ok'],fail:['Failed','hr-fail'],warn:['Warning','hr-warn']}[res]||['Success','hr-ok']; return `<span class="hres ${m[1]}"><span class="hres-dot"></span>${m[0]}</span>`; }
+function _hSrc(src){ return `<span class="hsrc">${src==='API'?_HIC.cmd:_HIC.users}${src||'UI'}</span>`; }
+function _histObj(kind,id){ return kind==='entity'?ENTITIES.find(x=>x.id===id):kind==='table'?_table(id):_ref(id); }
+function _histEvents(kind,o){
+  const e0=escapeHtml; const own=o.owner||'sb';
+  if(kind==='table'){
+    return [
+      {w:'8m ago',who:'sb',act:'update',res:'ok',src:'UI',d:"Description changed — added “behavioral data”"},
+      {w:'41m ago',who:'sc',act:'update',res:'ok',src:'UI',d:'Added column tax_id (uuid, not null, indexed)'},
+      {w:'1h ago',who:'mr',act:'update',res:'ok',src:'UI',d:'Modified index idx_email_unique — added email_lower'},
+      {w:'3h ago',who:'dn',act:'permission',res:'ok',src:'UI',d:"Granted privilege ‘Approve’ to role ‘Operations Lead’"},
+      {w:'5h ago',who:'sb',act:'export',res:'ok',src:'UI',d:'Exported 1,247 rows (CSV) · PII masked'},
+      {w:'8h ago',who:'jc',act:'update',res:'ok',src:'UI',d:'Added relationship comment.customer_id → customer.id (N:1)'},
+      {w:'14h ago',who:'sb',act:'publish',res:'ok',src:'UI',d:'Published 3 changes (column, description, index)'},
+      {w:'1d ago',who:'sc',act:'delete',res:'ok',src:'UI',d:'Removed column legacy_status (text)'},
+      {w:'2d ago',who:'svc',act:'export',res:'ok',src:'API',d:'Exported 1,247 rows (JSON) via integration · PII masked'},
+      {w:'4d ago',who:'mr',act:'sensitive',res:'warn',src:'API',d:'Exported 1,180 rows CSV with PII unmasked · Justification: Compliance review'},
+      {w:'5d ago',who:'sb',act:'publish',res:'fail',src:'UI',d:'Publish failed — schema validation on column phone',err:'ValidationError: column "phone" references missing format profile "e164_strict".'},
+      {w:'May 18, 2026',who:'pl',act:'update',res:'ok',src:'UI',d:'Display name changed: Customers → Customer accounts'},
+      {w:'May 2, 2026',who:'sc',act:'create',res:'ok',src:'UI',d:'Table '+e0(o.alias||'')+' created with '+((o.cols||[]).length)+' columns'},
+    ];
+  }
+  if(kind==='entity'){
+    const t1=(o.tables&&(o.tables[1]||o.tables[0]))||{alias:'detail'};
+    const rt=(o.rels&&o.rels[0]?o.rels[0].t:'related entity');
+    return [
+      {w:'12m ago',who:'sb',act:'update',res:'ok',src:'UI',d:'Updated business definition'},
+      {w:'47m ago',who:'jc',act:'update',res:'ok',src:'UI',d:'Added steward — Marcus Reed'},
+      {w:'1h ago',who:'sb',act:'update',res:'ok',src:'UI',d:'Disabled API operation Delete'},
+      {w:'4h ago',who:'jc',act:'update',res:'ok',src:'UI',d:'Added external relationship '+e0(o.name)+' → '+e0(rt)+' (1:N)'},
+      {w:'9h ago',who:'dn',act:'permission',res:'ok',src:'UI',d:"Granted privilege ‘Read’ to role ‘Data Steward’"},
+      {w:'12h ago',who:'sb',act:'permission',res:'ok',src:'UI',d:"Created custom privilege ‘export_data’ (3 permissions)"},
+      {w:'15h ago',who:'sb',act:'publish',res:'ok',src:'UI',d:'Published 5 changes'},
+      {w:'1d ago',who:'sc',act:'attach',res:'ok',src:'UI',d:'Added table '+e0(t1.alias)+' as Secondary'},
+      {w:'2d ago',who:'em',act:'update',res:'ok',src:'UI',d:'Changed sensitivity Internal → PII'},
+      {w:'5d ago',who:'sb',act:'publish',res:'fail',src:'UI',d:'Publish failed — API contract inconsistency',err:'ContractError: column "tax_id" is in exposed filters but hidden in visibility rules.'},
+      {w:'May 18, 2026',who:'svc',act:'update',res:'ok',src:'API',d:'Updated default page size 25 → 50 via tenant config sync'},
+      {w:'May 2, 2026',who:'sb',act:'create',res:'ok',src:'UI',d:'Entity created with primary table and 1 relationship'},
+    ];
+  }
+  /* reference */
+  const ext=(o.origin==='External'); const steward='pl'; const nItems=(o.values||[]).length;
+  const ev=[
+    {w:'45m ago',who:own,act:'update',res:'ok',src:'UI',d:'Updated a value in '+e0(o.name)},
+    {w:'2h ago',who:steward,act:'update',res:'ok',src:'API',d:'Imported 45 items (12 added, 33 updated, 0 conflicts)'},
+    {w:'11h ago',who:own,act:'publish',res:'ok',src:'UI',d:'Published '+e0(o.version||'v1.2')+' · 3 changes'},
+    {w:'1d ago',who:steward,act:'create',res:'ok',src:'UI',d:'Added field (string, optional)'},
+    {w:'2d ago',who:own,act:'update',res:'ok',src:'UI',d:'Changed sensitivity Internal → Confidential'},
+    {w:'3d ago',who:steward,act:'update',res:'ok',src:'UI',d:'Added item to '+e0(o.name)},
+    {w:'5d ago',who:own,act:'export',res:'ok',src:'UI',d:'Exported all items ('+nItems+' items)'},
+    {w:'1w ago',who:steward,act:'update',res:'fail',src:'UI',d:'Type change blocked — existing values not convertible',err:'ValidationError: cannot change field string→integer, 41 non-numeric values.'},
+    {w:'Apr 12, 2026',who:own,act:'create',res:'ok',src:'UI',d:'Created the reference list with '+((o.fields)||4)+' fields'},
+  ];
+  if(ext) ev.unshift({w:'5h ago',who:'svc',act:'sync',res:'ok',src:'API',d:'Synced from '+e0(o.origin||'source')+' · 3 items updated · 0 conflicts'});
+  return ev;
+}
+function _historyTab(kind,o){
+  const all=_histEvents(kind,o).map((e,i)=>({...e,_i:i}));
+  const q=(_histState.q||'').toLowerCase();
+  let ev=all;
+  if(_histState.res!=='all') ev=ev.filter(e=>e.res===_histState.res);
+  if(_histState.src!=='all') ev=ev.filter(e=>(e.src||'UI')===_histState.src);
+  if(q) ev=ev.filter(e=>(e.d+' '+P(e.who).n+' '+(_HACT[e.act]?_HACT[e.act][0]:'')).toLowerCase().includes(q));
+  const gt='grid-template-columns:120px 186px 96px minmax(0,1fr) 100px 74px';
+  const chip=(cur,v,l,fn)=>`<button class="hchip ${cur===v?'on':''}" onclick="${fn}('${kind}','${o.id}','${v}')">${l}</button>`;
+  return `<div class="hist-bar">
+     <label class="dsf-search" style="max-width:280px;height:36px">${_HIC.search}<input id="histSearch" type="text" placeholder="Search events, authors, resources…" value="${escapeHtml(_histState.q)}" oninput="histQuery('${kind}','${o.id}',this.value)" autocomplete="off"></label>
+     <div class="hchips">${chip(_histState.res,'all','All','histRes')}${chip(_histState.res,'ok','Success','histRes')}${chip(_histState.res,'fail','Failed','histRes')}${chip(_histState.res,'warn','Warning','histRes')}</div>
+     <div class="hchips">${chip(_histState.src,'all','Any','histSrc')}${chip(_histState.src,'UI','UI','histSrc')}${chip(_histState.src,'API','API','histSrc')}</div>
+     <span style="flex:1"></span>
+     <span class="hist-compliance">${_HIC.shield} Compliance audit log</span>
+     <span class="hist-retain">Retention: 7 years</span>
+     <button class="btn" style="height:36px" onclick="toast('Exported audit log to CSV','ok')">${_HIC.export} Export</button></div>
+   <div class="dtable hist-tbl"><div class="dtable-h" style="${gt}"><span>Timestamp</span><span>User</span><span>Action</span><span>Description</span><span>Result</span><span>Source</span></div>
+     ${ev.length?ev.map(e=>{const p=P(e.who); return `<div class="dtable-r hist-r ${e.res==='fail'?'is-fail':''}" style="${gt}" onclick="openHistEvent('${kind}','${o.id}',${e._i})">
+        <span class="dcell hist-when">${escapeHtml(e.w)}</span>
+        <span class="dcell hist-user">${av(p,'sm')}<span class="hist-user-b"><span class="hist-user-n">${escapeHtml(p.n)}</span><span class="hist-user-r">${escapeHtml(_HROLE[e.who]||'Member')}</span></span></span>
+        <span class="dcell">${_hActBadge(e.act)}</span>
+        <span class="dcell hist-desc">${escapeHtml(e.d)}${e.err?`<span class="hist-err">${escapeHtml(e.err)}</span>`:''}</span>
+        <span class="dcell">${_hRes(e.res)}</span>
+        <span class="dcell">${_hSrc(e.src||'UI')}</span>
+      </div>`;}).join(''):`<div class="empty" style="padding:44px">No events match your filters.</div>`}
+   </div>
+   <div class="pgn"><span>${ev.length} event${ev.length===1?'':'s'} · immutable · retained 7 years</span></div>`;
+}
+function openHistEvent(kind,id,idx){
+  const o=_histObj(kind,id); if(!o) return; const ev=_histEvents(kind,o)[idx]; if(!ev) return;
+  const p=P(ev.who); const abs=_HABS[idx%_HABS.length];
+  const base=kind==='entity'?`acme-corp / ${escapeHtml(o.model||'Model')} / ${escapeHtml(o.name)}`:kind==='table'?`acme-corp / ${escapeHtml(o.model||'Model')} / ${escapeHtml(o.alias)}`:`acme-corp / Reference Data / ${escapeHtml(o.name)}`;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  const ip='10.'+((idx*7)%240+2)+'.'+((idx*13)%240+4)+'.'+((idx*29)%240+11);
+  const sess='sess-'+((idx*4099+1013)%99999).toString(36).toUpperCase().padStart(5,'0');
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${_HACT[ev.act]?_HACT[ev.act][0]:'Event'} · ${escapeHtml(o.alias||o.name)}</div><div class="so-internal">${escapeHtml(abs)} UTC</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap">${_hActBadge(ev.act)}${_hRes(ev.res)}${_hSrc(ev.src||'UI')}</div>
+      <div style="font-size:13px;color:var(--field-text);line-height:1.55;margin-bottom:16px">${escapeHtml(ev.d)}.</div>
+      ${ev.err?`<div class="hist-so-err"><div class="hist-so-err-h">Error</div>${escapeHtml(ev.err)}</div>`:''}
+      <div class="so-sec"><div class="so-sec-h">Audit record</div><div class="so-fields">
+        ${F('User',`${av(p,'sm')} ${escapeHtml(p.n)}`)}
+        ${F('Role at event',escapeHtml(_HROLE[ev.who]||'Member'))}
+        ${F('Timestamp',escapeHtml(abs)+' UTC')}
+        ${F('IP address',`<span class="mono">${ip}</span>`)}
+        ${F('Session ID',`<span class="mono">${sess}</span>`)}
+        ${F('Source',ev.src==='API'?'API':'UI')}
+        ${F('Action',_HACT[ev.act]?_HACT[ev.act][0]:'Event')}
+        ${F('Result',ev.res==='fail'?'Failure':ev.res==='warn'?'Warning':'Success')}
+      </div></div>
+      <div class="so-sec"><div class="so-sec-h">Resource</div><div class="mono" style="font-size:12px;color:var(--t2);word-break:break-word">${base}</div></div>
+      <div class="hist-immutable">${_HIC.shield} This audit entry is immutable and retained for 7 years for compliance.</div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Close</button><button class="btn btn-primary" onclick="toast('Audit record exported','ok')">Export record</button></div>`;
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
 }
 
 /* ── shared: mini table + view toggle (grid/table) ── */
@@ -5639,16 +6069,16 @@ function route(){
   else if(r==='models'){ renderModels(); }
   else if(r==='entities' && parts[1]==='new'){ if(parts[2]==='scratch') renderEntFromScratch(); else if(parts[2]==='ai'){ _entAiReset(); renderEntAIAssist(); } else { renderEntities(); openEntityMarketplaceModal(); } }
   else if(r==='entities' && parts[1]){
-    if(detailState.id !== parts[1]) detailState.tab = 'tables';
+    if(detailState.id !== parts[1]) detailState.tab = 'overview';
     detailState.id = parts[1];
     renderEntityDetail(parts[1]);
   }
   else if(r==='entities'){ renderEntities(); }
   else if(r==='tables' && parts[1]==='new'){ if(parts[2]==='scratch') renderTblFromScratch(); else if(parts[2]==='ai'){ _tblAiReset(); renderTblAIAssist(); } else { renderTablesList(); openTableMarketplaceModal(); } }
-  else if(r==='tables' && parts[1]){ if(tableDetailState.id!==parts[1]){ tableDetailState.tab='columns'; dataState={search:'',page:1}; } tableDetailState.id=parts[1]; renderTableDetail(parts[1]); }
+  else if(r==='tables' && parts[1]){ if(tableDetailState.id!==parts[1]){ tableDetailState.tab='overview'; dataState={search:'',page:1}; } tableDetailState.id=parts[1]; renderTableDetail(parts[1]); }
   else if(r==='tables'){ renderTablesList(); }
   else if(r==='reference' && parts[1]==='new'){ if(parts[2]==='scratch') renderRefFromScratch(); else if(parts[2]==='ai'){ _refAiReset(); renderRefAIAssist(); } else { renderReferenceList(); openRefMarketplaceModal(); } }
-  else if(r==='reference' && parts[1]){ if(refDetailState.id!==parts[1]){ refDetailState.tab='data'; refDetailState.search=''; refDetailState.page=1; } refDetailState.id=parts[1]; renderReferenceDetail(parts[1]); }
+  else if(r==='reference' && parts[1]){ if(refDetailState.id!==parts[1]){ refDetailState.tab='overview'; refDetailState.search=''; refDetailState.page=1; } refDetailState.id=parts[1]; renderReferenceDetail(parts[1]); }
   else if(r==='reference'){ renderReferenceList(); }
   else { location.hash='#/models'; }
 }
