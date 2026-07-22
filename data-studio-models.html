@@ -3028,7 +3028,8 @@ function renderTableDetail(id){
   const t=_table(id); if(!t){ location.hash='#/tables'; return; }
   const tab=tableDetailState.tab;
   const _idxList=_tblIndexes(t);
-  const cnt={ overview:null, columns:t.cols.length, relationships:(t.rels?t.rels.length:0), data:(t._rows?t._rows.length:(t.cols.length?18:0)), indexes:_idxList.length, history:null };
+  const _relIn=TABLES.filter(x=>x.id!==t.id).reduce((n,x)=>n+(x.rels||[]).filter(r=>_refId(r.target)===t.id).length,0);
+  const cnt={ overview:null, columns:t.cols.length, relationships:((t.rels?t.rels.length:0)+_relIn), data:(t._rows?t._rows.length:(t.cols.length?18:0)), indexes:_idxList.length, history:null };
   const tabs=[['overview','Overview'],['columns','Columns'],['relationships','Relationships'],['data','Data'],['indexes','Indexes'],['history','History']];
   const pending = t.status!=='Published';
   $('content').innerHTML=`
