@@ -2176,6 +2176,16 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .acct-seg-ic{padding:4px 6px !important}
 .acct-val{margin-left:auto; display:inline-flex; align-items:center; gap:3px; font-size:12px; color:var(--t3); white-space:nowrap}
 .acct-kbd{margin-left:auto; font-size:11px; font-weight:600; color:var(--t3); border:1px solid var(--card-border); border-radius:5px; height:18px; display:inline-flex; align-items:center; justify-content:center; padding:0 5px}
+
+/* ── Topbar zone tooltips (DS TopbarTooltip) + profile avatar hover ring ── */
+.tb-studio, .tb-search, .tb-company{position:relative}
+.tb-tip{position:absolute; top:calc(100% + 6px); left:0; z-index:90; display:flex; flex-direction:column; gap:1px; white-space:nowrap; padding:7px 10px; border-radius:6px; background:var(--surface-floating-default,var(--bg2)); border:1px solid var(--line-strong,var(--line)); box-shadow:0 8px 24px rgba(0,0,0,0.28); opacity:0; transform:translateY(-2px); pointer-events:none; transition:opacity .12s ease, transform .12s ease}
+html.theme-light .tb-tip{background:#fff}
+.tb-tip-r{left:auto; right:0}
+.tb-tip b{font-size:11px; font-weight:600; color:var(--t1)}
+.tb-tip i{font-size:10px; font-style:normal; color:var(--t3)}
+.tb-studio:hover .tb-tip, .tb-search:hover .tb-tip, .tb-company:hover .tb-tip{opacity:1; transform:translateY(0)}
+.tb-company:hover .tb-user-av{box-shadow:0 0 0 2px var(--topbar-avatar-ring,rgba(33,115,255,0.55))}
 </style>
 </head>
 <body>
@@ -2184,13 +2194,13 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 <header class="topbar">
   <div class="tb-left">
     <button class="tb-burger" onclick="openSidebarDrawer()" aria-label="Open menu"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
-    <button class="tb-studio" data-pop onclick="openWorkspace(this)" title="Switch studio">
+    <button class="tb-studio" data-pop onclick="openWorkspace(this)" aria-label="Switch studio"><span class="tb-tip"><b>Workspace</b><i>Move across studios</i></span>
       <span class="tb-studio-av"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.4"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span>
       <span class="tb-studio-name">Data Studio</span>
       <svg class="tb-studio-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
     </button>
   </div>
-  <button class="tb-search" data-pop onclick="openSearch()" aria-label="Search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search</span></button>
+  <button class="tb-search" data-pop onclick="openSearch()" aria-label="Search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><span>Search</span><span class="tb-tip"><b>Global search</b><i>Search across apps, agents &amp; data</i></span></button>
   <div class="tb-right">
     <div class="tb-actions">
       <button class="tb-ai" data-pop onclick="openAI(this)" title="Ask AI" aria-label="Ask AI"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z"/></svg></button>
@@ -2198,7 +2208,7 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
       <button class="tb-ico tb-hide-sm" data-pop onclick="openSettings(this)" title="Settings" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M15 8h-2M3 8H1M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4M12.5 12.5l-1.4-1.4M4.9 4.9L3.5 3.5"/></svg></button>
     </div>
     <span class="tb-divider" aria-hidden="true"></span>
-    <button class="tb-company" data-pop onclick="openAccount(this)" title="Account">
+    <button class="tb-company" data-pop onclick="openAccount(this)" aria-label="Account"><span class="tb-tip tb-tip-r"><b>Account</b><i>Profile &amp; workspace</i></span>
       <span class="tb-company-av">A</span>
       <span class="tb-company-name">Aims</span>
       <span class="tb-user-av">SB</span>
