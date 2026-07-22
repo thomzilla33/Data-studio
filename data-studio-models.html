@@ -1936,7 +1936,7 @@ html:not(.theme-light) .tt-nodes rect{fill:var(--surface-raised,#131C2E)}
 
 
 /* ══ New-model marketplace MODAL ══ */
-.modal.modal-lg{width:min(1080px,95vw); max-width:none; max-height:88vh; display:flex; flex-direction:column; padding:0}
+.modal.modal-lg{width:min(1080px,95vw); max-width:none; height:min(860px,90vh); display:flex; flex-direction:column; padding:0}
 .mkt-modal-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:20px 22px 14px; border-bottom:1px solid var(--line); flex-shrink:0}
 .mkt-modal-head .modal-title{font-size:18px}
 .mkt-modal-sub{font-size:13px; color:var(--t2); margin-top:3px}
@@ -1994,6 +1994,47 @@ html:not(.theme-light) .ai-skel-diag{background:rgba(255,255,255,0.03)}
 .ai-typing span:nth-child(2){animation-delay:.2s}
 .ai-typing span:nth-child(3){animation-delay:.4s}
 @keyframes aiBlink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* Table marketplace — column-schema thumbnails */
+.tpl-thumb-wrap.has-schema{display:flex; align-items:center; justify-content:center; padding:10px}
+.tbl-schema{width:100%; max-width:158px; border:1px solid var(--card-border,var(--line)); border-radius:9px; background:var(--card-bg,#fff); overflow:hidden; box-shadow:0 2px 8px rgba(15,23,42,0.06)}
+html:not(.theme-light) .tbl-schema{background:var(--surface-raised,#131C2E)}
+.tbl-schema-head{display:flex; align-items:center; gap:5px; padding:5px 8px; border-bottom:1px solid var(--line); color:var(--primary)}
+.tbl-schema-head code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; font-weight:600; color:var(--t1)}
+.tsr{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:2.5px 8px}
+.tsr-n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; color:var(--t2)}
+.tsr-n.key{color:var(--t1); font-weight:600}
+.tsr-t{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; color:var(--t3); letter-spacing:.02em}
+.tsr-t.pk{color:var(--tag-alert-fg,#d08700); font-weight:700}
+.tsr-t.fk{color:var(--primary); font-weight:700}
+.mktp-hero.has-schema{display:flex; align-items:center; justify-content:center; padding:16px}
+.mktp-hero.has-schema .tbl-schema{max-width:220px}
+.mktp-ents .tsr-t{font-size:9px}
+/* from-scratch icon field */
+.fs-icon-sel{display:flex; align-items:center; gap:9px; height:42px; border:1px solid var(--field-border); border-radius:9px; background:var(--field-bg); padding:0 12px; cursor:pointer; max-width:280px}
+.fs-icon-sel:hover{border-color:var(--field-border-hover,var(--line-strong))}
+.fs-icon-tile{width:26px; height:26px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center; background:var(--tag-informative-bg,rgba(37,99,235,0.1)); color:var(--primary)}
+.fs-icon-name{font-size:13.5px; color:var(--t1)}
+/* AI table preview schema */
+.tblai-schema{border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); overflow:hidden; margin:0 0 14px}
+.tblai-col{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line)}
+.tblai-col:last-child{border-bottom:none}
+.tblai-col-n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:var(--t2)}
+.tblai-col-n.key{color:var(--t1); font-weight:600}
+
+/* Reference-data marketplace — value-list thumbnails */
+.ref-vals{width:100%; max-width:170px; border:1px solid var(--card-border,var(--line)); border-radius:9px; background:var(--card-bg,#fff); overflow:hidden; box-shadow:0 2px 8px rgba(15,23,42,0.06)}
+html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
+.ref-vals-head{display:flex; align-items:center; gap:5px; padding:5px 8px; border-bottom:1px solid var(--line); color:var(--primary)}
+.ref-vals-head code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; font-weight:600; color:var(--t1)}
+.rvr{display:flex; align-items:center; gap:7px; padding:3px 8px}
+.rvr-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:8.5px; font-weight:600; color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.1)); border-radius:4px; padding:1px 5px; flex-shrink:0}
+.rvr-label{font-size:10px; color:var(--t2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ref-origin{font-size:10.5px; font-weight:700; border-radius:6px; padding:2px 8px; color:var(--t2); background:var(--muted,var(--hover))}
+.ref-origin.catalog{color:var(--primary); background:var(--tag-informative-bg,rgba(37,99,235,0.1))}
+.mktp-ents .rvr-code{margin-right:2px}
+.refai-lbl{flex:1; font-size:13px; color:var(--t2); margin-left:10px}
+.refai-def{font-size:10px; font-weight:700; color:var(--tag-success-fg,#16a34a); background:var(--tag-success-bg,rgba(16,185,129,0.1)); border-radius:5px; padding:1px 7px}
 </style>
 </head>
 <body>
@@ -2203,7 +2244,7 @@ function renderEntities(){
       ${filtering ? `<button class="dsf-clear" onclick="clearFilters()">Clear</button>` : ''}
       <span class="tbar-spring"></span>
       ${viewToggle(listState,'eView')}
-      <button class="btn btn-primary" onclick="openCreateEntity()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New entity</button>
+      <button class="btn btn-primary" onclick="navigate('entities/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New entity</button>
     </div>
     ${listState.view==='table' ? dtblView('entities',filtered,_entCols(),'entities') : filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : listState.view==='grid' ? `<div class="mcard-grid">${filtered.map(entityCard).join('')}</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`}
     ${vcallout('v2','Models &amp; Marketplace — group entities and tables into publishable models, browse pre-built marketplace models, and generate entities with AI.')}
@@ -2606,7 +2647,7 @@ function renderTablesList(){
       ${filtering?`<button class="dsf-clear" onclick="tlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(tablesListState,'tlView')}
-      <button class="btn btn-primary" onclick="openCreateTable()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New table</button>
+      <button class="btn btn-primary" onclick="navigate('tables/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New table</button>
     </div>
     ${tablesListState.view==='table' ? dtblView('tables',filtered,_tblCols(),'tables') : filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>` : tablesListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(tableCard).join('')}</div>` : `<div class="lrows">${filtered.map(tableRow).join('')}</div>`}`;
 }
@@ -3085,7 +3126,7 @@ function renderReferenceList(){
       ${filtering?`<button class="dsf-clear" onclick="rlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(refListState,'rlView')}
-      <button class="btn btn-primary" onclick="openCreateReference()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New reference list</button>
+      <button class="btn btn-primary" onclick="navigate('reference/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New reference list</button>
     </div>
     ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>` : refListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(refCard).join('')}</div>` : `<div class="lrows">${filtered.map(refRow).join('')}</div>`}`;
 }
@@ -4383,7 +4424,7 @@ function _tplUse(id){
 
 /* ── New-model MODAL (marketplace chooser → preview → hand off) ── */
 function openMarketplaceModal(){
-  mktState.preview=null;
+  mktState.cat='all'; mktState.q=''; mktState.cx='all'; mktState.preview=null;
   $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Model marketplace">
     <div class="mkt-modal-head">
       <div><div class="modal-title">Model marketplace</div><div class="mkt-modal-sub">Browse a proven reference model from the AIMS OS catalog, or start your own.</div></div>
@@ -4644,6 +4685,951 @@ function _aiDiagram(p){
   return `<div class="diag-wrap ai-diag"><svg class="diag-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><g>${edges}${g}</g></svg><div class="diag-hint ai-diag-hint"><span class="diag-hint-txt">Hover an entity to trace its relations · click to inspect · drag to pan</span></div><div class="diag-legend"><span><span class="lg-line"></span>Relation</span><span><span class="lg-line lg-dash"></span>Cross-model</span></div></div>`;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   NEW ENTITY FLOW — marketplace pop-up · from scratch · AI assist
+   (mirrors the Models flow; reuses .mkt-* / .tpl-* / .mktp-* / .fs-* / .ai-* CSS)
+   ══════════════════════════════════════════════════════════════ */
+const ENT_TEMPLATES=[
+  {id:'e_account',name:'Account',cat:'sales',cx:'Advanced',t:4,r:6,c:14,tenants:'1,180',featured:true,badge:null,desc:'The canonical company record — legal entity, hierarchy, industry and the relationship owner. The backbone of the customer view.'},
+  {id:'e_invoice',name:'Invoice',cat:'finance',cx:'Advanced',t:4,r:6,c:15,tenants:'760',featured:true,badge:null,desc:'Billing documents with line items, tax, payment status and dunning. The core of the revenue-recognition flow.'},
+  {id:'e_employee',name:'Employee',cat:'hr',cx:'Intermediate',t:4,r:5,c:13,tenants:'910',featured:true,badge:null,desc:'The workforce record — positions, reporting lines, tenure and compensation, with the org chart.'},
+  {id:'e_case',name:'Case',cat:'service',cx:'Advanced',t:4,r:5,c:12,tenants:'840',featured:true,badge:'Most used',desc:'Support cases with queues, SLAs, priority and resolution timeline. Tracks the full support lifecycle.'},
+  {id:'e_contact',name:'Contact',cat:'sales',cx:'Intermediate',t:3,r:4,c:11,tenants:'990',badge:'Most used',desc:'People at accounts — roles, communication preferences and consent. The person-level record behind every relationship.'},
+  {id:'e_sku',name:'SKU',cat:'inventory',cx:'Intermediate',t:3,r:5,c:12,tenants:'780',badge:'Most used',desc:'Stock-keeping units with attributes, units of measure and lot tracking. Joined to stock movements.'},
+  {id:'e_opportunity',name:'Opportunity',cat:'sales',cx:'Advanced',t:3,r:5,c:13,tenants:'720',badge:null,desc:'Deals moving through the pipeline — stage, amount, forecast category and close plan with stage history.'},
+  {id:'e_product',name:'Product',cat:'inventory',cx:'Intermediate',t:4,r:4,c:11,tenants:'700',badge:null,desc:'Sellable products with variants, categories, pricing tiers and media for the storefront and catalog.'},
+  {id:'e_project',name:'Project',cat:'projects',cx:'Intermediate',t:4,r:4,c:12,tenants:'580',badge:'New',desc:'Projects with tasks, milestones, dependencies and resource allocation plus time tracking.'},
+  {id:'e_payment',name:'Payment',cat:'finance',cx:'Intermediate',t:3,r:4,c:10,tenants:'540',badge:null,desc:'Captured payments and their reconciliation state against invoices and the general ledger.'},
+  {id:'e_campaign',name:'Campaign',cat:'marketing',cx:'Intermediate',t:3,r:4,c:11,tenants:'505',badge:'New',desc:'Marketing campaigns with budget, channels, UTM capture and conversion attribution.'},
+  {id:'e_segment',name:'Segment',cat:'marketing',cx:'Simple',t:2,r:3,c:7,tenants:'470',badge:null,desc:'Audience segments with membership rules and the contacts that qualify at any point in time.'},
+  {id:'e_interaction',name:'Interaction',cat:'service',cx:'Intermediate',t:3,r:4,c:10,tenants:'430',badge:null,desc:'Every touchpoint with a customer — calls, emails, chats — timestamped and linked to a case or account.'},
+  {id:'e_candidate',name:'Candidate',cat:'hr',cx:'Intermediate',t:3,r:4,c:11,tenants:'360',badge:null,desc:'Applicants moving through requisitions, interviews and offers with scorecards and stage history.'},
+  {id:'e_shipment',name:'Shipment',cat:'logistics',cx:'Advanced',t:4,r:5,c:12,tenants:'320',badge:null,desc:'Shipments with routes, carriers and delivery events connected to the fulfillment layer.'},
+  {id:'e_route',name:'Route',cat:'logistics',cx:'Intermediate',t:3,r:4,c:9,tenants:'240',badge:null,desc:'Planned delivery routes with stops, sequencing and the vehicles and drivers assigned.'},
+  {id:'e_policy',name:'Policy',cat:'compliance',cx:'Advanced',t:3,r:4,c:10,tenants:'190',badge:null,desc:'Compliance policies with controls, evidence and the audit findings linked to each.'},
+  {id:'e_asset',name:'Asset',cat:'operations',cx:'Intermediate',t:3,r:4,c:9,tenants:'165',badge:null,desc:'Physical and digital assets with custody chains, depreciation schedules and maintenance history.'},
+  {id:'e_user',name:'User',cat:'itsec',cx:'Advanced',t:3,r:5,c:11,tenants:'150',badge:null,desc:'Identity records with credentials, sessions and the entitlements granted per system.'},
+  {id:'e_role',name:'Role',cat:'itsec',cx:'Intermediate',t:2,r:4,c:8,tenants:'138',badge:null,desc:'Permission bundles assigned to users, with segregation-of-duties checks and review cadence.'},
+  {id:'e_task',name:'Task',cat:'projects',cx:'Simple',t:2,r:3,c:7,tenants:'120',badge:null,desc:'Units of work with assignee, status, estimate and dependencies rolled up to a project.'},
+];
+const _TSI_TBL='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg>';
+
+/* ── Entity marketplace MODAL ── */
+let emktState={ cat:'all', q:'', cx:'all', sort:'popular', preview:null };
+function emktCat(id){ emktState.cat=id; _renderEmktBody(); }
+function emktSet(k,v){ emktState[k]=v; _renderEmktBody(); }
+function emktSearch(v){ emktState.q=v; _renderEmktBody(); setTimeout(()=>{const el=$('emktSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function _emktFiltered(){
+  const q=emktState.q.toLowerCase();
+  let a=ENT_TEMPLATES.filter(t=>{
+    if(emktState.cat!=='all'&&emktState.cat!=='featured'&&emktState.cat!=='recent'&&t.cat!==emktState.cat) return false;
+    if(emktState.cat==='featured'&&!t.featured) return false;
+    if(emktState.cx!=='all'&&t.cx!==emktState.cx) return false;
+    if(q&&!(t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||_catName(t.cat).toLowerCase().includes(q))) return false;
+    return true;
+  });
+  if(emktState.cat==='recent') a=a.slice(0,6);
+  if(emktState.sort==='popular') a=a.slice().sort((x,y)=>(+String(y.tenants).replace(/,/g,''))-(+String(x.tenants).replace(/,/g,'')));
+  else if(emktState.sort==='az') a=a.slice().sort((x,y)=>x.name.localeCompare(y.name));
+  return a;
+}
+function openEntityMarketplaceModal(){
+  emktState.cat='all'; emktState.q=''; emktState.cx='all'; emktState.preview=null;
+  $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Entity marketplace">
+    <div class="mkt-modal-head"><div><div class="modal-title">Entity marketplace</div><div class="mkt-modal-sub">Browse a proven reference entity from the AIMS OS catalog, or start your own.</div></div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+    <div class="mkt-modal-body" id="emktBody"></div>
+    <div class="mkt-modal-foot" id="emktFoot"></div>
+  </div>`;
+  $('modalScrim').classList.add('open');
+  _dsfRerender=_renderEmktBody;
+  _renderEmktBody();
+}
+function _renderEmktBody(){
+  const body=$('emktBody'), foot=$('emktFoot'); if(!body) return;
+  if(emktState.preview){
+    const t=ENT_TEMPLATES.find(x=>x.id===emktState.preview);
+    body.innerHTML=_emktPreviewHTML(t);
+    foot.innerHTML=`<button class="btn" onclick="emktBack()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Back to catalog</button><span class="tbar-spring"></span><span class="mkt-foot-lbl">Adds a Draft entity you can edit</span><button class="btn btn-primary" onclick="_entTplUse('${t.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg> Use this entity</button>`;
+    body.scrollTop=0; return;
+  }
+  body.innerHTML=_emktChooserHTML();
+  foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
+    <button class="btn" onclick="navigate('entities/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="navigate('entities/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+}
+function emktPreview(id){ emktState.preview=id; _renderEmktBody(); }
+function emktBack(){ emktState.preview=null; _renderEmktBody(); }
+function _emktChooserHTML(){
+  const featured=ENT_TEMPLATES.filter(t=>t.featured);
+  const all=_emktFiltered();
+  const showFeatured=emktState.cat==='all'&&!emktState.q&&emktState.cx==='all';
+  const total=ENT_TEMPLATES.length;
+  const catCount=id=> id==='all'?total : id==='featured'?featured.length : id==='recent'?Math.min(6,total) : ENT_TEMPLATES.filter(t=>t.cat===id).length;
+  const IC_ALL='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>';
+  const IC_STAR='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 13.5l.8-4.2L2 6.4l4.2-.5L8 2Z"/></svg>';
+  const IC_CLOCK='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.2" stroke-linecap="round"/></svg>';
+  const IC_CAT='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h6"/></svg>';
+  const railItem=(id,name,ic)=>`<button class="mkt-cat ${emktState.cat===id?'on':''}" onclick="emktCat('${id}')"><span class="mkt-cat-ic">${ic}</span><span class="mkt-cat-n">${escapeHtml(name)}</span><span class="mkt-cat-c">${catCount(id)}</span></button>`;
+  const cxOpts=[{label:'Any complexity',v:'all'},{label:'Simple',v:'Simple'},{label:'Intermediate',v:'Intermediate'},{label:'Advanced',v:'Advanced'}];
+  const sortOpts=[{label:'Most popular',v:'popular'},{label:'A–Z',v:'az'}];
+  const cxLabel=(cxOpts.find(o=>o.v===emktState.cx)||{}).label;
+  const sortLabel=(sortOpts.find(o=>o.v===emktState.sort)||{}).label;
+  return `<div class="mkt-layout">
+    <aside class="mkt-rail">
+      ${railItem('all','All categories',IC_ALL)}${railItem('featured','Featured',IC_STAR)}${railItem('recent','Recently added',IC_CLOCK)}
+      <div class="mkt-rail-label">Categories</div>
+      ${TPL_CATS.map(c=>railItem(c.id,c.name,IC_CAT)).join('')}
+    </aside>
+    <div class="mkt-main">
+      <div class="mkt-toolbar">
+        <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="emktSearch" type="text" placeholder="Search the catalog…" value="${escapeHtml(emktState.q)}" oninput="emktSearch(this.value)" autocomplete="off"></label>
+        ${dsfDrop('emktCx','Complexity', emktState.cx!=='all'?{label:cxLabel,onremove:"emktSet('cx','all')"}:null, cxOpts.map(o=>({label:o.label,selected:emktState.cx===o.v,onclick:`dsfPickSingle();emktSet('cx','${o.v}')`})))}
+        ${dsfDrop('emktSort','Sort: '+sortLabel, null, sortOpts.map(o=>({label:o.label,selected:emktState.sort===o.v,onclick:`dsfPickSingle();emktSet('sort','${o.v}')`})))}
+      </div>
+      ${showFeatured?`<div class="mkt-sec-h"><span class="mkt-sec-t">Featured by AIMS OS</span><span class="mkt-sec-sub">Curated reference entities to model a domain fast</span></div>
+        <div class="mkt-featured">${featured.map(_entTplFeaturedCard).join('')}</div>`:''}
+      <div class="mkt-sec-h"><span class="mkt-sec-t">${showFeatured?'All entities':(emktState.cat==='all'?'All entities':_catName(emktState.cat)+' entities')}</span><span class="mkt-sec-sub">${all.length} entit${all.length===1?'y':'ies'}</span></div>
+      ${all.length? `<div class="mkt-grid">${all.map(_entTplCard).join('')}</div>` : `<div class="empty" style="margin-top:0"><div class="empty-t">No entities match</div>Try a different search or category.</div>`}
+    </div>
+  </div>`;
+}
+function _entStatsHTML(t){ return `<div class="tpl-stats"><span>${_TSI_TBL}${t.t} tables</span><span>${_TSI.r}${t.r} relations</span><span>${_TSI.c}${t.c} components</span></div>`; }
+function _entTplFeaturedCard(t){
+  return `<div class="tpl-card tpl-card-f" onclick="emktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap"><span class="tpl-featured-badge"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>${_tplThumb(t.id.length+3)}</div>
+    <div class="tpl-body">
+      <div class="tpl-cat"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span></div>
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_entStatsHTML(t)}
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span><span class="tpl-view">View entity <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>
+    </div>
+  </div>`;
+}
+function _entTplCard(t){
+  return `<div class="tpl-card" onclick="emktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap tpl-thumb-sm"><span class="tpl-cat-chip tpl-chip-abs">${escapeHtml(_catName(t.cat))}</span>${t.badge?`<span class="tpl-badge ${t.badge==='New'?'is-new':''}">${t.badge==='New'?'+ New':'⚡ '+t.badge}</span>`:''}${_tplThumb(t.id.length+t.t)}</div>
+    <div class="tpl-body">
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_entStatsHTML(t)}
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span></div>
+    </div>
+  </div>`;
+}
+function _emktPreviewHTML(t){
+  const tbls=[t.name,t.name+' detail',t.name+' link',t.name+' history'].slice(0,t.t);
+  return `<div class="mktp">
+    <div class="mktp-hero">${_tplThumb(t.id.length+t.t)}</div>
+    <div class="mktp-info">
+      <div class="mktp-chips"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span>${t.featured?`<span class="tpl-featured-badge" style="position:static"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>`:''}<span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span></div>
+      <div class="mktp-name">${escapeHtml(t.name)}</div>
+      <div class="mktp-desc">${escapeHtml(t.desc)}</div>
+      <div class="mktp-stats">
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.t}</span><span class="mktp-stat-l">Tables</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.r}</span><span class="mktp-stat-l">Relations</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.c}</span><span class="mktp-stat-l">Components</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.tenants}</span><span class="mktp-stat-l">Tenants</span></div>
+      </div>
+      <div class="mktp-lbl">Included tables</div>
+      <div class="mktp-ents">${tbls.map(x=>`<span class="mktp-ent">${_TSI_TBL}${escapeHtml(x)}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function _entTplUse(id){
+  const t=ENT_TEMPLATES.find(x=>x.id===id); if(!t) return;
+  const u=_entNewId(t.name);
+  const tables=Array.from({length:t.t},(_,i)=>({id:u+(i?'_t'+i:''), alias:t.name+(i?' '+['detail','link','history'][i-1]:''), role:i?'Secondary':'Primary', cols:i?5:9, rows:'0'}));
+  ENTITIES.unshift({ id:u, name:t.name, model:MODELS[0].id, domain:'Customer-facing', status:'Draft', updated:'just now', owner:'sb', collab:[], external:0, records:'0', tags:[t.cat], desc:t.desc, tables, rels:[], cperms:[], cprivs:[], ceps:[] });
+  toast('Added “'+t.name+'” from template','ok');
+  navigate('entities/'+u);
+}
+function _entNewId(name){ let base=_slug(name),u=base,k=2; while(ENTITIES.find(e=>e.id===u)) u=base+'_'+(k++); return u; }
+
+/* ── Entity — from scratch ── */
+let efsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', tags:[], owner:'sb' };
+function _efsReset(){ efsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', tags:[], owner:'sb' }; }
+function efsSet(k,v){ efsState[k]=v; if(k==='display'&&!efsState.nameEdited) efsState.name=_slug(v); _efsSync(); }
+function efsName(v){ efsState.name=_slug(v); efsState.nameEdited=true; _efsSync(); }
+function _efsSync(){
+  const nm=$('efsName'); if(nm && document.activeElement!==nm) nm.value=efsState.name;
+  const ok=efsState.display.trim()&&efsState.desc.trim();
+  const btn=$('efsCreateBtn'); if(btn) btn.disabled=!ok;
+  const hint=$('efsHint'); if(hint){ hint.textContent=ok?'Ready to create':'Complete the required fields to continue'; hint.className='fs-foot-hint'+(ok?' ok':''); }
+  const cc=$('efsDescCount'); if(cc){ cc.textContent=efsState.desc.length+' / 60'; cc.classList.toggle('over',efsState.desc.length>60); }
+}
+function efsTagAdd(v){ v=(v||'').trim(); if(v&&!efsState.tags.includes(v)){ efsState.tags.push(v); renderEntFromScratch(); } }
+function efsTagDel(v){ efsState.tags=efsState.tags.filter(t=>t!==v); renderEntFromScratch(); }
+function efsSuggestTags(){ ['core','customer-360'].forEach(t=>{ if(!efsState.tags.includes(t)) efsState.tags.push(t); }); renderEntFromScratch(); toast('Suggested tags added','ok'); }
+function efsHelpDesc(){ const ta=$('efsDesc'); const txt='The canonical record for this domain, with its attributes, lifecycle status and the relationships it owns.'; efsState.desc=txt; if(ta) ta.value=txt; _efsSync(); toast('Draft description generated','ok'); }
+function efsCreate(){
+  const name=efsState.display.trim(); if(!name){ toast('Enter a display name'); return; }
+  if(!efsState.desc.trim()){ toast('Add a description'); return; }
+  const u=_entNewId(efsState.name||name);
+  ENTITIES.unshift({ id:u, name, model:MODELS[0].id, domain:efsState.cat||'Custom', status:'Draft', updated:'just now', owner:efsState.owner, collab:[], external:0, records:'0', tags:efsState.tags.slice(), desc:efsState.desc.trim(), tables:[], rels:[], cperms:[], cprivs:[], ceps:[] });
+  toast('“'+name+'” created','ok');
+  navigate('entities/'+u);
+}
+function renderEntFromScratch(){
+  const cats=['Customer-facing','Financial','Internal','Reference'];
+  $('content').innerHTML=`
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:'New entity',href:'#/entities/new'},{label:'From scratch'}])}
+    <div class="fs-wrap">
+      <h1 class="page-h1">Create a new entity from scratch</h1>
+      <p class="mkt-sub">Define the basic information. You’ll add tables and columns in the next step.</p>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Identity</div><div class="fs-sec-d">The minimum needed to create the entity.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Display name <span class="fs-req">*</span></label><input class="fs-in" id="efsDisplay" placeholder="Contact" value="${escapeHtml(efsState.display)}" oninput="efsSet('display',this.value)" autocomplete="off"><div class="fs-help">Human-readable name shown across the app.</div></div>
+          <div class="fs-field"><label class="fs-l">Name <span class="fs-req">*</span></label><div class="fs-name-in"><span class="fs-name-pre">entity.</span><input class="fs-in fs-mono" id="efsName" placeholder="contact" value="${escapeHtml(efsState.name)}" oninput="efsName(this.value)" autocomplete="off"></div><div class="fs-help">Internal identifier · snake_case · unique in tenant.</div></div>
+        </div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Description <span class="fs-req">*</span></label><button class="fs-ai-link" onclick="efsHelpDesc()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Help me write this</button></div>
+          <textarea class="fs-ta" id="efsDesc" placeholder="The person-level record behind every relationship — roles, communication preferences and consent…" oninput="efsSet('desc',this.value)">${escapeHtml(efsState.desc)}</textarea>
+          <div class="fs-ta-foot"><span class="fs-help">Feeds the catalog and agent context. Be specific about what’s included.</span><span class="md-count ${efsState.desc.length>60?'over':''}" id="efsDescCount">${efsState.desc.length} / 60</span></div>
+        </div>
+      </section>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Organization</div><div class="fs-sec-d">Helps classify, discover and govern the entity. All optional except owner.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Domain</label><select class="fs-in fs-sel" onchange="efsSet('cat',this.value)"><option value="" ${efsState.cat?'':'selected'} disabled hidden>Select a domain</option>${cats.map(c=>`<option ${efsState.cat===c?'selected':''}>${c}</option>`).join('')}</select><div class="fs-help">Business domain for this entity.</div></div>
+          <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Tags</label><button class="fs-ai-link" onclick="efsSuggestTags()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Suggest tags</button></div><div class="fs-tagbox">${efsState.tags.map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="efsTagDel('${escapeHtml(t)}')" aria-label="Remove">×</button></span>`).join('')}<input class="md-tag-in" placeholder="Add tags…" onkeydown="if(event.key==='Enter'){event.preventDefault();efsTagAdd(this.value);this.value='';}"></div><div class="fs-help">Free-form labels for classification.</div></div>
+        </div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Owner <span class="fs-req">*</span></label><div class="fs-owner">${av(P(efsState.owner),'sm')}<span class="fs-owner-n">${escapeHtml(P(efsState.owner).n)}</span><span class="fs-you">You</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;color:var(--t3)"><path d="M4 6l4 4 4-4"/></svg></div><div class="fs-help">Responsible person or team. Defaults to you.</div></div>
+          <div class="fs-field"><label class="fs-l">Stewards</label><button class="md-add-steward" onclick="toast('Add stewards')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add stewards</button><div class="fs-help">People who review quality and approve changes.</div></div>
+        </div>
+      </section>
+      <div class="fs-foot">
+        <button class="btn" onclick="navigate('entities/new')">Cancel</button>
+        <span class="tbar-spring"></span>
+        <span class="fs-foot-hint" id="efsHint">${efsState.display.trim()&&efsState.desc.trim()?'Ready to create':'Complete the required fields to continue'}</span>
+        <button class="btn btn-primary" id="efsCreateBtn" ${efsState.display.trim()&&efsState.desc.trim()?'':'disabled'} onclick="efsCreate()">Create entity <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+    </div>`;
+}
+
+/* ── Entity — AI assist ── */
+const ENT_AI_PROPOSAL={ name:'Custom Entity', slug:'custom_entity',
+  desc:'A starting structure for your entity — a primary table with its detail and link tables, key columns and the relationships it owns. We’ll refine it as you describe more.',
+  tables:[{n:'Custom',c:9},{n:'Custom detail',c:6},{n:'Custom link',c:4}], rel:4 };
+const ENT_AI_QUESTIONS=[
+  {q:'Hi! Let’s design an entity. In a sentence — what real-world thing does it represent?'},
+  {q:'What are the most important attributes you’ll store on it, and who owns those?'},
+  {q:'Does it need supporting tables — like a detail, history or link table?', chips:['Yes','Just the main one']},
+  {q:'Last one — which other entities does it relate to?', chips:['A few','Not sure yet']},
+];
+let entAiState={ step:0, msgs:[], phase:'asking', build:0 };
+function _entAiReset(){ entAiState={ step:0, phase:'asking', build:0, msgs:[{who:'ai', t:ENT_AI_QUESTIONS[0].q, chips:ENT_AI_QUESTIONS[0].chips}] }; }
+function entAiSend(v){
+  v=(v||'').trim(); if(!v||entAiState.phase!=='asking') return;
+  entAiState.msgs.push({who:'me',t:v}); entAiState.step++;
+  if(entAiState.step<ENT_AI_QUESTIONS.length){ const nq=ENT_AI_QUESTIONS[entAiState.step]; entAiState.msgs.push({who:'ai',t:nq.q,chips:nq.chips}); renderEntAIAssist(); }
+  else { entAiState.msgs.push({who:'ai',t:'Perfect — I have enough. Building your entity now…'}); entAiState.phase='building'; entAiState.build=0; renderEntAIAssist(); setTimeout(_entAiBuildTick,500); }
+}
+function entAiChip(v){ entAiSend(v); }
+function _entAiBuildTick(){
+  entAiState.build++;
+  const prev=$('entAiPrev'); if(prev) prev.innerHTML=_entAiPrevHTML();
+  if(entAiState.build<AI_BUILD_STEPS.length){ setTimeout(_entAiBuildTick,650); }
+  else { setTimeout(()=>{ entAiState.phase='ready'; entAiState.msgs.push({who:'ai',t:'Done! Here’s your proposed entity on the right — tell me what to adjust, or accept and create.'}); renderEntAIAssist(); },750); }
+}
+function entAiStartOver(){ _entAiReset(); renderEntAIAssist(); toast('Started over'); }
+function entAiCreate(){
+  if(entAiState.phase!=='ready'){ toast('Answer a few questions first — your entity is still being designed'); return; }
+  const u=_entNewId(ENT_AI_PROPOSAL.name);
+  const tables=ENT_AI_PROPOSAL.tables.map((t,i)=>({id:u+(i?'_t'+i:''), alias:t.n, role:i?'Secondary':'Primary', cols:t.c, rows:'0'}));
+  ENTITIES.unshift({ id:u, name:ENT_AI_PROPOSAL.name, model:MODELS[0].id, domain:'Custom', status:'Draft', updated:'just now', owner:'sb', collab:[], external:0, records:'0', tags:['ai-generated'], desc:ENT_AI_PROPOSAL.desc, tables, rels:[], cperms:[], cprivs:[], ceps:[] });
+  toast('“'+ENT_AI_PROPOSAL.name+'” created with AI','ok');
+  navigate('entities/'+u);
+}
+function renderEntAIAssist(){
+  if(!entAiState.msgs.length) _entAiReset();
+  const asking=entAiState.phase==='asking', building=entAiState.phase==='building', ready=entAiState.phase==='ready';
+  const last=entAiState.msgs[entAiState.msgs.length-1];
+  const bubbles=entAiState.msgs.map(m=> m.who==='ai'
+    ? `<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai">${escapeHtml(m.t)}${m.chips&&asking&&m===last?`<div class="ai-chips">${m.chips.map(c=>`<button class="ai-chip" onclick="entAiChip('${escapeHtml(c)}')">${escapeHtml(c)}</button>`).join('')}</div>`:''}</div></div>`
+    : `<div class="ai-row ai-row-me"><div class="ai-bub ai-bub-me">${escapeHtml(m.t)}</div></div>`
+  ).join('');
+  const typing=building?`<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai ai-typing"><span></span><span></span><span></span></div></div>`:'';
+  $('content').innerHTML=`
+    <div class="ai-head-row">${_crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:'New entity',href:'#/entities/new'},{label:'AI Assist'}])}<span class="ai-head-tag">${_AI_SPARK}Designing your entity with AI</span></div>
+    <div class="ai-layout">
+      <div class="ai-pane ai-chat-pane">
+        <div class="ai-chat" id="entAiChat">${bubbles}${typing}</div>
+        <div class="ai-input"><input id="entAiInput" type="text" placeholder="${ready?'Ask for changes, or accept the proposal…':building?'Building your entity…':'Type your answer…'}" ${building?'disabled':''} onkeydown="if(event.key==='Enter'){entAiSend(this.value);this.value='';}" autocomplete="off"><button class="ai-send" ${building?'disabled':''} onclick="var i=$('entAiInput');entAiSend(i.value);i.value='';" aria-label="Send"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h10M8 4l4 4-4 4"/></svg></button></div>
+      </div>
+      <div class="ai-pane ai-prev-pane" id="entAiPrev">${_entAiPrevHTML()}</div>
+    </div>
+    <div class="ai-foot">
+      <button class="btn" onclick="navigate('entities/new')">Cancel</button>
+      <span class="tbar-spring"></span>
+      <button class="ai-foot-link" onclick="entAiStartOver()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a5 5 0 1 1 1.5 3.5M3 8V5M3 8h3"/></svg> Start over</button>
+      <span class="ai-foot-or">${ready?'Or accept the current proposal':'Answer the questions to generate an entity'}</span>
+      <button class="btn btn-primary" ${ready?'':'disabled'} onclick="entAiCreate()">Accept and create <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></button>
+    </div>`;
+  setTimeout(()=>{const c=$('entAiChat'); if(c)c.scrollTop=c.scrollHeight;},0);
+}
+function _entAiPrevHTML(){
+  if(entAiState.phase==='building') return _entAiPrevBuilding();
+  if(entAiState.phase==='ready') return _entAiPrevReady();
+  return `<div class="ai-prev-empty"><div class="ai-prev-empty-ic"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5.5-1.4Z"/></svg></div><div class="ai-prev-empty-t">Your entity will take shape here</div><div class="ai-prev-empty-d">Answer a few questions on the left and I’ll propose an entity — its tables, key columns and relationships — that you can refine and create.</div></div>`;
+}
+function _entAiPrevBuilding(){
+  const n=AI_BUILD_STEPS.length;
+  const STEPS=['Analyzing your answers','Proposing tables','Wiring relationships','Adding key columns','Finalizing preview'];
+  const steps=STEPS.map((s,i)=>{ const done=i<entAiState.build-1; const active=i===entAiState.build-1;
+    return `<div class="ai-build-step ${done?'done':''} ${active?'active':''}"><span class="ai-build-dot">${done?_AI_CHK:active?'<span class="ai-spin"></span>':''}</span><span class="ai-build-lbl">${escapeHtml(s)}</span></div>`; }).join('');
+  const pct=Math.round(Math.min(entAiState.build,n)/n*100);
+  const skelNodes=Array.from({length:4},(_,i)=>`<div class="ai-skel-node" style="left:${10+i*22}%; top:${30+(i%2?32:0)}%"></div>`).join('');
+  const skelRows=Array.from({length:3},()=>`<div class="ai-skel-row"></div>`).join('');
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">Building your entity</div><code class="md-code">entity.custom_entity</code></div><span class="ai-prev-tag ai-tag-building"><span class="ai-spin ai-spin-sm"></span> Generating…</span></div>
+    <div class="ai-build-bar"><span style="width:${pct}%"></span></div>
+    <div class="ai-build-steps">${steps}</div>
+    <div class="ai-skel-diag">${skelNodes}</div>
+    <div class="ai-skel-rows">${skelRows}</div>`;
+}
+function _entAiPrevReady(){
+  const p=ENT_AI_PROPOSAL;
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">${escapeHtml(p.name)}</div><code class="md-code">entity.${escapeHtml(p.slug)}</code></div><span class="ai-prev-tag">● Preview · not saved yet</span></div>
+    <p class="ai-prev-desc">${escapeHtml(p.desc)}</p>
+    ${_aiDiagram({ents:p.tables})}
+    <div class="ai-prev-counts">${p.tables.length} tables · ${p.rel} relations</div>
+    <div class="ai-prev-lbl">Tables</div>
+    <div class="ai-ent-list">${p.tables.map(t=>`<div class="ai-ent"><span class="ai-ent-ic">${_TSI_TBL}</span><span class="ai-ent-n">${escapeHtml(t.n)}</span><span class="ai-ent-c">${t.c} cols <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>`).join('')}</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEW TABLE FLOW — marketplace pop-up · from scratch · AI assist
+   (mirrors Models/Entities; column-schema thumbnails + columns/relations/indexes)
+   ══════════════════════════════════════════════════════════════ */
+const _TBL_IX='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="10.5" r="2.5"/><path d="M7.3 8.7L13 3M11 3h2v2"/></svg>';
+const _COL_IC='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M2.5 6.5h11"/></svg>';
+const TBL_TEMPLATES=[
+  {id:'t_account',name:'account',display:'Account',cat:'sales',cx:'Advanced',cols:18,rel:6,idx:4,tenants:'1,180',featured:true,badge:null,desc:'Canonical company record — legal entity, industry, hierarchy and the relationship owner.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'industry',t:'enum'},{n:'owner_id',t:'FK'},{n:'parent_id',t:'FK'}]},
+  {id:'t_campaign',name:'campaign',display:'Campaign',cat:'marketing',cx:'Intermediate',cols:14,rel:4,idx:3,tenants:'610',featured:true,badge:null,desc:'Multi-channel campaigns with budgets, segments and attribution windows tying spend to pipeline.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'channel',t:'enum'},{n:'budget',t:'numeric'},{n:'start_at',t:'timestamptz'}]},
+  {id:'t_invoice',name:'invoice',display:'Invoice',cat:'finance',cx:'Advanced',cols:17,rel:6,idx:4,tenants:'760',featured:true,badge:null,desc:'Billing documents with tax, payment status and dunning. The core of the revenue-recognition flow.',schema:[{n:'id',t:'PK'},{n:'account_id',t:'FK'},{n:'total',t:'numeric'},{n:'status',t:'enum'},{n:'due_date',t:'date'}]},
+  {id:'t_employee',name:'employee',display:'Employee',cat:'hr',cx:'Intermediate',cols:16,rel:5,idx:3,tenants:'910',featured:true,badge:null,desc:'Workforce record — position, reporting line, tenure and compensation with the org chart.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'manager_id',t:'FK'},{n:'dept_id',t:'FK'},{n:'hired_at',t:'date'}]},
+  {id:'t_contact',name:'contact',display:'Contact',cat:'sales',cx:'Intermediate',cols:14,rel:4,idx:3,tenants:'1,020',featured:true,badge:'Most used',desc:'People at accounts — roles, communication preferences and consent flags.',schema:[{n:'id',t:'PK'},{n:'account_id',t:'FK'},{n:'email',t:'text'},{n:'role',t:'enum'},{n:'consent',t:'bool'}]},
+  {id:'t_shipment',name:'shipment',display:'Shipment',cat:'logistics',cx:'Advanced',cols:16,rel:5,idx:4,tenants:'620',featured:true,badge:null,desc:'Shipments with route, carrier and status connected to the fulfillment layer.',schema:[{n:'id',t:'PK'},{n:'order_id',t:'FK'},{n:'carrier',t:'text'},{n:'status',t:'enum'},{n:'eta',t:'timestamptz'}]},
+  {id:'t_opportunity',name:'opportunity',display:'Opportunity',cat:'sales',cx:'Advanced',cols:15,rel:5,idx:3,tenants:'940',badge:'Most used',desc:'Deals moving through the pipeline — stage, amount, forecast category and close plan with history.',schema:[{n:'id',t:'PK'},{n:'account_id',t:'FK'},{n:'stage',t:'enum'},{n:'amount',t:'numeric'},{n:'close_date',t:'date'}]},
+  {id:'t_support_case',name:'support_case',display:'Support Case',cat:'service',cx:'Intermediate',cols:16,rel:5,idx:4,tenants:'840',badge:'Most used',desc:'Support cases with queues, SLAs, priority and resolution timeline across the full lifecycle.',schema:[{n:'id',t:'PK'},{n:'account_id',t:'FK'},{n:'priority',t:'enum'},{n:'status',t:'enum'},{n:'assignee_id',t:'FK'}]},
+  {id:'t_product',name:'product',display:'Product',cat:'inventory',cx:'Intermediate',cols:16,rel:4,idx:3,tenants:'780',badge:'Most used',desc:'Sellable products with variants, categories, pricing tiers and media for the storefront.',schema:[{n:'sku',t:'text'},{n:'name',t:'text'},{n:'category_id',t:'FK'},{n:'price',t:'numeric'},{n:'active',t:'bool'}]},
+  {id:'t_invoice_line',name:'invoice_line',display:'Invoice Line',cat:'finance',cx:'Simple',cols:10,rel:3,idx:2,tenants:'700',badge:null,desc:'Line-level rows belonging to a parent invoice — one row per product, quantity and tax code.',schema:[{n:'id',t:'PK'},{n:'invoice_id',t:'FK'},{n:'product_id',t:'FK'},{n:'qty',t:'int'},{n:'amount',t:'numeric'}]},
+  {id:'t_audit_log',name:'audit_log',display:'Audit Log',cat:'itsec',cx:'Simple',cols:10,rel:1,idx:5,tenants:'640',badge:'Most used',desc:'System-wide record of user and service actions for security review. Captures actor, action and target.',schema:[{n:'id',t:'PK'},{n:'actor_id',t:'FK'},{n:'action',t:'text'},{n:'target',t:'text'},{n:'ip',t:'text'}]},
+  {id:'t_task',name:'task',display:'Task',cat:'projects',cx:'Intermediate',cols:13,rel:4,idx:3,tenants:'580',badge:'New',desc:'Unit of work under a project — assignee, status, effort and dependency links.',schema:[{n:'id',t:'PK'},{n:'project_id',t:'FK'},{n:'assignee_id',t:'FK'},{n:'status',t:'enum'},{n:'effort',t:'int'}]},
+  {id:'t_segment',name:'segment',display:'Segment',cat:'marketing',cx:'Simple',cols:9,rel:3,idx:2,tenants:'505',badge:null,desc:'Audience segments with membership rules and the contacts that qualify at any point in time.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'rule',t:'text'},{n:'size',t:'int'},{n:'updated_at',t:'timestamptz'}]},
+  {id:'t_interaction',name:'interaction',display:'Interaction',cat:'service',cx:'Intermediate',cols:12,rel:4,idx:3,tenants:'430',badge:null,desc:'Every touchpoint with a customer — calls, emails, chats — linked to a case or account.',schema:[{n:'id',t:'PK'},{n:'case_id',t:'FK'},{n:'channel',t:'enum'},{n:'occurred_at',t:'timestamptz'},{n:'note',t:'text'}]},
+  {id:'t_payment',name:'payment',display:'Payment',cat:'finance',cx:'Intermediate',cols:12,rel:4,idx:3,tenants:'520',badge:null,desc:'Captured payments and their reconciliation state against invoices and the ledger.',schema:[{n:'id',t:'PK'},{n:'invoice_id',t:'FK'},{n:'amount',t:'numeric'},{n:'method',t:'enum'},{n:'paid_at',t:'timestamptz'}]},
+  {id:'t_candidate',name:'candidate',display:'Candidate',cat:'hr',cx:'Intermediate',cols:13,rel:4,idx:3,tenants:'360',badge:null,desc:'Applicants moving through requisitions, interviews and offers with scorecards.',schema:[{n:'id',t:'PK'},{n:'req_id',t:'FK'},{n:'name',t:'text'},{n:'stage',t:'enum'},{n:'score',t:'numeric'}]},
+  {id:'t_sku',name:'sku',display:'SKU',cat:'inventory',cx:'Intermediate',cols:12,rel:5,idx:3,tenants:'340',badge:null,desc:'Stock-keeping units with attributes, units of measure and lot tracking.',schema:[{n:'sku',t:'PK'},{n:'product_id',t:'FK'},{n:'uom',t:'enum'},{n:'lot',t:'text'},{n:'on_hand',t:'int'}]},
+  {id:'t_shipment_event',name:'shipment_event',display:'Shipment Event',cat:'logistics',cx:'Simple',cols:9,rel:3,idx:2,tenants:'260',badge:null,desc:'Timestamped tracking events for a shipment — scans, exceptions and delivery.',schema:[{n:'id',t:'PK'},{n:'shipment_id',t:'FK'},{n:'type',t:'enum'},{n:'at',t:'timestamptz'},{n:'location',t:'text'}]},
+  {id:'t_policy',name:'policy',display:'Policy',cat:'compliance',cx:'Advanced',cols:13,rel:4,idx:3,tenants:'190',badge:null,desc:'Compliance policies with controls, evidence and the audit findings linked to each.',schema:[{n:'id',t:'PK'},{n:'framework',t:'enum'},{n:'owner_id',t:'FK'},{n:'status',t:'enum'},{n:'reviewed_at',t:'date'}]},
+  {id:'t_consent_record',name:'consent_record',display:'Consent Record',cat:'compliance',cx:'Simple',cols:9,rel:2,idx:2,tenants:'175',badge:null,desc:'Per-subject consent grants and withdrawals with lawful basis and timestamp.',schema:[{n:'id',t:'PK'},{n:'contact_id',t:'FK'},{n:'purpose',t:'enum'},{n:'granted',t:'bool'},{n:'at',t:'timestamptz'}]},
+  {id:'t_asset',name:'asset',display:'Asset',cat:'operations',cx:'Intermediate',cols:12,rel:4,idx:3,tenants:'165',badge:null,desc:'Physical and digital assets with custody, depreciation and maintenance history.',schema:[{n:'id',t:'PK'},{n:'owner_id',t:'FK'},{n:'category',t:'enum'},{n:'value',t:'numeric'},{n:'acquired_at',t:'date'}]},
+  {id:'t_work_order',name:'work_order',display:'Work Order',cat:'operations',cx:'Intermediate',cols:12,rel:4,idx:3,tenants:'150',badge:null,desc:'Field or maintenance work orders with assignee, asset and parts consumed.',schema:[{n:'id',t:'PK'},{n:'asset_id',t:'FK'},{n:'assignee_id',t:'FK'},{n:'status',t:'enum'},{n:'due',t:'date'}]},
+  {id:'t_user_account',name:'user_account',display:'User Account',cat:'itsec',cx:'Advanced',cols:14,rel:5,idx:4,tenants:'150',badge:null,desc:'Identity records with credentials, sessions and the entitlements granted per system.',schema:[{n:'id',t:'PK'},{n:'email',t:'text'},{n:'status',t:'enum'},{n:'role_id',t:'FK'},{n:'last_login',t:'timestamptz'}]},
+  {id:'t_role',name:'role',display:'Role',cat:'itsec',cx:'Intermediate',cols:10,rel:4,idx:3,tenants:'138',badge:null,desc:'Permission bundles assigned to users, with segregation-of-duties checks.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'scope',t:'enum'},{n:'system',t:'text'},{n:'active',t:'bool'}]},
+  {id:'t_project',name:'project',display:'Project',cat:'projects',cx:'Intermediate',cols:14,rel:4,idx:3,tenants:'560',badge:null,desc:'Projects with tasks, milestones, dependencies and resource allocation plus time tracking.',schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'owner_id',t:'FK'},{n:'status',t:'enum'},{n:'due_date',t:'date'}]},
+];
+function _tsrCls(t){ return t==='PK'?'pk':t==='FK'?'fk':'ty'; }
+function _tblSchemaThumb(name,schema){
+  return `<div class="tbl-schema"><div class="tbl-schema-head">${_COL_IC}<code>${escapeHtml(name)}</code></div>${schema.map(c=>`<div class="tsr"><span class="tsr-n ${c.t==='PK'||c.t==='FK'?'key':''}">${escapeHtml(c.n)}</span><span class="tsr-t ${_tsrCls(c.t)}">${escapeHtml(c.t)}</span></div>`).join('')}</div>`;
+}
+function _tblStats(t){ return `<div class="tpl-stats"><span>${_COL_IC}${t.cols} columns</span><span>${_TSI.r}${t.rel} relations</span><span>${_TBL_IX}${t.idx} indexes</span></div>`; }
+
+/* ── Table marketplace MODAL ── */
+let tmktState={ cat:'all', q:'', cx:'all', sort:'popular', preview:null };
+function tmktCat(id){ tmktState.cat=id; _renderTmktBody(); }
+function tmktSet(k,v){ tmktState[k]=v; _renderTmktBody(); }
+function tmktSearch(v){ tmktState.q=v; _renderTmktBody(); setTimeout(()=>{const el=$('tmktSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function _tmktFiltered(){
+  const q=tmktState.q.toLowerCase();
+  let a=TBL_TEMPLATES.filter(t=>{
+    if(tmktState.cat!=='all'&&tmktState.cat!=='featured'&&tmktState.cat!=='recent'&&t.cat!==tmktState.cat) return false;
+    if(tmktState.cat==='featured'&&!t.featured) return false;
+    if(tmktState.cx!=='all'&&t.cx!==tmktState.cx) return false;
+    if(q&&!(t.display.toLowerCase().includes(q)||t.name.includes(q)||t.desc.toLowerCase().includes(q)||_catName(t.cat).toLowerCase().includes(q))) return false;
+    return true;
+  });
+  if(tmktState.cat==='recent') a=a.slice(0,6);
+  if(tmktState.sort==='popular') a=a.slice().sort((x,y)=>(+String(y.tenants).replace(/,/g,''))-(+String(x.tenants).replace(/,/g,'')));
+  else if(tmktState.sort==='az') a=a.slice().sort((x,y)=>x.display.localeCompare(y.display));
+  return a;
+}
+function openTableMarketplaceModal(){
+  tmktState.cat='all'; tmktState.q=''; tmktState.cx='all'; tmktState.preview=null;
+  $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Table marketplace">
+    <div class="mkt-modal-head"><div><div class="modal-title">Table marketplace</div><div class="mkt-modal-sub">Browse a proven reference table from the AIMS OS catalog, or start your own.</div></div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+    <div class="mkt-modal-body" id="tmktBody"></div>
+    <div class="mkt-modal-foot" id="tmktFoot"></div>
+  </div>`;
+  $('modalScrim').classList.add('open');
+  _dsfRerender=_renderTmktBody;
+  _renderTmktBody();
+}
+function _renderTmktBody(){
+  const body=$('tmktBody'), foot=$('tmktFoot'); if(!body) return;
+  if(tmktState.preview){
+    const t=TBL_TEMPLATES.find(x=>x.id===tmktState.preview);
+    body.innerHTML=_tmktPreviewHTML(t);
+    foot.innerHTML=`<button class="btn" onclick="tmktBack()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Back to catalog</button><span class="tbar-spring"></span><span class="mkt-foot-lbl">Adds a Draft table you can edit</span><button class="btn btn-primary" onclick="_tblTplUse('${t.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg> Use this table</button>`;
+    body.scrollTop=0; return;
+  }
+  body.innerHTML=_tmktChooserHTML();
+  foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
+    <button class="btn" onclick="navigate('tables/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="navigate('tables/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+}
+function tmktPreview(id){ tmktState.preview=id; _renderTmktBody(); }
+function tmktBack(){ tmktState.preview=null; _renderTmktBody(); }
+function _tmktChooserHTML(){
+  const featured=TBL_TEMPLATES.filter(t=>t.featured);
+  const filtered=_tmktFiltered();
+  const showFeatured=tmktState.cat==='all'&&!tmktState.q&&tmktState.cx==='all';
+  const all=showFeatured?filtered.filter(t=>!t.featured):filtered;
+  const total=TBL_TEMPLATES.length;
+  const catCount=id=> id==='all'?total : id==='featured'?featured.length : id==='recent'?Math.min(6,total) : TBL_TEMPLATES.filter(t=>t.cat===id).length;
+  const IC_ALL='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>';
+  const IC_STAR='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 13.5l.8-4.2L2 6.4l4.2-.5L8 2Z"/></svg>';
+  const IC_CLOCK='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.2" stroke-linecap="round"/></svg>';
+  const IC_CAT='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h6"/></svg>';
+  const railItem=(id,name,ic)=>`<button class="mkt-cat ${tmktState.cat===id?'on':''}" onclick="tmktCat('${id}')"><span class="mkt-cat-ic">${ic}</span><span class="mkt-cat-n">${escapeHtml(name)}</span><span class="mkt-cat-c">${catCount(id)}</span></button>`;
+  const cxOpts=[{label:'Any complexity',v:'all'},{label:'Simple',v:'Simple'},{label:'Intermediate',v:'Intermediate'},{label:'Advanced',v:'Advanced'}];
+  const sortOpts=[{label:'Most popular',v:'popular'},{label:'A–Z',v:'az'}];
+  const cxLabel=(cxOpts.find(o=>o.v===tmktState.cx)||{}).label;
+  const sortLabel=(sortOpts.find(o=>o.v===tmktState.sort)||{}).label;
+  return `<div class="mkt-layout">
+    <aside class="mkt-rail">
+      ${railItem('all','All categories',IC_ALL)}${railItem('featured','Featured',IC_STAR)}${railItem('recent','Recently added',IC_CLOCK)}
+      <div class="mkt-rail-label">Categories</div>
+      ${TPL_CATS.map(c=>railItem(c.id,c.name,IC_CAT)).join('')}
+    </aside>
+    <div class="mkt-main">
+      <div class="mkt-toolbar">
+        <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="tmktSearch" type="text" placeholder="Search the catalog…" value="${escapeHtml(tmktState.q)}" oninput="tmktSearch(this.value)" autocomplete="off"></label>
+        ${dsfDrop('tmktCx','Complexity', tmktState.cx!=='all'?{label:cxLabel,onremove:"tmktSet('cx','all')"}:null, cxOpts.map(o=>({label:o.label,selected:tmktState.cx===o.v,onclick:`dsfPickSingle();tmktSet('cx','${o.v}')`})))}
+        ${dsfDrop('tmktSort','Sort: '+sortLabel, null, sortOpts.map(o=>({label:o.label,selected:tmktState.sort===o.v,onclick:`dsfPickSingle();tmktSet('sort','${o.v}')`})))}
+      </div>
+      ${showFeatured?`<div class="mkt-sec-h"><span class="mkt-sec-t">Featured by AIMS OS</span><span class="mkt-sec-sub">Curated reference tables to get productive fast</span></div>
+        <div class="mkt-featured">${featured.map(_tblTplFeaturedCard).join('')}</div>`:''}
+      <div class="mkt-sec-h"><span class="mkt-sec-t">${showFeatured?'All tables':(tmktState.cat==='all'?'All tables':_catName(tmktState.cat)+' tables')}</span><span class="mkt-sec-sub">${all.length} table${all.length===1?'':'s'}</span></div>
+      ${all.length? `<div class="mkt-grid">${all.map(_tblTplCard).join('')}</div>` : `<div class="empty" style="margin-top:0"><div class="empty-t">No tables match</div>Try a different search or category.</div>`}
+    </div>
+  </div>`;
+}
+function _tblTplFeaturedCard(t){
+  return `<div class="tpl-card tpl-card-f" onclick="tmktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap has-schema"><span class="tpl-featured-badge"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>${_tblSchemaThumb(t.name,t.schema)}</div>
+    <div class="tpl-body">
+      <div class="tpl-cat"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span></div>
+      <div class="tpl-name">${escapeHtml(t.display)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_tblStats(t)}
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span><span class="tpl-view">View table <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>
+    </div>
+  </div>`;
+}
+function _tblTplCard(t){
+  return `<div class="tpl-card" onclick="tmktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap tpl-thumb-sm has-schema"><span class="tpl-cat-chip tpl-chip-abs">${escapeHtml(_catName(t.cat))}</span>${t.badge?`<span class="tpl-badge ${t.badge==='New'?'is-new':''}">${t.badge==='New'?'+ New':'⚡ '+t.badge}</span>`:''}${_tblSchemaThumb(t.name,t.schema)}</div>
+    <div class="tpl-body">
+      <div class="tpl-name">${escapeHtml(t.display)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_tblStats(t)}
+      <div class="tpl-foot"><span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span></div>
+    </div>
+  </div>`;
+}
+function _tmktPreviewHTML(t){
+  return `<div class="mktp">
+    <div class="mktp-hero has-schema">${_tblSchemaThumb(t.name,t.schema)}</div>
+    <div class="mktp-info">
+      <div class="mktp-chips"><span class="tpl-cat-chip">${escapeHtml(_catName(t.cat))}</span>${t.featured?`<span class="tpl-featured-badge" style="position:static"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>`:''}<span class="cx-badge cx-${_cxTone(t.cx)}">${t.cx}</span><code class="md-code">table.${escapeHtml(t.name)}</code></div>
+      <div class="mktp-name">${escapeHtml(t.display)}</div>
+      <div class="mktp-desc">${escapeHtml(t.desc)}</div>
+      <div class="mktp-stats">
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.cols}</span><span class="mktp-stat-l">Columns</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.rel}</span><span class="mktp-stat-l">Relations</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.idx}</span><span class="mktp-stat-l">Indexes</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.tenants}</span><span class="mktp-stat-l">Tenants</span></div>
+      </div>
+      <div class="mktp-lbl">Key columns</div>
+      <div class="mktp-ents">${t.schema.map(c=>`<span class="mktp-ent">${_COL_IC}${escapeHtml(c.n)} <span class="tsr-t ${_tsrCls(c.t)}" style="margin-left:2px">${c.t}</span></span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+const _TBL_TYPE={PK:'UUID',FK:'Reference',text:'Text',enum:'Enum',numeric:'Number',int:'Number',date:'Date',timestamptz:'Timestamp',bool:'Boolean'};
+function _schemaToCols(schema){ return schema.map(c=>({ n:c.n, d:c.n.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase()), t:_TBL_TYPE[c.t]||'Text', pk:c.t==='PK'?1:0, uq:0, req:(c.t==='PK'||c.t==='FK')?1:0, idx:(c.t==='PK'||c.t==='FK')?1:0, sens:'', desc:'' })); }
+function _tblNewId(nm){ let base=_slug(nm),u=base,k=2; while(TABLES.find(t=>t.id===u)) u=base+'_'+(k++); return u; }
+function _tblAnchorEntity(){ return ENTITIES[0]||{id:'',name:'—',model:(MODELS[0]||{}).id}; }
+function _tblTplUse(id){
+  const t=TBL_TEMPLATES.find(x=>x.id===id); if(!t) return;
+  const e=_tblAnchorEntity(); const u=_tblNewId(t.name);
+  TABLES.unshift({ id:u, alias:t.display, model:e.model||(MODELS[0]||{}).id, entity:e.name, entityId:e.id, role:'Primary', status:'Draft', updated:'just now', owner:'sb', collab:[], rows:'0', tags:[t.cat], desc:t.desc, cols:_schemaToCols(t.schema), rels:[] });
+  toast('Added “'+t.display+'” from template','ok');
+  navigate('tables/'+u);
+}
+
+/* ── Table — from scratch ── */
+let tfsState={ display:'', name:'', nameEdited:false, desc:'', tags:[], owner:'sb' };
+function _tfsReset(){ tfsState={ display:'', name:'', nameEdited:false, desc:'', tags:[], owner:'sb' }; }
+function tfsSet(k,v){ tfsState[k]=v; if(k==='display'&&!tfsState.nameEdited) tfsState.name=_slug(v); _tfsSync(); }
+function tfsName(v){ tfsState.name=_slug(v); tfsState.nameEdited=true; _tfsSync(); }
+function _tfsSync(){
+  const nm=$('tfsName'); if(nm && document.activeElement!==nm) nm.value=tfsState.name;
+  const ok=tfsState.display.trim()&&tfsState.desc.trim();
+  const btn=$('tfsCreateBtn'); if(btn) btn.disabled=!ok;
+  const hint=$('tfsHint'); if(hint){ hint.textContent=ok?'Ready to create':'Complete the required fields to continue'; hint.className='fs-foot-hint'+(ok?' ok':''); }
+  const cc=$('tfsDescCount'); if(cc){ cc.textContent=tfsState.desc.length+' / 60'; cc.classList.toggle('over',tfsState.desc.length>60); }
+}
+function tfsTagAdd(v){ v=(v||'').trim(); if(v&&!tfsState.tags.includes(v)){ tfsState.tags.push(v); renderTblFromScratch(); } }
+function tfsTagDel(v){ tfsState.tags=tfsState.tags.filter(t=>t!==v); renderTblFromScratch(); }
+function tfsSuggestTags(){ ['core'].forEach(t=>{ if(!tfsState.tags.includes(t)) tfsState.tags.push(t); }); renderTblFromScratch(); toast('Suggested tags added','ok'); }
+function tfsHelpDesc(){ const ta=$('tfsDesc'); const txt='Stores the canonical rows for this concept — key columns, types and the foreign keys it joins on.'; tfsState.desc=txt; if(ta) ta.value=txt; _tfsSync(); toast('Draft description generated','ok'); }
+function tfsCreate(){
+  const name=tfsState.display.trim(); if(!name){ toast('Enter a display name'); return; }
+  if(!tfsState.desc.trim()){ toast('Add a description'); return; }
+  const e=_tblAnchorEntity(); const u=_tblNewId(tfsState.name||name);
+  TABLES.unshift({ id:u, alias:name, model:e.model||(MODELS[0]||{}).id, entity:e.name, entityId:e.id, role:'Primary', status:'Draft', updated:'just now', owner:tfsState.owner, collab:[], rows:'0', tags:tfsState.tags.slice(), desc:tfsState.desc.trim(), cols:[], rels:[] });
+  toast('“'+name+'” created','ok');
+  navigate('tables/'+u);
+}
+function renderTblFromScratch(){
+  $('content').innerHTML=`
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Tables',href:'#/tables'},{label:'New table',href:'#/tables/new'},{label:'From scratch'}])}
+    <div class="fs-wrap">
+      <h1 class="page-h1">Create a new table from scratch</h1>
+      <p class="mkt-sub">Define the basic information. You’ll add columns and structure in the next step.</p>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Identity</div><div class="fs-sec-d">The minimum needed to create the table.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Display name <span class="fs-req">*</span></label><input class="fs-in" id="tfsDisplay" placeholder="Contact Email" value="${escapeHtml(tfsState.display)}" oninput="tfsSet('display',this.value)" autocomplete="off"><div class="fs-help">Human-readable name shown across the app.</div></div>
+          <div class="fs-field"><label class="fs-l">Name <span class="fs-req">*</span></label><div class="fs-name-in"><span class="fs-name-pre">table.</span><input class="fs-in fs-mono" id="tfsName" placeholder="contact_email" value="${escapeHtml(tfsState.name)}" oninput="tfsName(this.value)" autocomplete="off"></div><div class="fs-help">Internal identifier · snake_case · unique in tenant.</div></div>
+        </div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Description <span class="fs-req">*</span></label><button class="fs-ai-link" onclick="tfsHelpDesc()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Help me write this</button></div>
+          <textarea class="fs-ta" id="tfsDesc" placeholder="Stores email addresses associated with customer contacts, including verification status and communication preferences…" oninput="tfsSet('desc',this.value)">${escapeHtml(tfsState.desc)}</textarea>
+          <div class="fs-ta-foot"><span class="fs-help">Feeds the catalog and agent context. Be specific about what’s included and excluded.</span><span class="md-count ${tfsState.desc.length>60?'over':''}" id="tfsDescCount">${tfsState.desc.length} / 60</span></div>
+        </div>
+      </section>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Organization</div><div class="fs-sec-d">Helps classify, discover and govern the table. All optional except owner.</div></div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Tags</label><button class="fs-ai-link" onclick="tfsSuggestTags()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Suggest tags</button></div><div class="fs-tagbox">${tfsState.tags.map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="tfsTagDel('${escapeHtml(t)}')" aria-label="Remove">×</button></span>`).join('')}<input class="md-tag-in" placeholder="Add tags…" onkeydown="if(event.key==='Enter'){event.preventDefault();tfsTagAdd(this.value);this.value='';}"></div><div class="fs-help">Free-form labels for classification.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Owner <span class="fs-req">*</span></label><div class="fs-owner">${av(P(tfsState.owner),'sm')}<span class="fs-owner-n">${escapeHtml(P(tfsState.owner).n)}</span><span class="fs-you">You</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;color:var(--t3)"><path d="M4 6l4 4 4-4"/></svg></div><div class="fs-help">Responsible person or team. Defaults to you.</div></div>
+          <div class="fs-field"><label class="fs-l">Stewards</label><button class="md-add-steward" onclick="toast('Add stewards')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add stewards</button><div class="fs-help">People who review quality and approve changes.</div></div>
+        </div>
+        <div class="fs-field"><label class="fs-l">Icon</label><div class="fs-icon-sel" onclick="toast('Icon picker')"><span class="fs-icon-tile">${_COL_IC}</span><span class="fs-icon-name">ViewTable</span><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="margin-left:6px;color:var(--t3)"><circle cx="8" cy="8" r="2"/><path d="M8 2.4v1.6M8 12v1.6M13.6 8H12M4 8H2.4M11.9 4.1l-1.1 1.1M5.2 10.8l-1.1 1.1M11.9 11.9l-1.1-1.1M5.2 5.2L4.1 4.1"/></svg></div><div class="fs-help">Visual identifier for the table.</div></div>
+      </section>
+      <div class="fs-foot">
+        <button class="btn" onclick="navigate('tables/new')">Cancel</button>
+        <span class="tbar-spring"></span>
+        <span class="fs-foot-hint" id="tfsHint">${tfsState.display.trim()&&tfsState.desc.trim()?'Ready to create':'Complete the required fields to continue'}</span>
+        <button class="btn btn-primary" id="tfsCreateBtn" ${tfsState.display.trim()&&tfsState.desc.trim()?'':'disabled'} onclick="tfsCreate()">Create table <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+    </div>`;
+}
+
+/* ── Table — AI assist ── */
+const TBL_AI_PROPOSAL={ display:'Custom Table', slug:'custom_table',
+  desc:'A starting table for your concept — primary key, the core columns with their types, and the foreign keys it joins on. We’ll refine columns as you describe more.',
+  schema:[{n:'id',t:'PK'},{n:'name',t:'text'},{n:'status',t:'enum'},{n:'owner_id',t:'FK'},{n:'created_at',t:'timestamptz'}], rel:3, idx:2 };
+const TBL_AI_QUESTIONS=[
+  {q:'Hi! Let’s design a table. In a sentence — what does one row represent?'},
+  {q:'What are the key columns you’ll store, and which one is the natural identifier?'},
+  {q:'Does it reference other tables (foreign keys)?', chips:['Yes','Not sure yet']},
+  {q:'Last one — any columns you’ll filter or look up often (for indexes)?', chips:['Yes','No']},
+];
+let tblAiState={ step:0, msgs:[], phase:'asking', build:0 };
+function _tblAiReset(){ tblAiState={ step:0, phase:'asking', build:0, msgs:[{who:'ai', t:TBL_AI_QUESTIONS[0].q, chips:TBL_AI_QUESTIONS[0].chips}] }; }
+function tblAiSend(v){
+  v=(v||'').trim(); if(!v||tblAiState.phase!=='asking') return;
+  tblAiState.msgs.push({who:'me',t:v}); tblAiState.step++;
+  if(tblAiState.step<TBL_AI_QUESTIONS.length){ const nq=TBL_AI_QUESTIONS[tblAiState.step]; tblAiState.msgs.push({who:'ai',t:nq.q,chips:nq.chips}); renderTblAIAssist(); }
+  else { tblAiState.msgs.push({who:'ai',t:'Perfect — I have enough. Building your table now…'}); tblAiState.phase='building'; tblAiState.build=0; renderTblAIAssist(); setTimeout(_tblAiBuildTick,500); }
+}
+function tblAiChip(v){ tblAiSend(v); }
+function _tblAiBuildTick(){
+  tblAiState.build++;
+  const prev=$('tblAiPrev'); if(prev) prev.innerHTML=_tblAiPrevHTML();
+  if(tblAiState.build<AI_BUILD_STEPS.length){ setTimeout(_tblAiBuildTick,650); }
+  else { setTimeout(()=>{ tblAiState.phase='ready'; tblAiState.msgs.push({who:'ai',t:'Done! Here’s your proposed table on the right — tell me what to adjust, or accept and create.'}); renderTblAIAssist(); },750); }
+}
+function tblAiStartOver(){ _tblAiReset(); renderTblAIAssist(); toast('Started over'); }
+function tblAiCreate(){
+  if(tblAiState.phase!=='ready'){ toast('Answer a few questions first — your table is still being designed'); return; }
+  const e=_tblAnchorEntity(); const u=_tblNewId(TBL_AI_PROPOSAL.slug);
+  TABLES.unshift({ id:u, alias:TBL_AI_PROPOSAL.display, model:e.model||(MODELS[0]||{}).id, entity:e.name, entityId:e.id, role:'Primary', status:'Draft', updated:'just now', owner:'sb', collab:[], rows:'0', tags:['ai-generated'], desc:TBL_AI_PROPOSAL.desc, cols:_schemaToCols(TBL_AI_PROPOSAL.schema), rels:[] });
+  toast('“'+TBL_AI_PROPOSAL.display+'” created with AI','ok');
+  navigate('tables/'+u);
+}
+function renderTblAIAssist(){
+  if(!tblAiState.msgs.length) _tblAiReset();
+  const asking=tblAiState.phase==='asking', building=tblAiState.phase==='building', ready=tblAiState.phase==='ready';
+  const last=tblAiState.msgs[tblAiState.msgs.length-1];
+  const bubbles=tblAiState.msgs.map(m=> m.who==='ai'
+    ? `<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai">${escapeHtml(m.t)}${m.chips&&asking&&m===last?`<div class="ai-chips">${m.chips.map(c=>`<button class="ai-chip" onclick="tblAiChip('${escapeHtml(c)}')">${escapeHtml(c)}</button>`).join('')}</div>`:''}</div></div>`
+    : `<div class="ai-row ai-row-me"><div class="ai-bub ai-bub-me">${escapeHtml(m.t)}</div></div>`
+  ).join('');
+  const typing=building?`<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai ai-typing"><span></span><span></span><span></span></div></div>`:'';
+  $('content').innerHTML=`
+    <div class="ai-head-row">${_crumbs([{label:'Models',href:'#/models'},{label:'Tables',href:'#/tables'},{label:'New table',href:'#/tables/new'},{label:'AI Assist'}])}<span class="ai-head-tag">${_AI_SPARK}Designing your table with AI</span></div>
+    <div class="ai-layout">
+      <div class="ai-pane ai-chat-pane">
+        <div class="ai-chat" id="tblAiChat">${bubbles}${typing}</div>
+        <div class="ai-input"><input id="tblAiInput" type="text" placeholder="${ready?'Ask for changes, or accept the proposal…':building?'Building your table…':'Type your answer…'}" ${building?'disabled':''} onkeydown="if(event.key==='Enter'){tblAiSend(this.value);this.value='';}" autocomplete="off"><button class="ai-send" ${building?'disabled':''} onclick="var i=$('tblAiInput');tblAiSend(i.value);i.value='';" aria-label="Send"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h10M8 4l4 4-4 4"/></svg></button></div>
+      </div>
+      <div class="ai-pane ai-prev-pane" id="tblAiPrev">${_tblAiPrevHTML()}</div>
+    </div>
+    <div class="ai-foot">
+      <button class="btn" onclick="navigate('tables/new')">Cancel</button>
+      <span class="tbar-spring"></span>
+      <button class="ai-foot-link" onclick="tblAiStartOver()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a5 5 0 1 1 1.5 3.5M3 8V5M3 8h3"/></svg> Start over</button>
+      <span class="ai-foot-or">${ready?'Or accept the current proposal':'Answer the questions to generate a table'}</span>
+      <button class="btn btn-primary" ${ready?'':'disabled'} onclick="tblAiCreate()">Accept and create <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></button>
+    </div>`;
+  setTimeout(()=>{const c=$('tblAiChat'); if(c)c.scrollTop=c.scrollHeight;},0);
+}
+function _tblAiPrevHTML(){
+  if(tblAiState.phase==='building') return _tblAiPrevBuilding();
+  if(tblAiState.phase==='ready') return _tblAiPrevReady();
+  return `<div class="ai-prev-empty"><div class="ai-prev-empty-ic"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5.5-1.4Z"/></svg></div><div class="ai-prev-empty-t">Your table will take shape here</div><div class="ai-prev-empty-d">Answer a few questions on the left and I’ll propose a table — its columns, types and indexes — that you can refine and create.</div></div>`;
+}
+function _tblAiPrevBuilding(){
+  const n=AI_BUILD_STEPS.length;
+  const STEPS=['Analyzing your answers','Proposing columns','Setting types','Adding indexes','Finalizing preview'];
+  const steps=STEPS.map((s,i)=>{ const done=i<tblAiState.build-1; const active=i===tblAiState.build-1;
+    return `<div class="ai-build-step ${done?'done':''} ${active?'active':''}"><span class="ai-build-dot">${done?_AI_CHK:active?'<span class="ai-spin"></span>':''}</span><span class="ai-build-lbl">${escapeHtml(s)}</span></div>`; }).join('');
+  const pct=Math.round(Math.min(tblAiState.build,n)/n*100);
+  const skelRows=Array.from({length:5},()=>`<div class="ai-skel-row" style="height:26px"></div>`).join('');
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">Building your table</div><code class="md-code">table.custom_table</code></div><span class="ai-prev-tag ai-tag-building"><span class="ai-spin ai-spin-sm"></span> Generating…</span></div>
+    <div class="ai-build-bar"><span style="width:${pct}%"></span></div>
+    <div class="ai-build-steps">${steps}</div>
+    <div class="ai-skel-rows">${skelRows}</div>`;
+}
+function _tblAiPrevReady(){
+  const p=TBL_AI_PROPOSAL;
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">${escapeHtml(p.display)}</div><code class="md-code">table.${escapeHtml(p.slug)}</code></div><span class="ai-prev-tag">● Preview · not saved yet</span></div>
+    <p class="ai-prev-desc">${escapeHtml(p.desc)}</p>
+    <div class="tblai-schema">${p.schema.map(c=>`<div class="tblai-col"><span class="tblai-col-n ${c.t==='PK'||c.t==='FK'?'key':''}">${escapeHtml(c.n)}</span><span class="tsr-t ${_tsrCls(c.t)}">${c.t}</span></div>`).join('')}</div>
+    <div class="ai-prev-counts">${p.schema.length} columns · ${p.rel} relations · ${p.idx} indexes</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEW REFERENCE DATA FLOW — marketplace pop-up · from scratch · AI assist
+   (value-list thumbnails · values/fields/references · Origin filter)
+   ══════════════════════════════════════════════════════════════ */
+const REF_CATS=[
+  {id:'business',name:'Business'},{id:'finance',name:'Finance'},{id:'geo',name:'Geography'},
+  {id:'compliance',name:'Compliance'},{id:'operations',name:'Operations'},{id:'marketing',name:'Marketing'},
+  {id:'service',name:'Service'},{id:'hr',name:'HR'},{id:'product',name:'Product'},{id:'logistics',name:'Logistics'},
+];
+function _refCatName(id){ const c=REF_CATS.find(x=>x.id===id); return c?c.name:id; }
+const _VAL_IC='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg>';
+const REF_TEMPLATES=[
+  {id:'r_currencies',name:'Currencies',cat:'finance',origin:'From catalog',values:168,fields:5,refs:31,tenants:'1,240',featured:true,badge:null,desc:'ISO 4217 currency codes and symbols. Sourced from the platform catalog and shared across billing and GL.',sample:[{code:'USD',label:'US Dollar'},{code:'EUR',label:'Euro'},{code:'GBP',label:'British Pound'},{code:'JPY',label:'Japanese Yen'}]},
+  {id:'r_countries',name:'Countries',cat:'geo',origin:'From catalog',values:249,fields:6,refs:44,tenants:'1,190',featured:true,badge:null,desc:'ISO 3166 country codes. The canonical geography list used across accounts, addresses and shipping.',sample:[{code:'US',label:'United States'},{code:'CA',label:'Canada'},{code:'GB',label:'United Kingdom'},{code:'DE',label:'Germany'}]},
+  {id:'r_account_types',name:'Account types',cat:'business',origin:'Custom',values:8,fields:4,refs:22,tenants:'980',featured:true,badge:null,desc:'Account classifications — prospect, customer, partner, reseller. Drives CRM routing and entitlements.',sample:[{code:'prospect',label:'Prospect'},{code:'customer',label:'Customer'},{code:'partner',label:'Partner'},{code:'reseller',label:'Reseller'}]},
+  {id:'r_case_priorities',name:'Case priorities',cat:'service',origin:'Custom',values:5,fields:5,refs:13,tenants:'870',featured:true,badge:'Most used',desc:'Support case priority levels with SLA response targets. Referenced by cases, routing and SLA policies.',sample:[{code:'urgent',label:'Urgent'},{code:'high',label:'High'},{code:'medium',label:'Medium'},{code:'low',label:'Low'}]},
+  {id:'r_lead_sources',name:'Lead sources',cat:'business',origin:'Custom',values:6,fields:4,refs:9,tenants:'760',featured:true,badge:null,desc:'Where leads come from — campaigns, referrals, events, inbound. Feeds attribution and routing.',sample:[{code:'inbound',label:'Inbound'},{code:'referral',label:'Referral'},{code:'event',label:'Event'},{code:'paid',label:'Paid ads'}]},
+  {id:'r_compliance_frameworks',name:'Compliance frameworks',cat:'compliance',origin:'Custom',values:5,fields:5,refs:6,tenants:'420',featured:true,badge:null,desc:'SOC 2, GDPR, HIPAA and ISO frameworks with control mappings for the risk office.',sample:[{code:'soc2',label:'SOC 2'},{code:'gdpr',label:'GDPR'},{code:'hipaa',label:'HIPAA'},{code:'iso27001',label:'ISO 27001'}]},
+  {id:'r_case_statuses',name:'Case statuses',cat:'service',origin:'Custom',values:6,fields:4,refs:11,tenants:'840',badge:'Most used',desc:'Lifecycle statuses for support cases — new, open, pending, resolved, closed.',sample:[{code:'new',label:'New'},{code:'open',label:'Open'},{code:'pending',label:'Pending'},{code:'resolved',label:'Resolved'}]},
+  {id:'r_payment_methods',name:'Payment methods',cat:'finance',origin:'Custom',values:7,fields:4,refs:14,tenants:'690',badge:'Most used',desc:'Accepted payment methods with processor mappings — card, ACH, wire, wallet.',sample:[{code:'card',label:'Card'},{code:'ach',label:'ACH'},{code:'wire',label:'Wire'},{code:'wallet',label:'Wallet'}]},
+  {id:'r_industries',name:'Industries',cat:'business',origin:'From catalog',values:24,fields:4,refs:18,tenants:'640',badge:null,desc:'NAICS-based industry classifications applied to accounts for segmentation and reporting.',sample:[{code:'tech',label:'Technology'},{code:'finance',label:'Financial Services'},{code:'health',label:'Healthcare'},{code:'retail',label:'Retail'}]},
+  {id:'r_shipment_statuses',name:'Shipment statuses',cat:'logistics',origin:'Custom',values:6,fields:4,refs:9,tenants:'520',badge:null,desc:'Canonical shipment lifecycle statuses shared across logistics tables and the tracking UI.',sample:[{code:'label_created',label:'Label created'},{code:'in_transit',label:'In transit'},{code:'delivered',label:'Delivered'},{code:'exception',label:'Exception'}]},
+  {id:'r_consent_purposes',name:'Consent purposes',cat:'compliance',origin:'Custom',values:8,fields:5,refs:8,tenants:'480',badge:null,desc:'GDPR consent purposes and lawful bases behind every consent record and preference flag.',sample:[{code:'marketing_email',label:'Marketing email'},{code:'analytics',label:'Analytics'},{code:'profiling',label:'Profiling'},{code:'service_email',label:'Service email'}]},
+  {id:'r_campaign_channels',name:'Campaign channels',cat:'marketing',origin:'Custom',values:7,fields:4,refs:7,tenants:'430',badge:null,desc:'Marketing channels for campaign spend and attribution — email, social, search, events.',sample:[{code:'email',label:'Email'},{code:'social',label:'Social'},{code:'search',label:'Paid search'},{code:'event',label:'Events'}]},
+  {id:'r_units_of_measure',name:'Units of measure',cat:'product',origin:'From catalog',values:32,fields:5,refs:12,tenants:'410',badge:null,desc:'Standard units for products and inventory — each, kg, litre, metre, box, pallet.',sample:[{code:'ea',label:'Each'},{code:'kg',label:'Kilogram'},{code:'l',label:'Litre'},{code:'box',label:'Box'}]},
+  {id:'r_product_categories',name:'Product categories',cat:'product',origin:'Custom',values:14,fields:5,refs:15,tenants:'380',badge:null,desc:'The category tree for the product catalog with parent/child hierarchy and merchandising order.',sample:[{code:'apparel',label:'Apparel'},{code:'home',label:'Home & Living'},{code:'tech',label:'Electronics'},{code:'beauty',label:'Beauty'}]},
+  {id:'r_departments',name:'Departments',cat:'hr',origin:'Custom',values:12,fields:4,refs:10,tenants:'360',badge:null,desc:'Organizational departments used by the org chart, cost allocation and access policies.',sample:[{code:'sales',label:'Sales'},{code:'eng',label:'Engineering'},{code:'ops',label:'Operations'},{code:'finance',label:'Finance'}]},
+  {id:'r_employment_types',name:'Employment types',cat:'hr',origin:'Custom',values:5,fields:4,refs:6,tenants:'340',badge:null,desc:'Worker engagement types — full-time, part-time, contractor, intern — driving payroll and benefits.',sample:[{code:'ft',label:'Full-time'},{code:'pt',label:'Part-time'},{code:'contractor',label:'Contractor'},{code:'intern',label:'Intern'}]},
+  {id:'r_carriers',name:'Carriers',cat:'logistics',origin:'From catalog',values:38,fields:5,refs:8,tenants:'300',badge:null,desc:'Shipping carriers with service levels and tracking-URL templates for the fulfillment layer.',sample:[{code:'ups',label:'UPS'},{code:'fedex',label:'FedEx'},{code:'dhl',label:'DHL'},{code:'usps',label:'USPS'}]},
+  {id:'r_device_alert_levels',name:'Device alert levels',cat:'operations',origin:'Custom',values:4,fields:4,refs:5,tenants:'210',badge:null,desc:'Severity levels for device telemetry alerts, from info to emergency.',sample:[{code:'info',label:'Info'},{code:'warning',label:'Warning'},{code:'critical',label:'Critical'},{code:'emergency',label:'Emergency'}]},
+  {id:'r_asset_conditions',name:'Asset conditions',cat:'operations',origin:'Custom',values:5,fields:4,refs:6,tenants:'180',badge:null,desc:'Condition grades for assets used in depreciation and maintenance scheduling.',sample:[{code:'new',label:'New'},{code:'good',label:'Good'},{code:'fair',label:'Fair'},{code:'retired',label:'Retired'}]},
+  {id:'r_data_classifications',name:'Data classifications',cat:'compliance',origin:'From catalog',values:5,fields:5,refs:7,tenants:'165',badge:'New',desc:'Sensitivity labels — public, internal, confidential, restricted — driving masking and access rules.',sample:[{code:'public',label:'Public'},{code:'internal',label:'Internal'},{code:'confidential',label:'Confidential'},{code:'restricted',label:'Restricted'}]},
+];
+function _refValThumb(name,sample){
+  return `<div class="ref-vals"><div class="ref-vals-head">${_VAL_IC}<code>${escapeHtml(name)}</code></div>${sample.map(v=>`<div class="rvr"><span class="rvr-code">${escapeHtml(v.code)}</span><span class="rvr-label">${escapeHtml(v.label)}</span></div>`).join('')}</div>`;
+}
+function _refStats(t){ return `<div class="tpl-stats"><span>${_VAL_IC}${t.values} values</span><span>${_COL_IC}${t.fields} fields</span><span>${_TSI.r}${t.refs} references</span></div>`; }
+function _refOriginChip(o){ return `<span class="ref-origin ${o==='From catalog'?'catalog':''}">${escapeHtml(o)}</span>`; }
+
+/* ── Reference marketplace MODAL ── */
+let rmktState={ cat:'all', q:'', origin:'all', sort:'popular', preview:null };
+function rmktCat(id){ rmktState.cat=id; _renderRmktBody(); }
+function rmktSet(k,v){ rmktState[k]=v; _renderRmktBody(); }
+function rmktSearch(v){ rmktState.q=v; _renderRmktBody(); setTimeout(()=>{const el=$('rmktSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function _rmktFiltered(){
+  const q=rmktState.q.toLowerCase();
+  let a=REF_TEMPLATES.filter(t=>{
+    if(rmktState.cat!=='all'&&rmktState.cat!=='featured'&&rmktState.cat!=='recent'&&t.cat!==rmktState.cat) return false;
+    if(rmktState.cat==='featured'&&!t.featured) return false;
+    if(rmktState.origin!=='all'&&t.origin!==rmktState.origin) return false;
+    if(q&&!(t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||_refCatName(t.cat).toLowerCase().includes(q))) return false;
+    return true;
+  });
+  if(rmktState.cat==='recent') a=a.slice(0,6);
+  if(rmktState.sort==='popular') a=a.slice().sort((x,y)=>(+String(y.tenants).replace(/,/g,''))-(+String(x.tenants).replace(/,/g,'')));
+  else if(rmktState.sort==='az') a=a.slice().sort((x,y)=>x.name.localeCompare(y.name));
+  return a;
+}
+function openRefMarketplaceModal(){
+  rmktState.cat='all'; rmktState.q=''; rmktState.origin='all'; rmktState.preview=null;
+  $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Reference data marketplace">
+    <div class="mkt-modal-head"><div><div class="modal-title">Reference data marketplace</div><div class="mkt-modal-sub">Browse a proven reference list from the AIMS OS catalog, or start your own.</div></div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+    <div class="mkt-modal-body" id="rmktBody"></div>
+    <div class="mkt-modal-foot" id="rmktFoot"></div>
+  </div>`;
+  $('modalScrim').classList.add('open');
+  _dsfRerender=_renderRmktBody;
+  _renderRmktBody();
+}
+function _renderRmktBody(){
+  const body=$('rmktBody'), foot=$('rmktFoot'); if(!body) return;
+  if(rmktState.preview){
+    const t=REF_TEMPLATES.find(x=>x.id===rmktState.preview);
+    body.innerHTML=_rmktPreviewHTML(t);
+    foot.innerHTML=`<button class="btn" onclick="rmktBack()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg> Back to catalog</button><span class="tbar-spring"></span><span class="mkt-foot-lbl">Adds a Draft list you can edit</span><button class="btn btn-primary" onclick="_refTplUse('${t.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg> Use this list</button>`;
+    body.scrollTop=0; return;
+  }
+  body.innerHTML=_rmktChooserHTML();
+  foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
+    <button class="btn" onclick="navigate('reference/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="navigate('reference/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+}
+function rmktPreview(id){ rmktState.preview=id; _renderRmktBody(); }
+function rmktBack(){ rmktState.preview=null; _renderRmktBody(); }
+function _rmktChooserHTML(){
+  const featured=REF_TEMPLATES.filter(t=>t.featured);
+  const filtered=_rmktFiltered();
+  const showFeatured=rmktState.cat==='all'&&!rmktState.q&&rmktState.origin==='all';
+  const all=showFeatured?filtered.filter(t=>!t.featured):filtered;
+  const total=REF_TEMPLATES.length;
+  const catCount=id=> id==='all'?total : id==='featured'?featured.length : id==='recent'?Math.min(6,total) : REF_TEMPLATES.filter(t=>t.cat===id).length;
+  const IC_ALL='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>';
+  const IC_STAR='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.9 4.3 13.5l.8-4.2L2 6.4l4.2-.5L8 2Z"/></svg>';
+  const IC_CLOCK='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.2" stroke-linecap="round"/></svg>';
+  const IC_CAT='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h6"/></svg>';
+  const railItem=(id,name,ic)=>`<button class="mkt-cat ${rmktState.cat===id?'on':''}" onclick="rmktCat('${id}')"><span class="mkt-cat-ic">${ic}</span><span class="mkt-cat-n">${escapeHtml(name)}</span><span class="mkt-cat-c">${catCount(id)}</span></button>`;
+  const oOpts=[{label:'Any origin',v:'all'},{label:'Custom',v:'Custom'},{label:'From catalog',v:'From catalog'}];
+  const sortOpts=[{label:'Most popular',v:'popular'},{label:'A–Z',v:'az'}];
+  const oLabel=(oOpts.find(o=>o.v===rmktState.origin)||{}).label;
+  const sortLabel=(sortOpts.find(o=>o.v===rmktState.sort)||{}).label;
+  return `<div class="mkt-layout">
+    <aside class="mkt-rail">
+      ${railItem('all','All categories',IC_ALL)}${railItem('featured','Featured',IC_STAR)}${railItem('recent','Recently added',IC_CLOCK)}
+      <div class="mkt-rail-label">Categories</div>
+      ${REF_CATS.map(c=>railItem(c.id,c.name,IC_CAT)).join('')}
+    </aside>
+    <div class="mkt-main">
+      <div class="mkt-toolbar">
+        <label class="dsf-search"><svg class="dsf-search-ic" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="rmktSearch" type="text" placeholder="Search the catalog…" value="${escapeHtml(rmktState.q)}" oninput="rmktSearch(this.value)" autocomplete="off"></label>
+        ${dsfDrop('rmktOr','Origin', rmktState.origin!=='all'?{label:oLabel,onremove:"rmktSet('origin','all')"}:null, oOpts.map(o=>({label:o.label,selected:rmktState.origin===o.v,onclick:`dsfPickSingle();rmktSet('origin','${o.v}')`})))}
+        ${dsfDrop('rmktSort','Sort: '+sortLabel, null, sortOpts.map(o=>({label:o.label,selected:rmktState.sort===o.v,onclick:`dsfPickSingle();rmktSet('sort','${o.v}')`})))}
+      </div>
+      ${showFeatured?`<div class="mkt-sec-h"><span class="mkt-sec-t">Featured by AIMS OS</span><span class="mkt-sec-sub">Curated reference lists every tenant needs</span></div>
+        <div class="mkt-featured">${featured.map(_refTplFeaturedCard).join('')}</div>`:''}
+      <div class="mkt-sec-h"><span class="mkt-sec-t">${showFeatured?'All lists':(rmktState.cat==='all'?'All lists':_refCatName(rmktState.cat)+' lists')}</span><span class="mkt-sec-sub">${all.length} list${all.length===1?'':'s'}</span></div>
+      ${all.length? `<div class="mkt-grid">${all.map(_refTplCard).join('')}</div>` : `<div class="empty" style="margin-top:0"><div class="empty-t">No lists match</div>Try a different search or category.</div>`}
+    </div>
+  </div>`;
+}
+function _refTplFeaturedCard(t){
+  return `<div class="tpl-card tpl-card-f" onclick="rmktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap has-schema"><span class="tpl-featured-badge"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>${_refValThumb(t.name,t.sample)}</div>
+    <div class="tpl-body">
+      <div class="tpl-cat"><span class="tpl-cat-chip">${escapeHtml(_refCatName(t.cat))}</span></div>
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_refStats(t)}
+      <div class="tpl-foot">${_refOriginChip(t.origin)}<span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span><span class="tpl-view">View list <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></span></div>
+    </div>
+  </div>`;
+}
+function _refTplCard(t){
+  return `<div class="tpl-card" onclick="rmktPreview('${t.id}')">
+    <div class="tpl-thumb-wrap tpl-thumb-sm has-schema"><span class="tpl-cat-chip tpl-chip-abs">${escapeHtml(_refCatName(t.cat))}</span>${t.badge?`<span class="tpl-badge ${t.badge==='New'?'is-new':''}">${t.badge==='New'?'+ New':'⚡ '+t.badge}</span>`:''}${_refValThumb(t.name,t.sample)}</div>
+    <div class="tpl-body">
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-desc">${escapeHtml(t.desc)}</div>
+      ${_refStats(t)}
+      <div class="tpl-foot">${_refOriginChip(t.origin)}<span class="tpl-tenants">${_TSI.t}${t.tenants} tenants</span></div>
+    </div>
+  </div>`;
+}
+function _rmktPreviewHTML(t){
+  return `<div class="mktp">
+    <div class="mktp-hero has-schema">${_refValThumb(t.name,t.sample)}</div>
+    <div class="mktp-info">
+      <div class="mktp-chips"><span class="tpl-cat-chip">${escapeHtml(_refCatName(t.cat))}</span>${t.featured?`<span class="tpl-featured-badge" style="position:static"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 4.3 4.6.5-3.4 3.2.9 4.5L8 11.4 4 13.5l.9-4.5L1.5 5.8l4.6-.5L8 1Z"/></svg>Featured</span>`:''}${_refOriginChip(t.origin)}</div>
+      <div class="mktp-name">${escapeHtml(t.name)}</div>
+      <div class="mktp-desc">${escapeHtml(t.desc)}</div>
+      <div class="mktp-stats">
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.values}</span><span class="mktp-stat-l">Values</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.fields}</span><span class="mktp-stat-l">Fields</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.refs}</span><span class="mktp-stat-l">References</span></div>
+        <div class="mktp-stat"><span class="mktp-stat-v">${t.tenants}</span><span class="mktp-stat-l">Tenants</span></div>
+      </div>
+      <div class="mktp-lbl">Sample values</div>
+      <div class="mktp-ents">${t.sample.map(v=>`<span class="mktp-ent"><span class="rvr-code">${escapeHtml(v.code)}</span>${escapeHtml(v.label)}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function _refNewId(nm){ let base=_slug(nm),u=base,k=2; while(REFDATA.find(r=>r.id===u)) u=base+'_'+(k++); return u; }
+function _refTplUse(id){
+  const t=REF_TEMPLATES.find(x=>x.id===id); if(!t) return;
+  const u=_refNewId(t.name);
+  REFDATA.unshift({ id:u, name:t.name, category:_refCatName(t.cat), origin:t.origin, status:'Draft', updated:'just now', owner:'sb', collab:[], fields:t.fields, referencedBy:0, tags:[t.cat], desc:t.desc, usedBy:[], values:t.sample.map(v=>RV(v.code,v.label,'',true,'2024-01-01')) });
+  toast('Added “'+t.name+'” from template','ok');
+  navigate('reference/'+u);
+}
+
+/* ── Reference — from scratch ── */
+let rfsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', origin:'Custom', tags:[], owner:'sb' };
+function _rfsReset(){ rfsState={ display:'', name:'', nameEdited:false, desc:'', cat:'', origin:'Custom', tags:[], owner:'sb' }; }
+function rfsSet(k,v){ rfsState[k]=v; if(k==='display'&&!rfsState.nameEdited) rfsState.name=_slug(v); _rfsSync(); }
+function rfsName(v){ rfsState.name=_slug(v); rfsState.nameEdited=true; _rfsSync(); }
+function _rfsSync(){
+  const nm=$('rfsName'); if(nm && document.activeElement!==nm) nm.value=rfsState.name;
+  const ok=rfsState.display.trim()&&rfsState.desc.trim();
+  const btn=$('rfsCreateBtn'); if(btn) btn.disabled=!ok;
+  const hint=$('rfsHint'); if(hint){ hint.textContent=ok?'Ready to create':'Complete the required fields to continue'; hint.className='fs-foot-hint'+(ok?' ok':''); }
+  const cc=$('rfsDescCount'); if(cc){ cc.textContent=rfsState.desc.length+' / 60'; cc.classList.toggle('over',rfsState.desc.length>60); }
+}
+function rfsTagAdd(v){ v=(v||'').trim(); if(v&&!rfsState.tags.includes(v)){ rfsState.tags.push(v); renderRefFromScratch(); } }
+function rfsTagDel(v){ rfsState.tags=rfsState.tags.filter(t=>t!==v); renderRefFromScratch(); }
+function rfsSuggestTags(){ ['lookup'].forEach(t=>{ if(!rfsState.tags.includes(t)) rfsState.tags.push(t); }); renderRefFromScratch(); toast('Suggested tags added','ok'); }
+function rfsHelpDesc(){ const ta=$('rfsDesc'); const txt='A controlled vocabulary of codes and labels for this concept, referenced by columns across the model.'; rfsState.desc=txt; if(ta) ta.value=txt; _rfsSync(); toast('Draft description generated','ok'); }
+function rfsCreate(){
+  const name=rfsState.display.trim(); if(!name){ toast('Enter a display name'); return; }
+  if(!rfsState.desc.trim()){ toast('Add a description'); return; }
+  const u=_refNewId(rfsState.name||name);
+  REFDATA.unshift({ id:u, name, category:rfsState.cat||'Business', origin:rfsState.origin, status:'Draft', updated:'just now', owner:rfsState.owner, collab:[], fields:4, referencedBy:0, tags:rfsState.tags.slice(), desc:rfsState.desc.trim(), usedBy:[], values:[] });
+  toast('“'+name+'” created','ok');
+  navigate('reference/'+u);
+}
+function renderRefFromScratch(){
+  $('content').innerHTML=`
+    ${_crumbs([{label:'Models',href:'#/models'},{label:'Reference Data',href:'#/reference'},{label:'New list',href:'#/reference/new'},{label:'From scratch'}])}
+    <div class="fs-wrap">
+      <h1 class="page-h1">Create a new reference list from scratch</h1>
+      <p class="mkt-sub">Define the basic information. You’ll add values in the next step.</p>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Identity</div><div class="fs-sec-d">The minimum needed to create the list.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Display name <span class="fs-req">*</span></label><input class="fs-in" id="rfsDisplay" placeholder="Case priorities" value="${escapeHtml(rfsState.display)}" oninput="rfsSet('display',this.value)" autocomplete="off"><div class="fs-help">Human-readable name shown across the app.</div></div>
+          <div class="fs-field"><label class="fs-l">Name <span class="fs-req">*</span></label><div class="fs-name-in"><span class="fs-name-pre">reference.</span><input class="fs-in fs-mono" id="rfsName" placeholder="case_priorities" value="${escapeHtml(rfsState.name)}" oninput="rfsName(this.value)" autocomplete="off"></div><div class="fs-help">Internal identifier · snake_case · unique in tenant.</div></div>
+        </div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Description <span class="fs-req">*</span></label><button class="fs-ai-link" onclick="rfsHelpDesc()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Help me write this</button></div>
+          <textarea class="fs-ta" id="rfsDesc" placeholder="Support case priority levels with SLA response targets, referenced by cases and routing rules…" oninput="rfsSet('desc',this.value)">${escapeHtml(rfsState.desc)}</textarea>
+          <div class="fs-ta-foot"><span class="fs-help">Feeds the catalog and agent context. Be specific about what’s included.</span><span class="md-count ${rfsState.desc.length>60?'over':''}" id="rfsDescCount">${rfsState.desc.length} / 60</span></div>
+        </div>
+      </section>
+      <section class="fs-sec">
+        <div class="fs-sec-h"><div class="fs-sec-t">Organization</div><div class="fs-sec-d">Helps classify, discover and govern the list. All optional except owner.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Category</label><select class="fs-in fs-sel" onchange="rfsSet('cat',this.value)"><option value="" ${rfsState.cat?'':'selected'} disabled hidden>Select a category</option>${REF_CATS.map(c=>`<option ${rfsState.cat===c.name?'selected':''}>${c.name}</option>`).join('')}</select><div class="fs-help">Business domain for this list.</div></div>
+          <div class="fs-field"><label class="fs-l">Origin</label><select class="fs-in fs-sel" onchange="rfsSet('origin',this.value)"><option ${rfsState.origin==='Custom'?'selected':''}>Custom</option><option ${rfsState.origin==='From catalog'?'selected':''}>From catalog</option></select><div class="fs-help">Custom lists are tenant-owned; catalog lists sync from AIMS OS.</div></div>
+        </div>
+        <div class="fs-field"><div class="fs-l-row"><label class="fs-l">Tags</label><button class="fs-ai-link" onclick="rfsSuggestTags()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2l1.2 3.1L12.3 6 9.2 7.2 8 10.3 6.8 7.2 3.7 6l3.1-.9L8 2Z"/></svg>Suggest tags</button></div><div class="fs-tagbox">${rfsState.tags.map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="rfsTagDel('${escapeHtml(t)}')" aria-label="Remove">×</button></span>`).join('')}<input class="md-tag-in" placeholder="Add tags…" onkeydown="if(event.key==='Enter'){event.preventDefault();rfsTagAdd(this.value);this.value='';}"></div><div class="fs-help">Free-form labels for classification.</div></div>
+        <div class="fs-grid">
+          <div class="fs-field"><label class="fs-l">Owner <span class="fs-req">*</span></label><div class="fs-owner">${av(P(rfsState.owner),'sm')}<span class="fs-owner-n">${escapeHtml(P(rfsState.owner).n)}</span><span class="fs-you">You</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;color:var(--t3)"><path d="M4 6l4 4 4-4"/></svg></div><div class="fs-help">Responsible person or team. Defaults to you.</div></div>
+          <div class="fs-field"><label class="fs-l">Stewards</label><button class="md-add-steward" onclick="toast('Add stewards')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add stewards</button><div class="fs-help">People who review quality and approve changes.</div></div>
+        </div>
+      </section>
+      <div class="fs-foot">
+        <button class="btn" onclick="navigate('reference/new')">Cancel</button>
+        <span class="tbar-spring"></span>
+        <span class="fs-foot-hint" id="rfsHint">${rfsState.display.trim()&&rfsState.desc.trim()?'Ready to create':'Complete the required fields to continue'}</span>
+        <button class="btn btn-primary" id="rfsCreateBtn" ${rfsState.display.trim()&&rfsState.desc.trim()?'':'disabled'} onclick="rfsCreate()">Create list <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+    </div>`;
+}
+
+/* ── Reference — AI assist ── */
+const REF_AI_PROPOSAL={ name:'Custom List', slug:'custom_list',
+  desc:'A controlled vocabulary for your concept — codes, human labels and a default. We’ll refine the values as you describe more.',
+  values:[{code:'new',label:'New'},{code:'active',label:'Active'},{code:'paused',label:'Paused'},{code:'closed',label:'Closed'}], fields:4 };
+const REF_AI_QUESTIONS=[
+  {q:'Hi! Let’s build a reference list. In a sentence — what set of values does it hold?'},
+  {q:'What are the main values, and is there a natural default?'},
+  {q:'Should any values be marked inactive or deprecated over time?', chips:['Yes','No']},
+  {q:'Last one — will columns across the model reference this list?', chips:['Yes','Not sure yet']},
+];
+let refAiState={ step:0, msgs:[], phase:'asking', build:0 };
+function _refAiReset(){ refAiState={ step:0, phase:'asking', build:0, msgs:[{who:'ai', t:REF_AI_QUESTIONS[0].q, chips:REF_AI_QUESTIONS[0].chips}] }; }
+function refAiSend(v){
+  v=(v||'').trim(); if(!v||refAiState.phase!=='asking') return;
+  refAiState.msgs.push({who:'me',t:v}); refAiState.step++;
+  if(refAiState.step<REF_AI_QUESTIONS.length){ const nq=REF_AI_QUESTIONS[refAiState.step]; refAiState.msgs.push({who:'ai',t:nq.q,chips:nq.chips}); renderRefAIAssist(); }
+  else { refAiState.msgs.push({who:'ai',t:'Perfect — I have enough. Building your list now…'}); refAiState.phase='building'; refAiState.build=0; renderRefAIAssist(); setTimeout(_refAiBuildTick,500); }
+}
+function refAiChip(v){ refAiSend(v); }
+function _refAiBuildTick(){
+  refAiState.build++;
+  const prev=$('refAiPrev'); if(prev) prev.innerHTML=_refAiPrevHTML();
+  if(refAiState.build<AI_BUILD_STEPS.length){ setTimeout(_refAiBuildTick,650); }
+  else { setTimeout(()=>{ refAiState.phase='ready'; refAiState.msgs.push({who:'ai',t:'Done! Here’s your proposed list on the right — tell me what to adjust, or accept and create.'}); renderRefAIAssist(); },750); }
+}
+function refAiStartOver(){ _refAiReset(); renderRefAIAssist(); toast('Started over'); }
+function refAiCreate(){
+  if(refAiState.phase!=='ready'){ toast('Answer a few questions first — your list is still being designed'); return; }
+  const u=_refNewId(REF_AI_PROPOSAL.slug);
+  REFDATA.unshift({ id:u, name:REF_AI_PROPOSAL.name, category:'Business', origin:'Custom', status:'Draft', updated:'just now', owner:'sb', collab:[], fields:REF_AI_PROPOSAL.fields, referencedBy:0, tags:['ai-generated'], desc:REF_AI_PROPOSAL.desc, usedBy:[], values:REF_AI_PROPOSAL.values.map((v,i)=>RV(v.code,v.label,'',true,'2024-01-01')) });
+  toast('“'+REF_AI_PROPOSAL.name+'” created with AI','ok');
+  navigate('reference/'+u);
+}
+function renderRefAIAssist(){
+  if(!refAiState.msgs.length) _refAiReset();
+  const asking=refAiState.phase==='asking', building=refAiState.phase==='building', ready=refAiState.phase==='ready';
+  const last=refAiState.msgs[refAiState.msgs.length-1];
+  const bubbles=refAiState.msgs.map(m=> m.who==='ai'
+    ? `<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai">${escapeHtml(m.t)}${m.chips&&asking&&m===last?`<div class="ai-chips">${m.chips.map(c=>`<button class="ai-chip" onclick="refAiChip('${escapeHtml(c)}')">${escapeHtml(c)}</button>`).join('')}</div>`:''}</div></div>`
+    : `<div class="ai-row ai-row-me"><div class="ai-bub ai-bub-me">${escapeHtml(m.t)}</div></div>`
+  ).join('');
+  const typing=building?`<div class="ai-row ai-row-ai"><span class="ai-av">${_AI_SPARK}</span><div class="ai-bub ai-bub-ai ai-typing"><span></span><span></span><span></span></div></div>`:'';
+  $('content').innerHTML=`
+    <div class="ai-head-row">${_crumbs([{label:'Models',href:'#/models'},{label:'Reference Data',href:'#/reference'},{label:'New list',href:'#/reference/new'},{label:'AI Assist'}])}<span class="ai-head-tag">${_AI_SPARK}Designing your list with AI</span></div>
+    <div class="ai-layout">
+      <div class="ai-pane ai-chat-pane">
+        <div class="ai-chat" id="refAiChat">${bubbles}${typing}</div>
+        <div class="ai-input"><input id="refAiInput" type="text" placeholder="${ready?'Ask for changes, or accept the proposal…':building?'Building your list…':'Type your answer…'}" ${building?'disabled':''} onkeydown="if(event.key==='Enter'){refAiSend(this.value);this.value='';}" autocomplete="off"><button class="ai-send" ${building?'disabled':''} onclick="var i=$('refAiInput');refAiSend(i.value);i.value='';" aria-label="Send"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h10M8 4l4 4-4 4"/></svg></button></div>
+      </div>
+      <div class="ai-pane ai-prev-pane" id="refAiPrev">${_refAiPrevHTML()}</div>
+    </div>
+    <div class="ai-foot">
+      <button class="btn" onclick="navigate('reference/new')">Cancel</button>
+      <span class="tbar-spring"></span>
+      <button class="ai-foot-link" onclick="refAiStartOver()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a5 5 0 1 1 1.5 3.5M3 8V5M3 8h3"/></svg> Start over</button>
+      <span class="ai-foot-or">${ready?'Or accept the current proposal':'Answer the questions to generate a list'}</span>
+      <button class="btn btn-primary" ${ready?'':'disabled'} onclick="refAiCreate()">Accept and create <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg></button>
+    </div>`;
+  setTimeout(()=>{const c=$('refAiChat'); if(c)c.scrollTop=c.scrollHeight;},0);
+}
+function _refAiPrevHTML(){
+  if(refAiState.phase==='building') return _refAiPrevBuilding();
+  if(refAiState.phase==='ready') return _refAiPrevReady();
+  return `<div class="ai-prev-empty"><div class="ai-prev-empty-ic"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/><path d="M12.5 10.5l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5.5-1.4Z"/></svg></div><div class="ai-prev-empty-t">Your list will take shape here</div><div class="ai-prev-empty-d">Answer a few questions on the left and I’ll propose a reference list — codes, labels and a default — that you can refine and create.</div></div>`;
+}
+function _refAiPrevBuilding(){
+  const n=AI_BUILD_STEPS.length;
+  const STEPS=['Analyzing your answers','Proposing values','Writing labels','Marking the default','Finalizing preview'];
+  const steps=STEPS.map((s,i)=>{ const done=i<refAiState.build-1; const active=i===refAiState.build-1;
+    return `<div class="ai-build-step ${done?'done':''} ${active?'active':''}"><span class="ai-build-dot">${done?_AI_CHK:active?'<span class="ai-spin"></span>':''}</span><span class="ai-build-lbl">${escapeHtml(s)}</span></div>`; }).join('');
+  const pct=Math.round(Math.min(refAiState.build,n)/n*100);
+  const skelRows=Array.from({length:4},()=>`<div class="ai-skel-row" style="height:26px"></div>`).join('');
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">Building your list</div><code class="md-code">reference.custom_list</code></div><span class="ai-prev-tag ai-tag-building"><span class="ai-spin ai-spin-sm"></span> Generating…</span></div>
+    <div class="ai-build-bar"><span style="width:${pct}%"></span></div>
+    <div class="ai-build-steps">${steps}</div>
+    <div class="ai-skel-rows">${skelRows}</div>`;
+}
+function _refAiPrevReady(){
+  const p=REF_AI_PROPOSAL;
+  return `<div class="ai-prev-head"><div><div class="ai-prev-title">${escapeHtml(p.name)}</div><code class="md-code">reference.${escapeHtml(p.slug)}</code></div><span class="ai-prev-tag">● Preview · not saved yet</span></div>
+    <p class="ai-prev-desc">${escapeHtml(p.desc)}</p>
+    <div class="tblai-schema">${p.values.map((v,i)=>`<div class="tblai-col"><span class="tblai-col-n key">${escapeHtml(v.code)}</span><span class="refai-lbl">${escapeHtml(v.label)}</span>${i===0?'<span class="refai-def">Default</span>':''}</div>`).join('')}</div>
+    <div class="ai-prev-counts">${p.values.length} values · ${p.fields} fields</div>`;
+}
+
 function route(){
   _dsfOpen = null; closeSlideout(); closeModal();
   const parts = (location.hash.replace(/^#\/?/,'') || 'models').split('/');
@@ -4651,14 +5637,17 @@ function route(){
   if(r==='models' && parts[1]==='new'){ if(parts[2]==='scratch') renderFromScratch(); else if(parts[2]==='ai'){ _aiReset(); renderAIAssist(); } else { renderModels(); openMarketplaceModal(); } }
   else if(r==='models' && parts[1]){ if(modelDetailState.id!==parts[1]) modelDetailState.tab='overview'; modelDetailState.id=parts[1]; renderModelDetail(parts[1]); }
   else if(r==='models'){ renderModels(); }
+  else if(r==='entities' && parts[1]==='new'){ if(parts[2]==='scratch') renderEntFromScratch(); else if(parts[2]==='ai'){ _entAiReset(); renderEntAIAssist(); } else { renderEntities(); openEntityMarketplaceModal(); } }
   else if(r==='entities' && parts[1]){
     if(detailState.id !== parts[1]) detailState.tab = 'tables';
     detailState.id = parts[1];
     renderEntityDetail(parts[1]);
   }
   else if(r==='entities'){ renderEntities(); }
+  else if(r==='tables' && parts[1]==='new'){ if(parts[2]==='scratch') renderTblFromScratch(); else if(parts[2]==='ai'){ _tblAiReset(); renderTblAIAssist(); } else { renderTablesList(); openTableMarketplaceModal(); } }
   else if(r==='tables' && parts[1]){ if(tableDetailState.id!==parts[1]){ tableDetailState.tab='columns'; dataState={search:'',page:1}; } tableDetailState.id=parts[1]; renderTableDetail(parts[1]); }
   else if(r==='tables'){ renderTablesList(); }
+  else if(r==='reference' && parts[1]==='new'){ if(parts[2]==='scratch') renderRefFromScratch(); else if(parts[2]==='ai'){ _refAiReset(); renderRefAIAssist(); } else { renderReferenceList(); openRefMarketplaceModal(); } }
   else if(r==='reference' && parts[1]){ if(refDetailState.id!==parts[1]){ refDetailState.tab='data'; refDetailState.search=''; refDetailState.page=1; } refDetailState.id=parts[1]; renderReferenceDetail(parts[1]); }
   else if(r==='reference'){ renderReferenceList(); }
   else { location.hash='#/models'; }
@@ -4736,7 +5725,7 @@ function _cmdkData(){ return [
   {label:'New model', cat:'Create', ic:'plus', act:"navigate('models/new')"},
   {label:'New entity', cat:'Create', ic:'plus', act:"navigate('entities');setTimeout(openCreateEntity,60)"},
   {label:'New table', cat:'Create', ic:'plus', act:"navigate('tables');setTimeout(openCreateTable,60)"},
-  {label:'New reference list', cat:'Create', ic:'plus', act:"navigate('reference');setTimeout(openCreateReference,60)"},
+  {label:'New reference list', cat:'Create', ic:'plus', act:"navigate('reference/new')"},
   {label:'Toggle theme', cat:'Action', ic:'sun', act:"toggleTheme()"},
 ].concat(MODELS.map(m=>({label:m.name, cat:'Model', ic:'grid', act:"navigate('models/"+m.id+"')"}))); }
 function openSearch(){
