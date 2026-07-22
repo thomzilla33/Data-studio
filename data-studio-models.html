@@ -2123,6 +2123,31 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .rfb-usage{display:flex; flex-direction:column; gap:2px}
 .rfb-usage-v{font-size:17px; font-weight:700; color:var(--t1)}
 .rfb-usage-l{font-size:11px; color:var(--t3)}
+
+/* ── DS Pagination component (port of design-system/pagination.tsx) ── */
+.pgn2{display:flex; width:100%; padding:8px 0; margin-top:8px}
+.pgn2-bar{display:flex; align-items:center; justify-content:space-between; width:100%; gap:24px; height:32px; padding:4px 10px;
+  background:var(--surface-floating-default,var(--card-bg)); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--card-border,var(--line)); border-radius:6px}
+.pgn2-rows{display:flex; align-items:center; gap:12px; position:relative; flex-shrink:0}
+.pgn2-lbl{font-size:12px; color:var(--t3); white-space:nowrap}
+.pgn2-sel{display:inline-flex; align-items:center; gap:4px; background:none; border:none; cursor:pointer; padding:0; outline:none}
+.pgn2-sel svg{color:var(--t2); transition:transform .15s ease}
+.pgn2-sel[data-open="1"] svg{transform:rotate(180deg)}
+.pgn2-selv{font-size:12px; font-weight:500; color:var(--t1)}
+.pgn2-menu{display:none; position:absolute; bottom:calc(100% + 6px); left:0; z-index:70; min-width:64px;
+  background:var(--surface-floating-default,var(--card-bg)); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--card-border,var(--line)); border-radius:6px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.pgn2-menu[data-open="1"]{display:block}
+.pgn2-opt{display:flex; align-items:center; width:100%; height:32px; padding:0 12px; font-size:12px; color:var(--t1); background:none; border:none; cursor:pointer; text-align:left}
+.pgn2-opt:hover{background:var(--hover)}
+.pgn2-opt.on{font-weight:600; color:var(--primary); background:var(--hover)}
+.pgn2-right{display:flex; align-items:center; gap:12px; flex-shrink:0}
+.pgn2-range{font-size:12px; font-weight:500; color:var(--t1); white-space:nowrap}
+.pgn2-nav{display:flex; align-items:center; gap:12px}
+.pgn2-btn{width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border:none; background:none; border-radius:4px; color:var(--t2); cursor:pointer; padding:0; transition:background .12s ease}
+.pgn2-btn:hover:not([disabled]){background:var(--hover)}
+.pgn2-btn[disabled]{opacity:.35; cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -2294,6 +2319,36 @@ function _saveView(s,v){ try{ localStorage.setItem('dsm-view-'+s, v); }catch(e){
 function eView(v){ listState.view=v; _saveView('entities',v); renderEntities(); }
 function clearFilters(){ listState.model='all'; listState.domain='all'; listState.status='all'; listState.owner='all'; listState.tags=[]; renderEntities(); }
 document.addEventListener('click', e=>{ if(_dsfOpen && !e.target.closest('.dsf-drop')){ _dsfOpen=null; _dsfRerender(); } });
+
+/* ── DS Pagination component (port of design-system/pagination.tsx) ── */
+let _pgnOpenId=null;
+function _pgnCloseMenus(){ document.querySelectorAll('.pgn2-menu[data-open="1"]').forEach(m=>m.setAttribute('data-open','0')); document.querySelectorAll('.pgn2-sel[data-open="1"]').forEach(b=>b.setAttribute('data-open','0')); _pgnOpenId=null; }
+function _pgnToggle(id){ const menu=document.getElementById(id+'-menu'); if(!menu) return; const willOpen=menu.getAttribute('data-open')!=='1'; _pgnCloseMenus(); if(willOpen){ menu.setAttribute('data-open','1'); const b=document.getElementById(id+'-sel'); if(b) b.setAttribute('data-open','1'); _pgnOpenId=id; } }
+function _pagination(o){
+  const per=+o.per, total=+o.total||0, page=Math.max(1,+o.page||1);
+  const pages=Math.max(1,Math.ceil(total/per));
+  if(pages<=1) return '';                                   // DS: hidden on a single page
+  const start=(page-1)*per+1, end=Math.min(page*per,total);
+  const opts=o.opts||[9,25,50], id=o.id, canPer=!!o.perCall;
+  const chevUp='<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4-4 4 4"/></svg>';
+  const chevL='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg>';
+  const chevR='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>';
+  const rows=canPer
+    ? `<span class="pgn2-lbl">Rows per page:</span><button id="${id}-sel" class="pgn2-sel" type="button" onclick="event.stopPropagation();_pgnToggle('${id}')" aria-haspopup="listbox"><span class="pgn2-selv">${per}</span>${chevUp}</button>
+       <div id="${id}-menu" class="pgn2-menu" data-open="0" role="listbox" aria-label="Rows per page">${opts.map(n=>`<button type="button" role="option" aria-selected="${n===per}" class="pgn2-opt ${n===per?'on':''}" onclick="${o.perCall(n)}">${n}</button>`).join('')}</div>`
+    : `<span class="pgn2-lbl">Rows per page:</span><span class="pgn2-selv">${per}</span>`;
+  return `<div class="pgn2"><div class="pgn2-bar">
+     <div class="pgn2-rows">${rows}</div>
+     <div class="pgn2-right">
+       <span class="pgn2-range">${start}–${end} of ${total} items</span>
+       <div class="pgn2-nav">
+         <button class="pgn2-btn" ${page<=1?'disabled':''} onclick="${o.pageCall(page-1)}" aria-label="Previous page">${chevL}</button>
+         <button class="pgn2-btn" ${page>=pages?'disabled':''} onclick="${o.pageCall(page+1)}" aria-label="Next page">${chevR}</button>
+       </div>
+     </div>
+   </div></div>`;
+}
+document.addEventListener('click', e=>{ if(_pgnOpenId && !e.target.closest('.pgn2-rows')) _pgnCloseMenus(); });
 
 function _filtered(){
   const q = listState.search.toLowerCase();
@@ -3118,7 +3173,8 @@ function dataTab(t){
    <div class="dtable"><div class="dtable-h" style="${gt}"><span>ID</span>${cols.map(c=>`<span>${escapeHtml(c.d)}</span>`).join('')}<span></span></div>
      ${vis.length?vis.map(r=>`<div class="dtable-r" style="${gt}" onclick="openRecord('${t.id}',${rows.indexOf(r)})"><span class="dcell mono">${escapeHtml(r.__id)}</span>${cols.map(c=>`<span class="dcell">${_fmtVal(c,r[c.n])}</span>`).join('')}<div class="erow-chev"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>`).join(''):`<div class="empty" style="padding:40px">${dataState.search?`No records match “${escapeHtml(dataState.search)}”.`:(t.cols.length?'No records yet.':'Add columns to this table, then add records.')}</div>`}
    </div>
-   <div class="pgn"><span>Page <b>${page}</b> of <b>${pages}</b> · ${filtered.length} records${cols.length<t.cols.length?` · showing ${cols.length} of ${t.cols.length} columns`:''}</span></div>`;
+   ${_pagination({page, total:filtered.length, per:PS, id:'pgn-data', pageCall:p=>`dataSetPage('${t.id}',${p})`})}
+   ${cols.length<t.cols.length?`<div class="pgn"><span>Showing ${cols.length} of ${t.cols.length} columns</span></div>`:''}`;
 }
 function openRecord(tid, idx){
   const t=_table(tid); const rows=_mockRows(t); const r=rows[idx]; if(!r) return;
@@ -3405,7 +3461,8 @@ function refDataTab(r){
         <div class="erow-chev"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </div>`).join(''):`<div class="empty" style="padding:40px">No values${q?' match “'+escapeHtml(refDetailState.search)+'”':''}.</div>`}
    </div>
-   <div class="pgn"><span>Page <b>${page}</b> of <b>${pages}</b> · ${vals.length} value${vals.length===1?'':'s'}${inactive&&!refDetailState.showInactive?` · ${inactive} inactive hidden`:''}</span></div>`;
+   ${_pagination({page, total:vals.length, per:PS, id:'pgn-refdata', pageCall:p=>`refSetPage('${r.id}',${p})`})}
+   ${inactive&&!refDetailState.showInactive?`<div class="pgn"><span>${inactive} inactive hidden</span></div>`:''}`;
 }
 function refColumnsTab(r){
   const schema=REF_SCHEMA.slice(0, r.fields||REF_SCHEMA.length);
@@ -3886,14 +3943,7 @@ function modelTableView(filtered){
       </tr>`).join('')}
     </tbody>
   </table></div>
-  <div class="mtbl-foot">
-    <div class="mtbl-foot-l">Rows per page <span class="mtbl-per"><select onchange="mPerPage(this.value)">${[9,25,50].map(n=>`<option value="${n}" ${n===per?'selected':''}>${n}</option>`).join('')}</select></span></div>
-    <div class="mtbl-foot-r"><span class="mtbl-range">${total===0?0:start+1}–${Math.min(start+per,total)} of ${total} items</span>
-      <button class="mtbl-pg" ${page<=1?'disabled':''} onclick="mTablePage(${page-1})" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg></button>
-      <span class="mtbl-pgnum">${page} / ${pages}</span>
-      <button class="mtbl-pg" ${page>=pages?'disabled':''} onclick="mTablePage(${page+1})" aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
-    </div>
-  </div>`;
+  ${_pagination({page, total, per, opts:[9,25,50], id:'pgn-models', pageCall:p=>`mTablePage(${p})`, perCall:n=>`mPerPage(${n})`})}`;
 }
 /* ── Generic table view (reused by Entities / Tables / Reference) ── */
 function _numAbbr(s){ s=String(s).trim(); const m=s.match(/^([\d.]+)\s*([KMB]?)/i); if(!m) return 0; let n=parseFloat(m[1])||0; const u=(m[2]||'').toUpperCase(); if(u==='K')n*=1e3; else if(u==='M')n*=1e6; else if(u==='B')n*=1e9; return n; }
@@ -3931,14 +3981,7 @@ function dtblView(surface, rows, columns, hrefBase){
       </tr>`).join('')}
     </tbody>
   </table></div>
-  <div class="mtbl-foot">
-    <div class="mtbl-foot-l">Rows per page <span class="mtbl-per"><select onchange="tblPerPage('${surface}',this.value)">${[9,25,50].map(n=>`<option value="${n}" ${n===per?'selected':''}>${n}</option>`).join('')}</select></span></div>
-    <div class="mtbl-foot-r"><span class="mtbl-range">${start+1}–${Math.min(start+per,total)} of ${total} items</span>
-      <button class="mtbl-pg" ${page<=1?'disabled':''} onclick="tblPage('${surface}',${page-1})" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg></button>
-      <span class="mtbl-pgnum">${page} / ${pages}</span>
-      <button class="mtbl-pg" ${page>=pages?'disabled':''} onclick="tblPage('${surface}',${page+1})" aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button>
-    </div>
-  </div>`;
+  ${_pagination({page, total, per, opts:[9,25,50], id:'pgn-'+surface, pageCall:p=>`tblPage('${surface}',${p})`, perCall:n=>`tblPerPage('${surface}',${n})`})}`;
 }
 function _entCols(){ return [
   {key:'name',label:'Name',cell:e=>`<span class="mtbl-name">${escapeHtml(e.name)}</span>`,sort:e=>e.name.toLowerCase()},
@@ -6063,7 +6106,7 @@ function _refAiPrevReady(){
 }
 
 function route(){
-  _dsfOpen = null; closeSlideout(); closeModal();
+  _dsfOpen = null; _pgnOpenId = null; closeSlideout(); closeModal();
   const parts = (location.hash.replace(/^#\/?/,'') || 'models').split('/');
   const r = parts[0];
   if(r==='models' && parts[1]==='new'){ if(parts[2]==='scratch') renderFromScratch(); else if(parts[2]==='ai'){ _aiReset(); renderAIAssist(); } else { renderModels(); openMarketplaceModal(); } }
