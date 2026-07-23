@@ -2339,6 +2339,40 @@ html:not(.theme-light) .er-card{fill:var(--surface-raised,#131C2E); stroke:var(-
 .pv-it-code{font-family:'SF Mono',Menlo,monospace; font-weight:600; color:var(--t1)}
 .pv-viewall{display:inline-block; margin:13px 0 4px; font-size:13px; font-weight:600; color:var(--primary); cursor:pointer}
 .pv-hsep{color:var(--t3); margin:0 3px}
+/* Entity workspace (master-detail inside a model) */
+.mdw{display:flex; gap:16px; align-items:flex-start}
+.mdw-rail{width:232px; flex-shrink:0; border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); overflow:hidden}
+.mdw-rail-h{padding:9px 11px; border-bottom:1px solid var(--card-border,var(--line))}
+.mdw-browse{display:inline-flex; align-items:center; gap:5px; border:none; background:transparent; color:var(--t2); font-size:12.5px; font-weight:600; cursor:pointer; padding:2px 0}
+.mdw-browse:hover{color:var(--t1)}
+.mdw-rail-list{padding:6px; display:flex; flex-direction:column; gap:2px; max-height:560px; overflow-y:auto}
+.mdw-rail-item{display:flex; align-items:center; gap:9px; padding:8px 10px; border:none; background:transparent; border-radius:8px; cursor:pointer; text-align:left; width:100%; color:var(--t2)}
+.mdw-rail-item:hover{background:var(--hover)}
+.mdw-rail-item.on{background:var(--accent,rgba(43,127,255,0.1)); color:var(--t1)}
+.mdw-rail-ic{color:var(--t3); display:inline-flex; flex-shrink:0}
+.mdw-rail-item.on .mdw-rail-ic{color:var(--primary)}
+.mdw-rail-name{flex:1; font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mdw-rail-r{display:flex; align-items:center; gap:7px; flex-shrink:0}
+.mdw-lock{color:var(--tag-alert-fg,#d99815); display:inline-flex}
+.mdw-dot{width:7px; height:7px; border-radius:50%; flex-shrink:0}
+.mdw-dot.pub{background:var(--tag-success-fg,#3ba55c)} .mdw-dot.draft{background:var(--field-placeholder)} .mdw-dot.pend{background:var(--tag-alert-fg,#d99815)}
+.mdw-main{flex:1; min-width:0}
+.mdw-head{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.mdw-head-l{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.mdw-title{font-size:18px; font-weight:700; color:var(--t1)}
+.mdw-tabs{display:flex; gap:2px; border-bottom:1px solid var(--card-border,var(--line)); margin:12px 0 16px}
+.mdw-tab{border:none; background:transparent; padding:9px 13px; font-size:13px; font-weight:600; color:var(--t3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px}
+.mdw-tab:hover{color:var(--t1)}
+.mdw-tab.on{color:var(--primary); border-bottom-color:var(--primary)}
+.mdw-sec-t{font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t2); margin:22px 0 10px}
+.mdw-metrics{margin-bottom:4px}
+.mdw-badges{display:inline-flex; gap:8px; align-items:center; flex-wrap:wrap}
+.mdw-diag-bar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+.mdw-segs{display:inline-flex; gap:4px; background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:8px; padding:3px}
+.mdw-seg{border:none; background:transparent; padding:5px 12px; border-radius:6px; font-size:12.5px; font-weight:600; color:var(--t2); cursor:pointer}
+.mdw-seg.on{background:var(--card-bg,#fff); color:var(--primary); box-shadow:0 1px 3px rgba(0,0,0,.1)}
+html:not(.theme-light) .mdw-seg.on{background:var(--surface-raised,#131C2E)}
+@media(max-width:900px){.mdw{flex-direction:column}.mdw-rail{width:100%}.mdw-rail-list{max-height:200px}}
 
 /* ── Reference Data: filters slideout · kebab count · record nav · import wizard · bulk ── */
 .mk-fcount{margin-left:6px; font-size:10px; font-weight:700; background:var(--primary); color:#fff; border-radius:8px; padding:0 5px; line-height:16px; display:inline-block}
@@ -4954,7 +4988,7 @@ function openRefPreview(id){
 
 /* Model DETAIL (grouped entities / tables / reference data) */
 let modelDetailState = { id:null, tab:'overview',
-  ent:{search:'',status:'all',owner:'all',pii:false,view:'grid'},
+  ent:{search:'',status:'all',owner:'all',pii:false,view:'grid',selEntId:null,subtab:'overview',diagMode:'columns'},
   tbl:{search:'',type:'all',entity:'all',status:'all',view:'list',exp:{}},
   comp:{sub:'widgets',search:'',view:'grid'},
   sec:{diagram:true,about:true,activity:true} };
@@ -5116,6 +5150,7 @@ function renderModelDetail(id){
     <div class="mtabs md-tabs">${tabs.map(([tid,label,c])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setModelTab('${tid}')">${label}${c!=null?`<span class="mtab-c">${c}</span>`:''}</button>`).join('')}</div>
     <div id="mpanel">${body}</div>`;
   if(tab==='overview' && modelDetailState.sec.diagram && md.counts.entities) _diagInit();
+  if(tab==='entities' && modelDetailState.ent.selEntId && modelDetailState.ent.subtab==='diagram') setTimeout(_diagInit,0);
 }
 function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; renderModelDetail(modelDetailState.id); }
 function mdSection(k){ modelDetailState.sec[k]=!modelDetailState.sec[k]; renderModelDetail(modelDetailState.id); }
@@ -5357,7 +5392,9 @@ function _mdEntFilter(md){ const st=modelDetailState.ent, q=st.search.toLowerCas
   return md.ents.filter(e=>{ if(st.status!=='all'&&e.status!==st.status) return false; if(st.owner!=='all'&&e.owner!==st.owner) return false; if(st.pii&&!e.pii) return false;
     if(q&&!(e.name.toLowerCase().includes(q)||e.desc.toLowerCase().includes(q))) return false; return true; }); }
 function _mdEntitiesTab(m,md){
-  const st=modelDetailState.ent; const owners=[...new Set(md.ents.map(e=>e.owner))]; const rows=_mdEntFilter(md);
+  const st=modelDetailState.ent;
+  if(st.selEntId){ const sel=md.ents.find(e=>e.id===st.selEntId); if(sel) return _mdEntWorkspace(m,md,sel); st.selEntId=null; }
+  const owners=[...new Set(md.ents.map(e=>e.owner))]; const rows=_mdEntFilter(md);
   const stc=st.status!=='all'?{label:st.status,onremove:"mdEnt('status','all')"}:null;
   const oc=st.owner!=='all'?{label:P(st.owner).n,onremove:"mdEnt('owner','all')"}:null;
   const body = rows.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>`
@@ -5376,7 +5413,11 @@ function _mdEntitiesTab(m,md){
       <button class="btn btn-primary" onclick="openMdAddEntity('${m.id}')">${_MDIC.plus} Add entity</button>
     </div>${body}`;
 }
-function _mdEntClick(e){ return `openMdEntityPreview('${modelDetailState.id}','${e.id}')`; }
+function _mdEntClick(e){ return `mdSelectEnt('${modelDetailState.id}','${e.id}')`; }
+function mdSelectEnt(mid,eid){ modelDetailState.tab='entities'; modelDetailState.ent.selEntId=eid; modelDetailState.ent.subtab='overview'; renderModelDetail(mid); }
+function mdBackToEntities(mid){ modelDetailState.ent.selEntId=null; renderModelDetail(mid); }
+function mdEntWsTab(mid,t){ modelDetailState.ent.subtab=t; renderModelDetail(mid); if(t==='diagram') setTimeout(_diagInit,0); }
+function mdDiagMode(mid,v){ modelDetailState.ent.diagMode=v; renderModelDetail(mid); setTimeout(_diagInit,0); }
 function _mdEntCard(m,e){
   return `<div class="md-ecard" onclick="${_mdEntClick(e)}">
     <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.ent}</span><span class="md-ecard-name">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div>
@@ -5389,6 +5430,69 @@ function _mdEntListRow(m,e){
     <div class="lrow-desc">${escapeHtml(e.desc)}</div>
     <div class="lrow-foot"><span class="lrow-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.tbl}${e.tables} tables</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.col}${e.cols} columns</span></div></div>`;
 }
+
+/* ── Entity WORKSPACE (master-detail inside a model) ── */
+const _EXP_IC='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>';
+const _CHEVL='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4l-4 4 4 4"/></svg>';
+function _mdEntWorkspace(m,md,e){
+  const sub=modelDetailState.ent.subtab||'overview';
+  const rail=md.ents.map(x=>`<button class="mdw-rail-item ${x.id===e.id?'on':''}" onclick="mdSelectEnt('${m.id}','${x.id}')"><span class="mdw-rail-ic">${_MDIC.ent}</span><span class="mdw-rail-name">${escapeHtml(x.name)}</span><span class="mdw-rail-r">${x.pii?`<span class="mdw-lock">${_MDIC.lock}</span>`:''}<span class="mdw-dot ${x.status==='Published'?'pub':x.status==='Draft'?'draft':'pend'}"></span></span></button>`).join('');
+  const tabs=[['overview','Overview'],['diagram','Diagram'],['tables','Tables'],['relationships','Relationships'],['privileges','Privileges']];
+  const body = sub==='diagram'?_mdwDiagram(m,md,e) : sub==='tables'?_mdwTables(m,md,e) : sub==='relationships'?_mdwSoon('Relationships','Cross-model relationships graph + list, with New relationship.') : sub==='privileges'?_mdwSoon('Privileges','Standard + custom privileges with the permission catalog and Create privilege.') : _mdwOverview(m,md,e);
+  return `<div class="mdw">
+    <aside class="mdw-rail">
+      <div class="mdw-rail-h"><button class="mdw-browse" onclick="mdBackToEntities('${m.id}')">${_CHEVL} Browse</button></div>
+      <div class="mdw-rail-list">${rail}</div>
+    </aside>
+    <section class="mdw-main">
+      <div class="mdw-head"><div class="mdw-head-l"><span class="mdw-title">${escapeHtml(e.name)}</span>${_stPill(e.status)}</div>
+        <button class="btn btn-primary" onclick="${e.real?`navigate('entities/${e.id}')`:`openMdEntityPreview('${m.id}','${e.id}')`}">${_MDIC.open} Open</button></div>
+      <div class="mdw-tabs">${tabs.map(([tid,l])=>`<button class="mdw-tab ${sub===tid?'on':''}" onclick="mdEntWsTab('${m.id}','${tid}')">${l}</button>`).join('')}</div>
+      <div class="mdw-body">${body}</div>
+    </section>
+  </div>`;
+}
+function _mdwActivity(m,e){
+  const acts=[{d:'Updated '+e.name+' description',who:e.owner,w:e.updated},{d:'Added 2 columns',who:m.owner,w:'2d ago'},{d:'Created entity '+e.name,who:m.owner,w:'May 2, 2026'}];
+  return `<div class="mdw-sec-t">Recent activity</div><div class="md-timeline">${acts.map((a,i)=>`<div class="md-tl-item ${i===acts.length-1?'last':''}"><span class="md-tl-dot"></span><div class="md-tl-b"><div class="md-tl-t">${escapeHtml(a.d)}</div><div class="md-tl-m">${escapeHtml(P(a.who).n)} · ${escapeHtml(a.w)}</div></div></div>`).join('')}</div>`;
+}
+function _mdwOverview(m,md,e){
+  const tbls=md.tables.filter(t=>t.entityId===e.id); const secN=Math.max(0,tbls.length-1);
+  const piiCols=e.pii?Math.max(1,Math.round(e.cols*0.3)):0;
+  const rel=e.real?(((_entById(e.id)||{}).rels)||[]).length : Math.max(1,Math.min(4,tbls.length));
+  const rows=((e.cols*137+tbls.length*311)%1900)+300; const rowsFmt=String(rows).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  const versions=2+(e.cols%3);
+  const metrics=[
+    _ovTile(e.cols,'Columns', piiCols?`${piiCols} PII · ${e.cols-piiCols} standard`:'all standard', _ICO_COLS),
+    _ovTile(tbls.length,'Tables', `${tbls.length?1:0} primary · ${secN} secondary`, _MDIC.tbl),
+    _ovTile(rel,'Relations','across the model', _HIC.link),
+    _ovTile(rowsFmt,'Data preview','Last update '+escapeHtml(e.updated), _HIC.db),
+    _ovTile(versions,'Versions','published', _MDIC.pub),
+  ];
+  const stewards=(m.collab||[]);
+  return `<div style="display:flex;align-items:flex-start;gap:12px">
+      <span class="lrow-ic" style="width:34px;height:34px;flex-shrink:0">${_MDIC.ent}</span>
+      <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="dh-title" style="font-size:20px">${escapeHtml(e.name)}</span><span class="mdw-badges"><span class="chip">${escapeHtml(m.category)}</span>${_modelChip(m.id)}${e.pii?_piiBadge():''}</span></div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-top:10px">${escapeHtml(e.desc)}</div>
+        <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span>${stewards.length?`<span class="lrow-sep">·</span>${avStack(stewards,3)}<span style="font-size:12px;color:var(--t3)">+${stewards.length} steward${stewards.length===1?'':'s'}</span>`:''}<span class="lrow-sep">·</span><span style="font-size:12px;color:var(--t3)">Updated ${escapeHtml(e.updated)}</span></div>
+      </div></div>
+    <div class="mdw-sec-t">Key metrics</div><div class="md-tiles mdw-metrics">${metrics.join('')}</div>
+    ${_mdwActivity(m,e)}`;
+}
+function _mdwDiagram(m,md,e){
+  const mode=modelDetailState.ent.diagMode||'columns';
+  const pseudo={name:e.name, tables:md.tables.filter(t=>t.entityId===e.id).map(t=>({id:t.id,alias:t.name,role:t.role,cols:t.cols}))};
+  const er=_erEntityNodes(pseudo);
+  if(mode==='keys') er.nodes.forEach(n=>{ n.cols=(n.cols||[]).filter(c=>c.pk||c.fk); });
+  const seg=(v,l)=>`<button class="mdw-seg ${mode===v?'on':''}" onclick="mdDiagMode('${m.id}','${v}')">${l}</button>`;
+  return `<div class="mdw-diag-bar"><div class="mdw-segs">${seg('columns','Columns')}${seg('keys','Keys')}</div><button class="btn" style="height:32px" onclick="toast('Diagram exported','ok')">${_EXP_IC} Export</button></div>${_erDiagram(er.nodes,er.edges,er.note)}`;
+}
+function _mdwTables(m,md,e){
+  const tbls=md.tables.filter(t=>t.entityId===e.id); const prim=tbls.filter(t=>t.role==='Primary').length, sec=tbls.length-prim;
+  return `<div class="dsec-h" style="margin-bottom:12px"><div class="dsec-t">Tables<span class="dsec-sub">${tbls.length} table${tbls.length===1?'':'s'} · ${prim} primary · ${sec} secondary</span></div><button class="btn btn-primary" style="height:34px" onclick="openMdAddTable('${m.id}')">${_MDIC.plus} Add table</button></div>
+    <div class="md-trows">${tbls.map(t=>_mdTblRow(m,t)).join('')||'<div class="placeholder" style="padding:28px">No tables in this entity yet.</div>'}</div>`;
+}
+function _mdwSoon(title,desc){ return `<div class="placeholder" style="padding:44px"><div class="placeholder-t">${escapeHtml(title)}</div>${escapeHtml(desc)}<div style="margin-top:8px;font-size:12px;color:var(--t3)">Coming in the next pass.</div></div>`; }
 
 /* ── Tables tab ── */
 function mdTbl(k,v){ modelDetailState.tbl[k]=v; renderModelDetail(modelDetailState.id); if(k==='search') _mdRefocus('mdTblSearch',v); }
