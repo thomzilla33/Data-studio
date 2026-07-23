@@ -2350,6 +2350,9 @@ html.theme-light .rel-cardb{fill:#fff}
 .mdp-row-r{margin-left:auto; font-size:11.5px; color:var(--t3); flex-shrink:0}
 .mdp-cols{display:flex; flex-wrap:wrap; gap:6px}
 .mdp-col{font-family:var(--mono,ui-monospace,monospace); font-size:11.5px; color:var(--t2); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:6px; padding:3px 8px}
+.priv-pick{display:flex; flex-direction:column; gap:6px; margin-top:4px}
+.priv-pick-opt{display:flex; align-items:center; gap:9px; cursor:pointer; padding:2px 0}
+.priv-pick-opt input{width:15px; height:15px; accent-color:var(--primary); cursor:pointer; flex-shrink:0}
 .md-steward-chip .md-tag-x:hover{color:var(--field-text-error,#dc2626)}
 </style>
 </head>
@@ -2724,9 +2727,10 @@ function entityOverviewTab(e){
     ${_ovActivity('entity',e)}`;
 }
 function tablesTab(e){
-  return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${e.tables.length} tables · exactly one primary required</span></div><button class="btn" style="height:34px" onclick="openCreateTable()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add table</button></div>
-    <div class="dcard">${e.tables.map(t=>`<div class="drow"><span class="drow-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span><span class="drow-name">${escapeHtml(t.alias)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><span class="drow-meta"><span>${t.cols} cols</span><span>${escapeHtml(t.rows)} rows</span><span class="drow-link" onclick="navigate('tables/${t.id}')">Open →</span></span></div>`).join('')}</div></div>`;
+  return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${e.tables.length} tables · exactly one primary required</span></div><button class="btn" style="height:34px" onclick="openEntTableForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add table</button></div>
+    <div class="dcard">${e.tables.map((t,i)=>`<div class="drow"><span class="drow-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span><span class="drow-name">${escapeHtml(t.alias)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><span class="drow-meta"><span>${t.cols} cols</span><span>${escapeHtml(t.rows)} rows</span>${_tableExists(t.id)?`<span class="drow-link" onclick="navigate('tables/${t.id}')">Open →</span>`:''}<button class="lrow-menu" onclick="_entTblMenu('${e.id}',${i},this)" aria-label="Table actions">${_MDIC.dots}</button></span></div>`).join('')}</div></div>`;
 }
+function _tableExists(id){ return !!(typeof _table==='function'?_table(id):TABLES.find(t=>t.id===id)); }
 /* ── Relationships tab: Diagram / Cards / Table (port of TfdRelationshipsTab) ── */
 let _relViewMode='diagram';
 function setRelView(kind,id,v){ _relViewMode=v; if(kind==='table') renderTableDetail(id); else if(kind==='entity') renderEntityDetail(id); else renderReferenceDetail(id); }
@@ -2753,16 +2757,16 @@ function _relDiagram(centerLabel, rels){
 function _relView(kind, obj, centerLabel, rels){
   const id=obj.id, v=_relViewMode;
   const seg=(mode,label,ic)=>`<button class="rel-vw-btn ${v===mode?'on':''}" onclick="setRelView('${kind}','${id}','${mode}')">${ic}<span>${label}</span></button>`;
-  const toolbar=`<div class="ttd-head"><div class="ttd-head-l"><label class="dsf-search" style="max-width:220px;height:34px">${_HIC.search}<input type="text" placeholder="Search relationships…" oninput="toast('Search — prototype')" autocomplete="off"></label></div><div class="ttd-head-r"><div class="rel-vw">${seg('diagram','Diagram',_ICO_DIAG)}${seg('cards','Cards',_ICO_CARDS)}${seg('table','Table',_ICO_TBL2)}</div><button class="btn btn-primary" style="height:34px" onclick="toast('Add relationship — coming soon')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add relationship</button></div></div>`;
+  const toolbar=`<div class="ttd-head"><div class="ttd-head-l"><label class="dsf-search" style="max-width:220px;height:34px">${_HIC.search}<input type="text" placeholder="Search relationships…" oninput="toast('Search — prototype')" autocomplete="off"></label></div><div class="ttd-head-r"><div class="rel-vw">${seg('diagram','Diagram',_ICO_DIAG)}${seg('cards','Cards',_ICO_CARDS)}${seg('table','Table',_ICO_TBL2)}</div><button class="btn btn-primary" style="height:34px" onclick="_relAdd('${kind}','${id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add relationship</button></div></div>`;
   let body;
   if(!rels.length){ body=`<div class="placeholder" style="padding:38px">No relationships yet. Connect <b>${escapeHtml(centerLabel)}</b> to another ${kind==='reference'?'list':kind} via a foreign key.</div>`; }
   else if(v==='diagram'){ body=_relDiagram(centerLabel, rels); }
-  else if(v==='table'){ const gt='grid-template-columns:minmax(0,1fr) 96px 100px 120px 120px'; body=`<div class="ttd-table"><div class="ttd-thead cv-thead" style="${gt}"><span class="cv-th">Related</span><span class="cv-th">Cardinality</span><span class="cv-th">Strength</span><span class="cv-th">Direction</span><span class="cv-th">On delete</span></div>${rels.map(r=>`<div class="ttd-tr cv-static" style="${gt}"><span class="cv-td"><span class="cv-field-d">${escapeHtml(r.target)}</span>${r.via?`<span class="cv-field-n" style="margin-left:6px">.${escapeHtml(r.via)}</span>`:''}</span><span class="cv-td"><span class="card-badge">${r.cardShort}</span></span><span class="cv-td">${r.strong?'<span class="cv-yes">Strong</span>':'<span class="cv-no">Weak</span>'}</span><span class="cv-td">${escapeHtml(r.dir||'Uni')}</span><span class="cv-td">${escapeHtml(r.del)}</span></div>`).join('')}</div>`; }
-  else { body=`<div class="rfb-list">${rels.map(r=>`<div class="rfb-card" onclick="toast('Relationship detail — coming soon')"><div class="rfb-top"><span class="idx-ic">${_HIC.link}</span><span class="rfb-col">${escapeHtml(centerLabel)}</span>${r.via?`<span class="cv-field-n">.${escapeHtml(r.via)}</span>`:''}${_ARROW}<span class="rfb-col">${escapeHtml(r.target)}</span><span class="card-badge">${r.cardShort}</span><span class="rfb-reqchip ${r.strong?'rfb-req':'rfb-opt'}">${r.strong?'Strong':'Weak'}</span><span style="flex:1"></span><span style="font-size:11px;color:var(--t3)">${escapeHtml(r.dir||'Uni')} · on delete ${escapeHtml(r.del)}</span></div>${r.desc?`<div class="rfb-desc">${escapeHtml(r.desc)}</div>`:''}</div>`).join('')}</div>`; }
+  else if(v==='table'){ const gt='grid-template-columns:minmax(0,1fr) 96px 100px 120px 120px'; body=`<div class="ttd-table"><div class="ttd-thead cv-thead" style="${gt}"><span class="cv-th">Related</span><span class="cv-th">Cardinality</span><span class="cv-th">Strength</span><span class="cv-th">Direction</span><span class="cv-th">On delete</span></div>${rels.map((r,i)=>`<div class="ttd-tr cv-static" style="${gt};cursor:pointer" onclick="_relOpen('${kind}','${id}',${i})"><span class="cv-td"><span class="cv-field-d">${escapeHtml(r.target)}</span>${r.via?`<span class="cv-field-n" style="margin-left:6px">.${escapeHtml(r.via)}</span>`:''}</span><span class="cv-td"><span class="card-badge">${r.cardShort}</span></span><span class="cv-td">${r.strong?'<span class="cv-yes">Strong</span>':'<span class="cv-no">Weak</span>'}</span><span class="cv-td">${escapeHtml(r.dir||'Uni')}</span><span class="cv-td">${escapeHtml(r.del)}</span></div>`).join('')}</div>`; }
+  else { body=`<div class="rfb-list">${rels.map((r,i)=>`<div class="rfb-card" onclick="_relOpen('${kind}','${id}',${i})"><div class="rfb-top"><span class="idx-ic">${_HIC.link}</span><span class="rfb-col">${escapeHtml(centerLabel)}</span>${r.via?`<span class="cv-field-n">.${escapeHtml(r.via)}</span>`:''}${_ARROW}<span class="rfb-col">${escapeHtml(r.target)}</span><span class="card-badge">${r.cardShort}</span><span class="rfb-reqchip ${r.strong?'rfb-req':'rfb-opt'}">${r.strong?'Strong':'Weak'}</span><span style="flex:1"></span><span style="font-size:11px;color:var(--t3)">${escapeHtml(r.dir||'Uni')} · on delete ${escapeHtml(r.del)}</span></div>${r.desc?`<div class="rfb-desc">${escapeHtml(r.desc)}</div>`:''}</div>`).join('')}</div>`; }
   return toolbar+body;
 }
 function relsTab(e){
-  const rels=(e.rels||[]).map(r=>({target:r.t, cardShort:_cardShort(r.k), strong:!!r.s, dir:'Outgoing', del:r.s?'Restrict':'Set null'}));
+  const rels=(e.rels||[]).map(r=>({target:r.t, via:r.via, desc:r.desc, cardShort:_cardShort(r.k), strong:!!r.s, dir:r.dir||'Outgoing', del:r.del||(r.s?'Restrict':'Set null')}));
   return _relView('entity', e, e.name, rels);
 }
 function privTab(e){
@@ -2770,10 +2774,10 @@ function privTab(e){
   return `
     <div class="dsec"><div class="dsec-h"><div class="dsec-t">Default permissions<span class="dsec-sub">created automatically with every entity</span></div></div>
       <div class="priv-grid">${['Read','Create','Update','Delete','List'].map(p=>`<div class="priv-cell">${_CHK} ${p}</div>`).join('')}</div></div>
-    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom permissions<span class="dsec-sub">granular controls you define (data · screen · API)</span></div><button class="btn" style="height:34px" onclick="toast('Add permission — coming soon')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add permission</button></div>
-      ${cperms.length?`<div class="dcard">${cperms.map(p=>`<div class="drow"><span class="drow-name">${escapeHtml(p.n)}</span><span class="drow-meta"><span class="perm-chip ${p.c==='Data'?'data':'api'}">Controls: ${escapeHtml(p.c)}</span></span></div>`).join('')}</div>`:`<div class="placeholder" style="padding:24px">No custom permissions.</div>`}</div>
-    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom privileges<span class="dsec-sub">named groups of permissions granted to users, roles or agents</span></div></div>
-      ${cprivs.length?cprivs.map(pv=>`<div class="cpriv"><div class="cpriv-name"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#7db1ff" stroke-width="1.5"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>${escapeHtml(pv.n)}</div><div class="cpriv-perms">${pv.p.map(([lbl,kind])=>`<span class="perm-chip ${kind}">${escapeHtml(lbl)}</span>`).join('')}</div></div>`).join(''):`<div class="placeholder" style="padding:24px">No custom privileges.</div>`}</div>`;
+    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom permissions<span class="dsec-sub">granular controls you define (data · screen · API)</span></div><button class="btn" style="height:34px" onclick="openPermForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add permission</button></div>
+      ${cperms.length?`<div class="dcard">${cperms.map((p,i)=>`<div class="drow"><span class="drow-name">${escapeHtml(p.n)}</span><span class="drow-meta"><span class="perm-chip ${p.c==='Data'?'data':(p.c==='Screen'?'':'api')}">Controls: ${escapeHtml(p.c)}</span><button class="lrow-menu" onclick="_entPermMenu('${e.id}',${i},this)" aria-label="Permission actions">${_MDIC.dots}</button></span></div>`).join('')}</div>`:`<div class="placeholder" style="padding:24px">No custom permissions.</div>`}</div>
+    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom privileges<span class="dsec-sub">named groups of permissions granted to users, roles or agents</span></div><button class="btn" style="height:34px" onclick="openPrivForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add privilege</button></div>
+      ${cprivs.length?cprivs.map((pv,i)=>`<div class="cpriv"><div class="cpriv-name"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#7db1ff" stroke-width="1.5"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>${escapeHtml(pv.n)}<span style="flex:1"></span><button class="lrow-menu" onclick="_entPrivMenu('${e.id}',${i},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div><div class="cpriv-perms">${pv.p.map(([lbl,kind])=>`<span class="perm-chip ${kind}">${escapeHtml(lbl)}</span>`).join('')}</div></div>`).join(''):`<div class="placeholder" style="padding:24px">No custom privileges.</div>`}</div>`;
 }
 function apiTab(e,endpoints){
   return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">API contracts<span class="dsec-sub">${endpoints.length} endpoints exposing this entity</span></div></div>
@@ -2800,6 +2804,173 @@ function openPublish(id){
 }
 function closeModal(){ $('modalScrim').classList.remove('open'); $('modalScrim').innerHTML=''; }
 function confirmPublish(id){ const e=ENTITIES.find(x=>x.id===id); if(e) e.status='Published'; closeModal(); toast('“'+(e?e.name:'Entity')+'” published','ok'); renderEntityDetail(id); }
+
+/* ══════════════════════════════════════════════════════════════
+   ENTITY DETAIL — deep CRUD: relationships · privileges · tables
+   ══════════════════════════════════════════════════════════════ */
+function _entById(id){ return ENTITIES.find(x=>x.id===id); }
+function _entEdited(e){ if(e.status==='Published') e.status='Pending changes'; e.updated='just now'; }
+const _CARD_OPTS=[['one-to-one','1:1 · One to one'],['one-to-many','1:N · One to many'],['many-to-one','N:1 · Many to one'],['many-to-many','N:M · Many to many']];
+const _REL_DIRS=['Outgoing','Incoming','Bidirectional'];
+const _REL_DEL=['Restrict','Set null','Cascade','No action'];
+
+/* ── Relationships CRUD (entity kind only; table/reference stay read-only) ── */
+function _relAdd(kind,id){ if(kind!=='entity'){ toast('Add relationship — available on entities'); return; } openRelForm(id,null); }
+function _relOpen(kind,id,i){ if(kind!=='entity'){ toast('Relationship detail — prototype'); return; } openRelDetail(id,i); }
+function openRelForm(id,idx){
+  const e=_entById(id); if(!e) return; const r=(idx!=null&&idx>=0)?(e.rels||[])[idx]:null;
+  const names=ENTITIES.filter(x=>x.id!==id).map(x=>x.name); if(r&&r.t&&!names.includes(r.t)) names.unshift(r.t);
+  const k=r?r.k:'one-to-many', dir=r?(r.dir||'Outgoing'):'Outgoing', del=r?(r.del||(r.s?'Restrict':'Set null')):'Restrict', strong=r?!!r.s:true;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${r?'Edit relationship':'Add relationship'}</div><div class="so-internal">${escapeHtml(e.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Related entity',null,`<select class="minput" id="rel_target">${names.map(n=>`<option ${r&&r.t===n?'selected':''}>${escapeHtml(n)}</option>`).join('')||'<option>—</option>'}</select>`,1)}
+      ${_RIF('Cardinality',null,`<select class="minput" id="rel_card">${_CARD_OPTS.map(([v,l])=>`<option value="${v}" ${k===v?'selected':''}>${l}</option>`).join('')}</select>`)}
+      ${_RIF('Foreign key',null,`<input class="minput md-name-mono" id="rel_via" value="${r&&r.via?escapeHtml(r.via):''}" placeholder="e.g. account_id" autocomplete="off">`,0,'field')}
+      ${_RIF('Direction',null,`<select class="minput" id="rel_dir">${_REL_DIRS.map(d=>`<option ${dir===d?'selected':''}>${d}</option>`).join('')}</select>`)}
+      ${_RIF('On delete',null,`<select class="minput" id="rel_del">${_REL_DEL.map(d=>`<option ${del===d?'selected':''}>${d}</option>`).join('')}</select>`)}
+      ${_RIF('Description',null,`<textarea class="mtextarea" id="rel_desc" placeholder="What this relationship represents.">${r&&r.desc?escapeHtml(r.desc):''}</textarea>`)}
+      <label class="mde-check"><input type="checkbox" id="rel_strong" ${strong?'checked':''}> Strong (enforced foreign key)</label>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveRel('${id}',${idx==null?'null':idx})">${_MDIC.plus}${r?'Save changes':'Add relationship'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('rel_target'); if(el)el.focus();},60);
+}
+function saveRel(id,idx){
+  const e=_entById(id); if(!e) return; e.rels=e.rels||[];
+  const t=$('rel_target').value; if(!t){ toast('Pick a related entity'); return; }
+  const rel={ t, k:$('rel_card').value, s:$('rel_strong').checked, via:($('rel_via').value||'').trim().toLowerCase().replace(/\s+/g,'_'), dir:$('rel_dir').value, del:$('rel_del').value, desc:($('rel_desc').value||'').trim() };
+  if(idx!=null&&idx>=0&&e.rels[idx]) e.rels[idx]=rel; else e.rels.unshift(rel);
+  _entEdited(e); closeSlideout(); toast('Relationship '+(idx!=null?'updated':'to “'+t+'” added'),'ok'); renderEntityDetail(id);
+}
+function openRelDetail(id,idx){
+  const e=_entById(id); if(!e) return; const r=(e.rels||[])[idx]; if(!r) return;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${escapeHtml(e.name)} ${_ARROW} ${escapeHtml(r.t)}</div><div class="so-internal">Relationship</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${r.desc?`<div class="so-desc">${escapeHtml(r.desc)}</div>`:''}
+      <div class="so-fields">
+        ${F('Related entity',_entityChip('',r.t))}${F('Cardinality',`<span class="card-badge">${_cardShort(r.k)}</span>`)}
+        ${F('Foreign key',r.via?`<span class="mono">${escapeHtml(r.via)}</span>`:'<span style="color:var(--t3)">—</span>')}
+        ${F('Direction',escapeHtml(r.dir||'Outgoing'))}${F('Strength',r.s?'<span class="cv-yes">Strong</span>':'<span class="cv-no">Weak</span>')}${F('On delete',escapeHtml(r.del||(r.s?'Restrict':'Set null')))}
+      </div>
+    </div>
+    <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmRemoveRel('${id}',${idx})">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openRelForm('${id}',${idx})">${_MDIC.edit} Edit</button></div>`;
+  _soOpen();
+}
+function confirmRemoveRel(id,idx){ const e=_entById(id); if(!e) return; const r=(e.rels||[])[idx]; if(!r) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove relationship?</div></div>
+    <div class="modal-body">This removes the link <b>${escapeHtml(e.name)} → ${escapeHtml(r.t)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeRel('${id}',${idx})">Remove</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeRel(id,idx){ const e=_entById(id); if(!e) return; (e.rels||[]).splice(idx,1); _entEdited(e); closeModal(); closeSlideout(); toast('Relationship removed','ok'); renderEntityDetail(id); }
+
+/* ── Custom permissions CRUD ── */
+function openPermForm(id,idx){
+  const e=_entById(id); if(!e) return; const p=(idx!=null&&idx>=0)?(e.cperms||[])[idx]:null; const CTRL=['Data','Screen','API'];
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${p?'Edit permission':'Add permission'}</div><div class="so-internal">${escapeHtml(e.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="perm_name" value="${p?escapeHtml(p.n):''}" placeholder="e.g. Read revenue" autocomplete="off">`,1,'string')}
+      ${_RIF('Controls',null,`<select class="minput" id="perm_ctrl">${CTRL.map(c=>`<option ${(p?p.c===c:c==='Data')?'selected':''}>${c}</option>`).join('')}</select>`)}
+      <div class="so-desc" style="margin:6px 0 0">Custom permissions are granular controls you grant through privileges below.</div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveCustomPerm('${id}',${idx==null?'null':idx})">${_MDIC.plus}${p?'Save changes':'Add permission'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('perm_name'); if(el)el.focus();},60);
+}
+function saveCustomPerm(id,idx){ const e=_entById(id); if(!e) return; e.cperms=e.cperms||[];
+  const n=($('perm_name').value||'').trim(); if(!n){ toast('Enter a name'); return; } const c=$('perm_ctrl').value;
+  if(idx!=null&&idx>=0&&e.cperms[idx]) e.cperms[idx]={n,c}; else e.cperms.unshift({n,c});
+  _entEdited(e); closeSlideout(); toast('Permission “'+n+'” '+(idx!=null?'updated':'added'),'ok'); renderEntityDetail(id);
+}
+function _entPermMenu(id,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit',act:`openPermForm('${id}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove',act:`confirmRemovePerm('${id}',${idx})`,danger:true},
+  ]); }
+function confirmRemovePerm(id,idx){ const e=_entById(id); if(!e) return; const p=(e.cperms||[])[idx]; if(!p) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(p.n)}”?</div></div>
+    <div class="modal-body">This removes the custom permission from <b>${escapeHtml(e.name)}</b>. Privileges that reference it keep their other permissions.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeCustomPerm('${id}',${idx})">Remove</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeCustomPerm(id,idx){ const e=_entById(id); if(!e) return; (e.cperms||[]).splice(idx,1); _entEdited(e); closeModal(); toast('Permission removed','ok'); renderEntityDetail(id); }
+
+/* ── Custom privileges CRUD ── */
+function _availPerms(e){ const base=['Read','Create','Update','Delete','List'].map(l=>[l,'']);
+  const cust=(e.cperms||[]).map(p=>[p.n, p.c==='Data'?'data':(p.c==='API'?'api':'')]); return base.concat(cust); }
+function openPrivForm(id,idx){
+  const e=_entById(id); if(!e) return; const pv=(idx!=null&&idx>=0)?(e.cprivs||[])[idx]:null; const avail=_availPerms(e);
+  const sel=new Set((pv?pv.p:[]).map(x=>x[0]));
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${pv?'Edit privilege':'Add privilege'}</div><div class="so-internal">${escapeHtml(e.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="priv_name" value="${pv?escapeHtml(pv.n):''}" placeholder="e.g. Account manager" autocomplete="off">`,1,'string')}
+      <div class="ri-field"><div class="ri-flabel"><span class="ri-fdisp">Permissions</span><span class="ri-ftype">${avail.length}</span></div>
+        <div class="priv-pick">${avail.map(([lbl,kind])=>`<label class="priv-pick-opt"><input type="checkbox" class="priv-perm-cb" data-lbl="${escapeHtml(lbl)}" data-kind="${kind}" ${sel.has(lbl)?'checked':''}><span class="perm-chip ${kind}">${escapeHtml(lbl)}</span></label>`).join('')}</div></div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveCustomPriv('${id}',${idx==null?'null':idx})">${_MDIC.plus}${pv?'Save changes':'Add privilege'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('priv_name'); if(el)el.focus();},60);
+}
+function saveCustomPriv(id,idx){ const e=_entById(id); if(!e) return; e.cprivs=e.cprivs||[];
+  const n=($('priv_name').value||'').trim(); if(!n){ toast('Enter a name'); return; }
+  const p=[...document.querySelectorAll('.priv-perm-cb')].filter(cb=>cb.checked).map(cb=>[cb.getAttribute('data-lbl'),cb.getAttribute('data-kind')]);
+  if(!p.length){ toast('Pick at least one permission'); return; }
+  if(idx!=null&&idx>=0&&e.cprivs[idx]) e.cprivs[idx]={n,p}; else e.cprivs.unshift({n,p});
+  _entEdited(e); closeSlideout(); toast('Privilege “'+n+'” '+(idx!=null?'updated':'added'),'ok'); renderEntityDetail(id);
+}
+function _entPrivMenu(id,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit',act:`openPrivForm('${id}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove',act:`confirmRemovePriv('${id}',${idx})`,danger:true},
+  ]); }
+function confirmRemovePriv(id,idx){ const e=_entById(id); if(!e) return; const pv=(e.cprivs||[])[idx]; if(!pv) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(pv.n)}”?</div></div>
+    <div class="modal-body">This removes the custom privilege from <b>${escapeHtml(e.name)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeCustomPriv('${id}',${idx})">Remove</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeCustomPriv(id,idx){ const e=_entById(id); if(!e) return; (e.cprivs||[]).splice(idx,1); _entEdited(e); closeModal(); toast('Privilege removed','ok'); renderEntityDetail(id); }
+
+/* ── Entity tables CRUD (scoped to the entity) ── */
+function openEntTableForm(id,idx){
+  const e=_entById(id); if(!e) return; const t=(idx!=null&&idx>=0)?(e.tables||[])[idx]:null; const hasPrimary=(e.tables||[]).some((x,xi)=>x.role==='Primary'&&xi!==idx);
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${t?'Edit table':'Add table'}</div><div class="so-internal">${escapeHtml(e.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="etb_name" value="${t?escapeHtml(t.alias):''}" placeholder="e.g. Account address" autocomplete="off">`,1,'string')}
+      ${_RIF('Role',null,`<select class="minput" id="etb_role"><option ${t&&t.role==='Primary'?'selected':''} ${hasPrimary?'disabled':''}>Primary${hasPrimary?' (already set)':''}</option><option ${(t?t.role==='Secondary':true)?'selected':''}>Secondary</option></select>`)}
+      ${_RIF('Columns',null,`<input class="minput" id="etb_cols" type="number" min="1" max="60" value="${t?t.cols:8}">`,0,'int')}
+      ${_RIF('Rows',null,`<input class="minput" id="etb_rows" value="${t?escapeHtml(t.rows):''}" placeholder="e.g. 512K" autocomplete="off">`,0,'string')}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveEntTable('${id}',${idx==null?'null':idx})">${_MDIC.plus}${t?'Save changes':'Add table'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('etb_name'); if(el)el.focus();},60);
+}
+function saveEntTable(id,idx){
+  const e=_entById(id); if(!e) return; e.tables=e.tables||[];
+  const alias=($('etb_name').value||'').trim(); if(!alias){ toast('Enter a name'); return; }
+  const roleRaw=$('etb_role').value; const role=/Primary/.test(roleRaw)?'Primary':'Secondary';
+  const cols=Math.max(1,parseInt($('etb_cols').value,10)||8); const rows=($('etb_rows').value||'').trim()||'0';
+  if(idx!=null&&idx>=0&&e.tables[idx]){ const t=e.tables[idx]; t.alias=alias; t.role=role; t.cols=cols; t.rows=rows; }
+  else { let base=e.id+'_'+_slug(alias).replace(/-/g,'_'), uid=base, k=2; while(e.tables.find(t=>t.id===uid)) uid=base+'_'+(k++); e.tables.push({id:uid, alias, role, cols, rows}); }
+  _entEdited(e); closeSlideout(); toast('Table “'+alias+'” '+(idx!=null?'updated':'added'),'ok'); renderEntityDetail(id);
+}
+function _entTblMenu(id,idx,btn){ const e=_entById(id); const t=e?(e.tables||[])[idx]:null; if(!t) return;
+  _mdKebab(btn,[
+    _tableExists(t.id)?{ic:_RM_IC.open,label:'Open table',act:`navigate('tables/${t.id}')`}:null,
+    {ic:_MDIC.edit,label:'Edit',act:`openEntTableForm('${id}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove from entity',act:`confirmRemoveEntTbl('${id}',${idx})`,danger:true},
+  ]); }
+function confirmRemoveEntTbl(id,idx){ const e=_entById(id); if(!e) return; const t=(e.tables||[])[idx]; if(!t) return;
+  if(t.role==='Primary'){ toast('Set another table as primary before removing this one'); return; }
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(t.alias)}”?</div></div>
+    <div class="modal-body">This removes the table from <b>${escapeHtml(e.name)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeEntTbl('${id}',${idx})">Remove table</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeEntTbl(id,idx){ const e=_entById(id); if(!e) return; const t=(e.tables||[])[idx]; const nm=t?t.alias:'Table'; (e.tables||[]).splice(idx,1); _entEdited(e); closeModal(); toast('“'+nm+'” removed','ok'); renderEntityDetail(id); }
 let _toastTimer;
 function toast(msg, kind){
   let t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
