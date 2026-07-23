@@ -2333,6 +2333,12 @@ html.theme-light .rel-cardb{fill:#fff}
 .imp-upd b{color:var(--tag-informative-fg,#2563eb)}
 .imp-rem b{color:var(--field-text-error,#dc2626)}
 .imp-done{text-align:center; padding:24px 0}
+
+/* ── Model About: editable stewards ── */
+.md-stewards{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.md-steward-chip{display:inline-flex; align-items:center; gap:6px; background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:20px; padding:2px 8px 2px 3px; font-size:12px; color:var(--t1)}
+.md-steward-chip .md-tag-x{border:none; background:none; color:var(--t3); cursor:pointer; font-size:14px; line-height:1; padding:0}
+.md-steward-chip .md-tag-x:hover{color:var(--field-text-error,#dc2626)}
 </style>
 </head>
 <body>
@@ -4712,11 +4718,12 @@ function _mdDiagram(m, md){
 /* ── Model DETAIL — render ── */
 function renderModelDetail(id){
   const m=_model(id); if(!m){ location.hash='#/models'; return; }
+  if(!m.internal) m.internal=_slug(m.name);
   _dsfRerender=()=>renderModelDetail(modelDetailState.id);
   const md=_md(m); const tab=modelDetailState.tab; const pending=m.status!=='Published';
   const tabs=[['overview','Overview',null],['entities','Entities',md.counts.entities],['tables','Tables',md.counts.tables],['components','Components',md.counts.components]];
   const acts=`<span class="md-userav" title="You">SB</span>
-    <button class="btn md-hbtn" onclick="setModelTab('overview');modelDetailState.sec.about=true;renderModelDetail('${id}');toast('Edit the basics in Overview ▸ About')">${_MDIC.edit} Edit</button>
+    <button class="btn md-hbtn" onclick="setModelTab('overview');modelDetailState.sec.about=true;renderModelDetail('${id}')">${_MDIC.edit} Edit</button>
     <button class="btn btn-primary md-hbtn" onclick="publishModel('${id}')">${_MDIC.pub} Publish</button>
     <button class="md-icobtn" onclick="event.stopPropagation();openRowMenu('models','${id}',this)" aria-label="More actions">${_MDIC.dots}</button>`;
   const body = tab==='entities'?_mdEntitiesTab(m,md) : tab==='tables'?_mdTablesTab(m,md) : tab==='components'?_mdComponentsTab(m,md) : _mdOverview(m,md);
@@ -4724,10 +4731,10 @@ function renderModelDetail(id){
     <div class="md-crumbrow">${_crumbs([{label:'Models',href:'#/models'},{label:m.name}])}<div class="md-pageacts">${acts}</div></div>
     <div class="detail-head md-head"><div class="dh-l">
       <div class="dh-title-row"><span class="dh-title">${escapeHtml(m.name)}</span>${_stPill(m.status)}<span class="chip md-origin-chip">${escapeHtml(m.origin)}</span></div>
-      <div class="rfd-internal"><code>model.${escapeHtml(_slug(m.name))}</code><span class="rfd-lock" title="Internal name — cannot be changed after creation"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span></div>
+      <div class="rfd-internal"><code>model.${escapeHtml(m.internal)}</code><span class="rfd-lock" title="Internal name — cannot be changed after creation"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg></span></div>
       <div class="dh-desc" style="margin-top:8px">${escapeHtml(m.desc)}</div>
       <div class="md-meta"><span class="lrow-owner">${av(P(m.owner),'sm')}${escapeHtml(P(m.owner).n)}</span><span class="md-dot">·</span><span>${escapeHtml(m.origin)}</span>${m.tags&&m.tags.length?`<span class="md-dot">·</span>${m.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}`:''}</div>
-    </div><div class="dh-actions"><button class="btn md-settings" onclick="toast('Model settings')">${_MDIC.gear} Settings</button><button class="btn" style="width:40px;padding:0" aria-label="More actions" onclick="_detailKebab(this)"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></div></div>
+    </div><div class="dh-actions"><button class="btn md-settings" onclick="openModelSettings('${id}')">${_MDIC.gear} Settings</button><button class="btn" style="width:40px;padding:0" aria-label="More actions" onclick="_detailKebab(this)"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></div></div>
     <div class="mtabs md-tabs">${tabs.map(([tid,label,c])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setModelTab('${tid}')">${label}${c!=null?`<span class="mtab-c">${c}</span>`:''}</button>`).join('')}</div>
     <div id="mpanel">${body}</div>`;
   if(tab==='overview' && modelDetailState.sec.diagram && md.counts.entities) _diagInit();
@@ -4735,6 +4742,33 @@ function renderModelDetail(id){
 function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; renderModelDetail(modelDetailState.id); }
 function mdSection(k){ modelDetailState.sec[k]=!modelDetailState.sec[k]; renderModelDetail(modelDetailState.id); }
 function publishModel(id){ const m=_model(id); if(m){ m.status='Published'; _mdReset(id); } toast('“'+(m?m.name:'Model')+'” published','ok'); renderModelDetail(id); }
+function openModelSettings(id){
+  const m=_model(id); if(!m) return;
+  const row=(t,d,ctrl)=>`<div class="rset-row"><div class="rset-row-l"><span class="rset-row-t">${t}</span><span class="rset-row-d">${d}</span></div><div>${ctrl}</div></div>`;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">Model settings</div><div class="so-internal">${escapeHtml(m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body"><div class="rset">
+      ${row('Display name','Shown across the catalog and to the LLM.',`<input class="minput" style="width:210px" value="${escapeHtml(m.name)}" onchange="mdSetField('${m.id}','name',this.value);openModelSettings('${m.id}')">`)}
+      ${row('Internal name','Locked after creation.',`<span class="mono" style="color:var(--t3)">model.${escapeHtml(m.internal||_slug(m.name))}</span>`)}
+      ${row('Category','Groups the model in the catalog.',`<select class="mselect" style="width:160px" onchange="mdSetField('${m.id}','category',this.value)">${[m.category].concat(MD_CATS.filter(c=>c!==m.category)).map(c=>`<option ${c===m.category?'selected':''}>${escapeHtml(c)}</option>`).join('')}</select>`)}
+      ${row('Owner','Accountable for this model.',`<select class="mselect" style="width:160px" onchange="mdSetOwner('${m.id}',this.value);openModelSettings('${m.id}')">${_mdOwners().map(k=>`<option value="${k}" ${k===m.owner?'selected':''}>${escapeHtml(P(k).n)}</option>`).join('')}</select>`)}
+      ${row('Status','Lifecycle state.',_stPill(m.status))}
+      <div class="rset-danger"><div class="rset-danger-h">Danger zone</div>
+        <div class="rset-row" style="border:none;padding:6px 0"><div class="rset-row-l"><span class="rset-row-t">Archive model</span><span class="rset-row-d">Hide from the catalog; keep for history.</span></div><button class="btn" onclick="mdArchive('${m.id}')">Archive</button></div>
+        <div class="rset-row" style="border:none;padding:6px 0"><div class="rset-row-l"><span class="rset-row-t">Delete model</span><span class="rset-row-d">Permanently remove ${escapeHtml(m.name)} and its ${m.entities} entities.</span></div><button class="btn" style="color:var(--field-text-error,#dc2626);border-color:rgba(220,38,38,.3)" onclick="mdDelete('${m.id}')">Delete</button></div>
+      </div>
+    </div></div>
+    <div class="so-foot"><span style="flex:1"></span><button class="btn btn-primary" onclick="closeSlideout()">Done</button></div>`;
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
+function mdArchive(id){ const m=_model(id); if(m) m.status='Archived'; closeSlideout(); toast('“'+(m?m.name:'Model')+'” archived','ok'); renderModelDetail(id); }
+function mdDelete(id){ const m=_model(id); const nm=m?m.name:'Model'; closeSlideout();
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5 1 13.5h14L8 1.5Z"/><path d="M8 6.5v3M8 11.5h.01" stroke-linecap="round"/></svg></div><div class="modal-title">Delete “${escapeHtml(nm)}”?</div></div>
+    <div class="modal-body">This permanently removes the model and its entities, tables and components. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" style="background:var(--field-text-error,#dc2626);border-color:transparent" onclick="_mdDoDelete('${id}')">Delete model</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _mdDoDelete(id){ const i=MODELS.findIndex(x=>x.id===id); if(i>=0) MODELS.splice(i,1); closeModal(); toast('Model deleted','ok'); location.hash='#/models'; }
 function _mdRefocus(fid,v){ setTimeout(()=>{ const el=$(fid); if(el){ el.focus(); el.setSelectionRange(v.length,v.length); } },0); }
 
 /* ── Overview ── */
@@ -4756,24 +4790,35 @@ function _mdOverview(m,md){
   ];
   return `<div class="md-tiles">${tiles.join('')}</div>
     ${_mdSec('diagram','Model diagram',`${md.counts.entities} entities · ${md.relations} relations`,s.diagram, md.counts.entities?_mdDiagram(m,md):'<div class="placeholder" style="padding:28px">No entities to diagram yet.</div>')}
-    ${_mdSec('about','About this model',`<a class="md-sec-link" onclick="toast('Editing the basics inline')">Edit the basics inline</a>`,s.about,_mdAbout(m))}
+    ${_mdSec('about','About this model',`<span style="font-size:11.5px;color:var(--t3)">Changes save automatically</span>`,s.about,_mdAbout(m))}
     ${_mdSec('activity','Recent activity','',s.activity,_mdActivity(m,md))}`;
 }
+const MD_CATS=['CRM','Finance','Operations','Compliance','Business','Analytical'];
+const _mdOwners=()=>Object.keys(PEOPLE).filter(k=>k!=='svc'&&k!=='dp');
+function _mdEdited(m){ if(m.status==='Published') m.status='Pending changes'; m.updated='just now'; }
+function mdSetField(id,k,v){ const m=_model(id); if(!m) return; m[k]=(k==='name'?v.trim():v); _mdEdited(m); renderModelDetail(id); }
+function mdAddTag(id,v){ v=(v||'').trim().toLowerCase().replace(/\s+/g,'-'); if(!v) return; const m=_model(id); m.tags=m.tags||[]; if(!m.tags.includes(v)) m.tags.push(v); _mdEdited(m); renderModelDetail(id); _mdRefocus('mdTagIn',''); }
+function mdRemoveTag(id,t){ const m=_model(id); m.tags=(m.tags||[]).filter(x=>x!==t); _mdEdited(m); renderModelDetail(id); }
+function mdSetOwner(id,k){ const m=_model(id); m.owner=k; _mdEdited(m); renderModelDetail(id); }
+function mdAddSteward(id){ const m=_model(id); m.collab=m.collab||[]; const avail=_mdOwners().filter(k=>k!==m.owner&&!m.collab.includes(k)); if(!avail.length){ toast('Everyone is already a steward'); return; } m.collab.push(avail[0]); _mdEdited(m); renderModelDetail(id); }
+function mdRemoveSteward(id,k){ const m=_model(id); m.collab=(m.collab||[]).filter(x=>x!==k); _mdEdited(m); renderModelDetail(id); }
 function _mdAbout(m){
-  const over=m.desc.length; const lim=180; const cls=over>lim?'over':'';
+  const over=(m.desc||'').length; const lim=180; const cls=over>lim?'over':'';
+  const cats=[m.category].concat(MD_CATS.filter(c=>c!==m.category));
+  const stewards=(m.collab||[]);
   return `<div class="md-about">
     <div class="md-form-row">
-      <div class="mfield"><label class="mfield-l">Display name</label><input class="minput" value="${escapeHtml(m.name)}" onchange="toast('Display name is read-only in this prototype')"></div>
-      <div class="mfield"><label class="mfield-l">Name</label><div class="md-name-input"><span class="md-name-pre">model.</span><input class="minput md-name-mono" value="${escapeHtml(_slug(m.name))}" onchange="toast('Internal name is read-only in this prototype')"></div></div>
+      <div class="mfield"><label class="mfield-l">Display name</label><input class="minput" value="${escapeHtml(m.name)}" onchange="mdSetField('${m.id}','name',this.value)"></div>
+      <div class="mfield"><label class="mfield-l">Internal name <span class="so-locked" style="font-weight:400"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>locked</span></label><div class="md-name-input"><span class="md-name-pre">model.</span><input class="minput md-name-mono" value="${escapeHtml(m.internal||_slug(m.name))}" disabled style="opacity:.65"></div></div>
     </div>
-    <div class="mfield"><label class="mfield-l">Description</label><textarea class="mtextarea" oninput="_mdCount(this)">${escapeHtml(m.desc)}</textarea><div class="md-field-foot"><span class="md-field-hint">Feeds the catalog and agent context.</span><span class="md-count ${cls}" id="mdDescCount">${over} / ${lim}</span></div></div>
+    <div class="mfield"><label class="mfield-l">Description</label><textarea class="mtextarea" oninput="_mdCount(this)" onchange="mdSetField('${m.id}','desc',this.value)">${escapeHtml(m.desc||'')}</textarea><div class="md-field-foot"><span class="md-field-hint">Feeds the catalog and agent context.</span><span class="md-count ${cls}" id="mdDescCount">${over} / ${lim}</span></div></div>
     <div class="md-form-row">
-      <div class="mfield"><label class="mfield-l">Category</label><select class="mselect"><option>${escapeHtml(m.category)}</option><option>CRM</option><option>Finance</option><option>Operations</option><option>Compliance</option></select></div>
-      <div class="mfield"><label class="mfield-l">Tags</label><div class="md-tagbox">${(m.tags||[]).map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="toast('Tags are read-only in this prototype')" aria-label="Remove ${escapeHtml(t)}">×</button></span>`).join('')}<input class="md-tag-in" placeholder="Add tag…" onkeydown="if(event.key==='Enter'){toast('Tags are read-only in this prototype');this.value=''}"></div></div>
+      <div class="mfield"><label class="mfield-l">Category</label><select class="mselect" onchange="mdSetField('${m.id}','category',this.value)">${cats.map(c=>`<option ${c===m.category?'selected':''}>${escapeHtml(c)}</option>`).join('')}</select></div>
+      <div class="mfield"><label class="mfield-l">Tags</label><div class="md-tagbox">${(m.tags||[]).map(t=>`<span class="md-tag-chip">${escapeHtml(t)}<button class="md-tag-x" onclick="mdRemoveTag('${m.id}','${escapeHtml(t)}')" aria-label="Remove ${escapeHtml(t)}">×</button></span>`).join('')}<input id="mdTagIn" class="md-tag-in" placeholder="Add tag…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();mdAddTag('${m.id}',this.value)}"></div></div>
     </div>
     <div class="md-form-row">
-      <div class="mfield"><label class="mfield-l">Owner</label><div class="md-owner-sel"><span class="md-owner-av">${av(P(m.owner),'sm')}</span><span class="md-owner-n">${escapeHtml(P(m.owner).n)}</span>${_MDIC.chevd}</div></div>
-      <div class="mfield"><label class="mfield-l">Stewards</label><button class="md-add-steward" onclick="toast('Add stewards')">${_MDIC.plus} Add stewards</button></div>
+      <div class="mfield"><label class="mfield-l">Owner</label><select class="mselect" onchange="mdSetOwner('${m.id}',this.value)">${_mdOwners().map(k=>`<option value="${k}" ${k===m.owner?'selected':''}>${escapeHtml(P(k).n)}</option>`).join('')}</select></div>
+      <div class="mfield"><label class="mfield-l">Stewards</label><div class="md-stewards">${stewards.map(k=>`<span class="md-steward-chip">${av(P(k),'sm')}${escapeHtml(P(k).n)}<button class="md-tag-x" onclick="mdRemoveSteward('${m.id}','${k}')" aria-label="Remove steward">×</button></span>`).join('')}<button class="md-add-steward" onclick="mdAddSteward('${m.id}')">${_MDIC.plus} Add steward</button></div></div>
     </div></div>`;
 }
 function _mdCount(el){ const c=$('mdDescCount'); if(c){ const n=el.value.length; c.textContent=n+' / 180'; c.classList.toggle('over',n>180); } }
