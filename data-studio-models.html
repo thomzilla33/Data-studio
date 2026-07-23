@@ -3402,10 +3402,33 @@ function dataPerPage(tid,n){ dataState.perPage=+n; dataState.page=1; renderTable
 function dataSelToggle(tid,id){ const s=dataState; s.sel=s.sel||new Set(); s.sel.has(id)?s.sel.delete(id):s.sel.add(id); renderTableDetail(tid); }
 function dataSelAll(tid,ids){ const s=dataState; s.sel=s.sel||new Set(); const all=ids.length&&ids.every(i=>s.sel.has(i)); ids.forEach(i=>all?s.sel.delete(i):s.sel.add(i)); renderTableDetail(tid); }
 function dataSelClear(tid){ dataState.sel=new Set(); renderTableDetail(tid); }
+function openTblFilters(id){
+  const t=_table(id); const cols=t.cols.slice(0,8); const cf=dataState.colFilter||{col:(cols[0]||{n:''}).n,text:''};
+  $('slideout').innerHTML=`
+    <div class="so-head"><div class="so-title">Filters</div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body"><div class="flt-sec"><div class="flt-sec-h">Column contains</div>
+      <div class="mfield"><label class="mfield-l">Column</label><select class="mselect" id="tfCol">${cols.map(c=>`<option value="${escapeHtml(c.n)}" ${c.n===cf.col?'selected':''}>${escapeHtml(c.d||c.n)}</option>`).join('')}</select></div>
+      <div class="mfield" style="margin-top:10px"><label class="mfield-l">Contains</label><input class="minput" id="tfText" value="${escapeHtml(cf.text||'')}" placeholder="e.g. active" autocomplete="off"></div></div></div>
+    <div class="so-foot"><button class="btn" onclick="clearTblFilters('${id}')">Clear all</button><button class="btn btn-primary" onclick="applyTblFilters('${id}')">Apply filters</button></div>`;
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
+function applyTblFilters(id){ dataState.colFilter={col:$('tfCol').value,text:($('tfText').value||'').trim()}; dataState.page=1; closeSlideout(); renderTableDetail(id); }
+function clearTblFilters(id){ dataState.colFilter=null; dataState.page=1; closeSlideout(); renderTableDetail(id); }
+function _tblDataKebab(btn,id){ _openPop(btn, `
+  <button class="pop-item" onclick="_closePop();openImportWizard('${id}','table')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2M5 5l3-3 3 3M3 11v2h10v-2"/></svg>Import records…</button>
+  <button class="pop-item" onclick="_closePop();toast('Exported records to CSV','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>Export all as CSV</button>
+  <button class="pop-item" onclick="_closePop();toast('Exported records to JSON','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4V2Z"/><path d="M6.5 8h3M6.5 10.5h3"/></svg>Export all as JSON</button>`); }
+function openTblBulkDelete(id,n){
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5 1 13.5h14L8 1.5Z"/><path d="M8 6.5v3M8 11.5h.01" stroke-linecap="round"/></svg></div><div class="modal-title">Delete ${n} record${n===1?'':'s'}?</div></div>
+    <div class="modal-body">This permanently removes the selected record${n===1?'':'s'} from live tenant data. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" style="background:var(--field-text-error,#dc2626);border-color:transparent" onclick="dataSelClear('${id}');closeModal();toast('${n} record${n===1?'':'s'} deleted','ok')">Delete</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
 function dataTab(t){
   const s=dataState; const rows=_mockRows(t); const q=(s.search||'').toLowerCase(); const per=s.perPage||25;
   const cols=t.cols.slice(0,6);
   let filtered=q?rows.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):rows.slice();
+  if(s.colFilter&&s.colFilter.text){ const cf=s.colFilter; filtered=filtered.filter(r=>String(r[cf.col]||'').toLowerCase().includes(cf.text.toLowerCase())); }
   if(s.sortCol){ const c=s.sortCol; filtered.sort((a,b)=>{ const va=(''+(c==='__id'?a.__id:(a[c]||''))).toLowerCase(), vb=(''+(c==='__id'?b.__id:(b[c]||''))).toLowerCase(); const cmp=va<vb?-1:va>vb?1:0; return s.sortDir==='desc'?-cmp:cmp; }); }
   const total=filtered.length, pages=Math.max(1,Math.ceil(total/per)), page=Math.min(Math.max(1,s.page||1),pages);
   const start=(page-1)*per, end=Math.min(start+per,total), vis=filtered.slice(start,end);
@@ -3417,16 +3440,16 @@ function dataTab(t){
   return `<div class="ttd-head">
      <div class="ttd-head-l">
        <label class="dsf-search" style="max-width:250px;height:34px"><svg class="dsf-search-ic" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="dataSearch" type="text" placeholder="Search records…" value="${escapeHtml(s.search||'')}" oninput="dataSearchInput('${t.id}',this.value)" autocomplete="off"></label>
-       <button class="btn ttd-tool" style="height:34px" onclick="toast('Advanced filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg> Filters</button>
+       <button class="btn ttd-tool ${s.colFilter&&s.colFilter.text?'has-active':''}" style="height:34px" onclick="openTblFilters('${t.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg> Filters${s.colFilter&&s.colFilter.text?'<span class="mk-fcount">1</span>':''}</button>
      </div>
      <div class="ttd-head-r">
        <span class="ttd-fresh">Updated ${escapeHtml(t.updated)}</span>
        <button class="tb-ico ttd-iconbtn" title="Refresh data" aria-label="Refresh" onclick="dataRefresh('${t.id}')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3v3h-3M3 13v-3h3M13 6A5 5 0 0 0 4 4.5M3 10a5 5 0 0 0 9 1.5"/></svg></button>
-       <button class="tb-ico ttd-iconbtn" title="More" aria-label="More" onclick="toast('Import · Export · Columns — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
+       <button class="tb-ico ttd-iconbtn" title="More" aria-label="More" onclick="_tblDataKebab(this,'${t.id}')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
        <button class="btn btn-primary" style="height:34px" onclick="openAddRecord('${t.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add record</button>
      </div>
    </div>
-   ${selN?`<div class="ttd-bulk"><span class="ttd-bulk-n">${selN} selected</span><button class="ttd-bulk-x" onclick="dataSelClear('${t.id}')">Deselect all</button><span class="ttd-bulk-sep"></span><button class="ttd-bulk-a" onclick="toast('Exported ${selN} rows','ok')">Export selected</button><button class="ttd-bulk-a danger" onclick="toast('Delete — coming soon')">Delete</button></div>`:''}
+   ${selN?`<div class="ttd-bulk"><span class="ttd-bulk-n">${selN} selected</span><button class="ttd-bulk-x" onclick="dataSelClear('${t.id}')">Deselect all</button><span class="ttd-bulk-sep"></span><button class="ttd-bulk-a" onclick="toast('Exported ${selN} rows','ok')">Export selected</button><button class="ttd-bulk-a danger" onclick="openTblBulkDelete('${t.id}',${selN})">Delete</button></div>`:''}
    <div class="ttd-table">
      <div class="ttd-thead" style="${gt}">
        ${cb(allSel,`dataSelAll('${t.id}',${JSON.stringify(ids).replace(/"/g,'&quot;')})`)}
@@ -4019,27 +4042,27 @@ function openRefBulkDelete(id){
 function applyRefBulkDelete(id){ const r=_ref(id); const sel=refDetailState.sel||new Set(); const n=sel.size; r.values=r.values.filter(v=>!sel.has(v.code)); if(r.status==='Published') r.status='Draft'; refDetailState.sel=new Set(); closeModal(); toast(n+' item'+(n===1?'':'s')+' deleted','ok'); renderReferenceDetail(id); }
 /* ── Reference Data: import wizard (5 steps) ── */
 let _impState={step:0,format:'CSV',strategy:'append'};
-function openImportWizard(id){ _impState={step:0,format:'CSV',strategy:'append'}; _renderImport(id); }
+function openImportWizard(id,kind){ _impState={step:0,format:'CSV',strategy:'append',kind:kind||'reference'}; _renderImport(id); }
 function _impNav(id,d){ _impState.step=Math.max(0,Math.min(4,_impState.step+d)); _renderImport(id); }
 function _impSet(k,v){ _impState[k]=v; }
 function _renderImport(id){
-  const r=_ref(id); const STEPS=['Upload','Mapping','Merge','Preview','Confirm']; const st=_impState.step;
+  const kind=_impState.kind||'reference'; const r=kind==='table'?_table(id):_ref(id); const name=r.alias||r.name; const noun=kind==='table'?'records':'items'; const curLen=kind==='table'?(_mockRows(r)||[]).length:(r.values||[]).length; const STEPS=['Upload','Mapping','Merge','Preview','Confirm']; const st=_impState.step;
   const stepper=`<div class="imp-steps">${STEPS.map((s,i)=>`<div class="imp-step ${i===st?'on':''} ${i<st?'done':''}"><span class="imp-step-n">${i<st?'✓':i+1}</span><span class="imp-step-l">${s}</span></div>`).join('')}</div>`;
   let body='';
   if(st===0){ body=`<div class="imp-drop"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2M5 5l3-3 3 3M3 11v2h10v-2"/></svg><div style="margin-top:8px;font-weight:600">Drop a file or click to upload</div><div style="font-size:12px;color:var(--t3);margin-top:2px">CSV or JSON · first row = headers</div></div>
     <div class="mfield" style="margin-top:14px;max-width:200px"><label class="mfield-l">Format</label><select class="mselect" onchange="_impSet('format',this.value)"><option ${_impState.format==='CSV'?'selected':''}>CSV</option><option ${_impState.format==='JSON'?'selected':''}>JSON</option></select></div>`; }
   else if(st===1){ body=`<div style="font-size:12.5px;color:var(--t2);margin-bottom:12px">Map incoming columns to reference fields.</div>${['label','code','description','status'].map(f=>`<div class="imp-map"><span class="imp-map-src mono">${f}</span>${_ARROW}<select class="mselect" style="max-width:180px"><option>${f}</option><option>— skip —</option></select></div>`).join('')}`; }
   else if(st===2){ const opt=(v,tt,d)=>`<label class="imp-strat ${_impState.strategy===v?'on':''}" onclick="_impSet('strategy','${v}');_renderImport('${id}')"><span class="imp-strat-t">${tt}</span><span class="imp-strat-d">${d}</span></label>`; body=`${opt('append','Append','Add new items; keep existing.')}${opt('update','Update existing','Match on code; update matched, add new.')}${opt('replace','Replace all','Delete all current items, then import.')}`; }
-  else if(st===3){ body=`<div class="imp-dry"><div class="imp-dry-c imp-add"><b>12</b> to add</div><div class="imp-dry-c imp-upd"><b>3</b> to update</div><div class="imp-dry-c imp-rem"><b>${_impState.strategy==='replace'?r.values.length:0}</b> to remove</div></div>
+  else if(st===3){ body=`<div class="imp-dry"><div class="imp-dry-c imp-add"><b>12</b> to add</div><div class="imp-dry-c imp-upd"><b>3</b> to update</div><div class="imp-dry-c imp-rem"><b>${_impState.strategy==='replace'?curLen:0}</b> to remove</div></div>
     <div style="font-size:12px;color:var(--t3);margin:14px 0 6px">Preview · first rows</div>${_mdMiniTable(['Code','Label','Status'],[['emea','EMEA region','Active'],['apac','APAC region','Active'],['latam','LATAM region','Active']])}`; }
-  else { body=`<div class="imp-done"><svg width="34" height="34" viewBox="0 0 16 16" fill="none" stroke="var(--tag-success-fg,#16a34a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M5 8.2l2 2 4-4.4"/></svg><div style="margin-top:10px;font-weight:600">Ready to import</div><div style="font-size:12.5px;color:var(--t2);margin-top:4px">15 items · ${_impState.strategy} · ${_impState.format}.</div></div>`; }
+  else { body=`<div class="imp-done"><svg width="34" height="34" viewBox="0 0 16 16" fill="none" stroke="var(--tag-success-fg,#16a34a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M5 8.2l2 2 4-4.4"/></svg><div style="margin-top:10px;font-weight:600">Ready to import</div><div style="font-size:12.5px;color:var(--t2);margin-top:4px">15 ${noun} · ${_impState.strategy} · ${_impState.format}.</div></div>`; }
   const isLast=st===4;
-  $('modalScrim').innerHTML=`<div class="modal modal-imp"><div class="modal-head"><div class="modal-title">Import items · ${escapeHtml(r.name)}</div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+  $('modalScrim').innerHTML=`<div class="modal modal-imp"><div class="modal-head"><div class="modal-title">Import ${noun} · ${escapeHtml(name)}</div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
     <div class="modal-body">${stepper}<div class="imp-body">${body}</div></div>
-    <div class="modal-foot"><button class="btn" onclick="${st===0?'closeModal()':`_impNav('${id}',-1)`}">${st===0?'Cancel':'Back'}</button><button class="btn btn-primary" onclick="${isLast?`_impFinish('${id}')`:`_impNav('${id}',1)`}">${isLast?'Import 15 items':'Continue'}</button></div></div>`;
+    <div class="modal-foot"><button class="btn" onclick="${st===0?'closeModal()':`_impNav('${id}',-1)`}">${st===0?'Cancel':'Back'}</button><button class="btn btn-primary" onclick="${isLast?`_impFinish('${id}')`:`_impNav('${id}',1)`}">${isLast?('Import 15 '+noun):'Continue'}</button></div></div>`;
   $('modalScrim').classList.add('open');
 }
-function _impFinish(id){ const r=_ref(id); [['emea','EMEA region'],['apac','APAC region'],['latam','LATAM region']].forEach(a=>{ if(!r.values.find(v=>v.code===a[0])) r.values.push(RV(a[0],a[1],'Imported region.',true,'')); }); if(r.status==='Published') r.status='Draft'; closeModal(); toast('Imported 15 items','ok'); renderReferenceDetail(id); }
+function _impFinish(id){ const kind=_impState.kind||'reference'; if(kind==='table'){ closeModal(); toast('Imported 15 records','ok'); renderTableDetail(id); return; } const r=_ref(id); [['emea','EMEA region'],['apac','APAC region'],['latam','LATAM region']].forEach(a=>{ if(!r.values.find(v=>v.code===a[0])) r.values.push(RV(a[0],a[1],'Imported region.',true,'')); }); if(r.status==='Published') r.status='Draft'; closeModal(); toast('Imported 15 items','ok'); renderReferenceDetail(id); }
 function openEditRefValue(refId, code){ openRefItem(refId,'edit',code); }
 function saveRefValue(refId, code){
   const r=_ref(refId);
