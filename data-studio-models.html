@@ -2373,6 +2373,85 @@ html:not(.theme-light) .er-card{fill:var(--surface-raised,#131C2E); stroke:var(-
 .mdw-seg.on{background:var(--card-bg,#fff); color:var(--primary); box-shadow:0 1px 3px rgba(0,0,0,.1)}
 html:not(.theme-light) .mdw-seg.on{background:var(--surface-raised,#131C2E)}
 @media(max-width:900px){.mdw{flex-direction:column}.mdw-rail{width:100%}.mdw-rail-list{max-height:200px}}
+/* Workspace relationships */
+.mdw-rel-head{display:flex; align-items:center; gap:10px; margin:0 0 12px}
+.mdw-rel-h-t{display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:700; color:var(--t1)}
+.mdw-rel-h-c{font-size:12.5px; color:var(--t3)}
+.mdw-rel-toolbar{display:flex; align-items:center; gap:8px; margin:14px 0 12px}
+.mdw-rel-list{display:flex; flex-direction:column; gap:10px}
+.mdw-rel-card{border:1px solid var(--card-border,var(--line)); border-radius:11px; background:var(--card-bg,var(--bg2)); padding:14px 15px}
+.mdw-rel-inc{background:var(--muted)}
+.mdw-rel-top{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.mdw-rel-ent{display:inline-flex; align-items:center; gap:5px; font-size:13.5px; font-weight:700; color:var(--t1)}
+.mdw-rel-ent svg{color:var(--t3)}
+.mdw-rel-cross{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--primary); background:rgba(43,127,255,0.1); border-radius:6px; padding:3px 8px}
+.mdw-rel-intra{font-size:11.5px; font-weight:600; color:var(--t2); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:6px; padding:3px 8px}
+.mdw-rel-open{font-size:12px; font-weight:600; color:var(--primary); cursor:pointer}
+.mdw-rel-desc{font-size:12.5px; color:var(--t2); margin:9px 0}
+.mdw-rel-meta{display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:12px; color:var(--t2)}
+.mdw-rel-k{font-size:10px; font-weight:700; letter-spacing:.05em; color:var(--t3)}
+.mdw-rel-sep{color:var(--field-placeholder)}
+.mdw-rel-inc-h{display:flex; align-items:center; gap:8px; margin:20px 0 10px; font-size:13px; font-weight:700; color:var(--t1)}
+/* Workspace privileges */
+.mdw-priv-sub{font-size:12.5px; color:var(--t3); margin:-4px 0 12px}
+.mdw-priv-list{display:flex; flex-direction:column; border:1px solid var(--card-border,var(--line)); border-radius:11px; overflow:hidden; margin-bottom:8px}
+.mdw-priv-row{display:flex; align-items:center; gap:12px; padding:13px 15px; border-bottom:1px solid var(--card-border,var(--line))}
+.mdw-priv-row:last-child{border-bottom:none}
+.mdw-priv-lock{width:30px; height:30px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:8px; background:var(--muted); color:var(--t3)}
+.mdw-priv-b{flex:1; min-width:0}
+.mdw-priv-n{font-size:13.5px; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px}
+.mdw-priv-sym{font-family:'SF Mono',Menlo,monospace; font-size:11px; font-weight:500; color:var(--t3); background:transparent}
+.mdw-priv-d{font-size:12.5px; color:var(--t2); margin-top:3px}
+.mdw-priv-std{font-size:11.5px; font-weight:600; color:var(--t3); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:6px; padding:3px 10px; flex-shrink:0}
+.mdw-cpriv-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:22px 0 10px}
+.mdw-cpriv-list{display:flex; flex-direction:column; gap:10px}
+.mdw-cpriv{border:1px solid var(--card-border,var(--line)); border-radius:11px; background:var(--card-bg,var(--bg2)); padding:14px 15px}
+.mdw-cpriv-top{display:flex; align-items:center; gap:9px}
+.mdw-cpriv-ic{width:30px; height:30px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:8px; background:rgba(43,127,255,0.1); color:var(--primary)}
+.mdw-cpriv-n{font-size:14px; font-weight:700; color:var(--t1)}
+.mdw-cpriv-scope{font-size:11.5px; font-weight:600; color:var(--primary); background:rgba(43,127,255,0.1); border-radius:6px; padding:3px 9px}
+.mdw-cpriv-d{font-size:12.5px; color:var(--t2); margin:10px 0}
+.mdw-cpriv-foot{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--t3); border-top:1px solid var(--card-border,var(--line)); padding-top:10px}
+.mdw-cpriv-c{display:inline-flex; align-items:center; gap:5px}
+.mdw-cpriv-desc2{color:var(--primary); cursor:pointer}
+.mdw-priv-note{display:flex; align-items:center; gap:9px; margin-top:16px; padding:12px 15px; border-radius:10px; background:rgba(43,127,255,0.06); border:1px solid rgba(43,127,255,0.16); font-size:12.5px; color:var(--t2)}
+.mdw-priv-note a{color:var(--primary); cursor:pointer; font-weight:600}
+.mdw-priv-note svg{color:var(--primary); flex-shrink:0}
+.mdw-perm-chips{display:flex; flex-wrap:wrap; gap:7px}
+.mdw-perm-chips .md-tag-x{border:none; background:none; color:currentColor; cursor:pointer; font-size:14px; line-height:1; padding:0 0 0 4px; opacity:.7}
+.mdw-perm-empty{text-align:center; padding:24px; border:1px dashed var(--card-border,var(--line)); border-radius:10px; color:var(--t3)}
+.mdw-perm-empty svg{color:var(--t3)}
+/* Permission browser modal */
+.pb-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:18px 20px 14px}
+.pb-crumbs{padding:0 20px 12px; font-size:12.5px; color:var(--t2); border-bottom:1px solid var(--card-border,var(--line))}
+.pb-crumb-sep{color:var(--field-placeholder); margin:0 4px}
+.pb-body{display:flex; min-height:340px; max-height:52vh}
+.pb-left{width:250px; flex-shrink:0; border-right:1px solid var(--card-border,var(--line)); padding:12px; overflow-y:auto}
+.pb-left-h{font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin:0 4px 8px}
+.pb-sibs{display:flex; flex-direction:column; gap:2px}
+.pb-sib{display:flex; align-items:center; gap:8px; width:100%; text-align:left; border:none; background:transparent; border-radius:8px; padding:8px 10px; cursor:pointer; color:var(--t2)}
+.pb-sib:hover{background:var(--hover)}
+.pb-sib.on{background:var(--accent,rgba(43,127,255,0.1))}
+.pb-sib-n{flex:1; display:flex; flex-direction:column; gap:1px; font-size:13px; font-weight:600; color:var(--t1); min-width:0}
+.pb-sib-sym{font-family:'SF Mono',Menlo,monospace; font-size:10.5px; font-weight:400; color:var(--t3)}
+.pb-sib-c{font-size:10.5px; font-weight:700; color:var(--t3); background:var(--muted); border-radius:5px; padding:1px 6px}
+.pb-chev{color:var(--t3); transform:rotate(-90deg); display:inline-flex}
+.pb-right{flex:1; min-width:0; padding:16px 20px; overflow-y:auto}
+.pb-right-h{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px}
+.pb-right-t{font-size:16px; font-weight:700; color:var(--t1)}
+.pb-select{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--t2); cursor:pointer; border:1px solid var(--card-border,var(--line)); border-radius:8px; padding:6px 11px}
+.pb-select input,.pb-sub input{width:15px; height:15px; accent-color:var(--primary); cursor:pointer}
+.pb-badges{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px}
+.pb-sub-h{font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin:0 0 8px}
+.pb-sub{display:flex; align-items:flex-start; gap:10px; border:1px solid var(--card-border,var(--line)); border-radius:9px; padding:11px 13px; margin-bottom:8px; cursor:pointer}
+.pb-sub:hover{border-color:var(--primary)}
+.pb-sub-b{flex:1; min-width:0}
+.pb-sub-n{font-size:13px; font-weight:600; color:var(--t1); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.pb-sub-d{font-size:12px; color:var(--t2); margin-top:3px}
+.pb-nosubs{font-size:12.5px; color:var(--t3); padding:8px 0}
+.pb-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-top:1px solid var(--card-border,var(--line))}
+.pb-foot-n{font-size:12.5px; color:var(--t2)}
+.pb-foot>div{display:flex; gap:8px}
 
 /* ── Reference Data: filters slideout · kebab count · record nav · import wizard · bulk ── */
 .mk-fcount{margin-left:6px; font-size:10px; font-weight:700; background:var(--primary); color:#fff; border-radius:8px; padding:0 5px; line-height:16px; display:inline-block}
@@ -5150,7 +5229,7 @@ function renderModelDetail(id){
     <div class="mtabs md-tabs">${tabs.map(([tid,label,c])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setModelTab('${tid}')">${label}${c!=null?`<span class="mtab-c">${c}</span>`:''}</button>`).join('')}</div>
     <div id="mpanel">${body}</div>`;
   if(tab==='overview' && modelDetailState.sec.diagram && md.counts.entities) _diagInit();
-  if(tab==='entities' && modelDetailState.ent.selEntId && modelDetailState.ent.subtab==='diagram') setTimeout(_diagInit,0);
+  if(tab==='entities' && modelDetailState.ent.selEntId && (modelDetailState.ent.subtab==='diagram'||modelDetailState.ent.subtab==='relationships')) setTimeout(_diagInit,0);
 }
 function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; renderModelDetail(modelDetailState.id); }
 function mdSection(k){ modelDetailState.sec[k]=!modelDetailState.sec[k]; renderModelDetail(modelDetailState.id); }
@@ -5438,7 +5517,7 @@ function _mdEntWorkspace(m,md,e){
   const sub=modelDetailState.ent.subtab||'overview';
   const rail=md.ents.map(x=>`<button class="mdw-rail-item ${x.id===e.id?'on':''}" onclick="mdSelectEnt('${m.id}','${x.id}')"><span class="mdw-rail-ic">${_MDIC.ent}</span><span class="mdw-rail-name">${escapeHtml(x.name)}</span><span class="mdw-rail-r">${x.pii?`<span class="mdw-lock">${_MDIC.lock}</span>`:''}<span class="mdw-dot ${x.status==='Published'?'pub':x.status==='Draft'?'draft':'pend'}"></span></span></button>`).join('');
   const tabs=[['overview','Overview'],['diagram','Diagram'],['tables','Tables'],['relationships','Relationships'],['privileges','Privileges']];
-  const body = sub==='diagram'?_mdwDiagram(m,md,e) : sub==='tables'?_mdwTables(m,md,e) : sub==='relationships'?_mdwSoon('Relationships','Cross-model relationships graph + list, with New relationship.') : sub==='privileges'?_mdwSoon('Privileges','Standard + custom privileges with the permission catalog and Create privilege.') : _mdwOverview(m,md,e);
+  const body = sub==='diagram'?_mdwDiagram(m,md,e) : sub==='tables'?_mdwTables(m,md,e) : sub==='relationships'?_mdwRelationships(m,md,e) : sub==='privileges'?_mdwPrivileges(m,md,e) : _mdwOverview(m,md,e);
   return `<div class="mdw">
     <aside class="mdw-rail">
       <div class="mdw-rail-h"><button class="mdw-browse" onclick="mdBackToEntities('${m.id}')">${_CHEVL} Browse</button></div>
@@ -5493,6 +5572,156 @@ function _mdwTables(m,md,e){
     <div class="md-trows">${tbls.map(t=>_mdTblRow(m,t)).join('')||'<div class="placeholder" style="padding:28px">No tables in this entity yet.</div>'}</div>`;
 }
 function _mdwSoon(title,desc){ return `<div class="placeholder" style="padding:44px"><div class="placeholder-t">${escapeHtml(title)}</div>${escapeHtml(desc)}<div style="margin-top:8px;font-size:12px;color:var(--t3)">Coming in the next pass.</div></div>`; }
+
+/* ── Workspace: Relationships (cross-model graph + list + CRUD) ── */
+function _rsnip(s){ return _slug(s||'').replace(/-/g,'_'); }
+function _mdwEnsureRels(m,md,e){
+  if(e._wrels) return e._wrels;
+  const rels=[]; const others=MODELS.filter(x=>x.id!==m.id); const sibs=md.ents.filter(x=>x.id!==e.id);
+  if(others.length){ const o=others[0]; rels.push({t:o.name, k:'one-to-one', via:_rsnip(o.name)+'_id', del:'Set null', cross:o.name, desc:e.name+' links to one '+o.name+'.'}); }
+  if(sibs.length){ const s=sibs[0]; rels.push({t:s.name, k:'one-to-many', via:_rsnip(s.name)+'_id', del:'Restrict', cross:null, desc:e.name+' has many '+s.name+'.'}); }
+  e._wrels=rels; return rels;
+}
+function _mdwIncoming(m,md,e){ const sibs=md.ents.filter(x=>x.id!==e.id); return sibs.length>1?[{t:sibs[1].name, k:'one-to-many', via:_rsnip(e.name)+'_id', del:'Cascade', srcId:sibs[1].id}]:[]; }
+function _mdwRelCard(m,e,r,idx){
+  const es=_rsnip(e.name), ts=_rsnip(r.t);
+  return `<div class="mdw-rel-card">
+    <div class="mdw-rel-top"><span class="mdw-rel-ent">${_MDIC.ent}${escapeHtml(e.name)}</span>${_ARROW}<span class="mdw-rel-ent">${escapeHtml(r.t)}</span><span class="card-badge">${_cardShort(r.k)}</span>${r.cross?`<span class="mdw-rel-cross">${_OPEN_IC} Cross-model · ${escapeHtml(r.cross)}</span>`:''}<span style="flex:1"></span><button class="lrow-menu" onclick="_mdwRelMenu('${m.id}','${e.id}',${idx},this)" aria-label="Relationship actions">${_MDIC.dots}</button></div>
+    <div class="mdw-rel-desc">${escapeHtml(r.desc)}</div>
+    <div class="mdw-rel-meta"><span class="mdw-rel-k">FK</span><code class="md-code">${escapeHtml((r.cross?ts:es)+'.'+r.via)}</code><span class="mdw-rel-sep">·</span><span class="mdw-rel-k">ON DELETE</span><b>${escapeHtml(r.del)}</b>${!r.cross?`<span class="mdw-rel-sep">·</span><span class="mdw-rel-k">NAVIGATE</span><code class="md-code">${es}.${ts}</code> ↔ <code class="md-code">${ts}.${es}</code>`:''}</div>
+  </div>`;
+}
+function _mdwIncCard(m,e,r){
+  const ts=_rsnip(e.name);
+  return `<div class="mdw-rel-card mdw-rel-inc">
+    <div class="mdw-rel-top"><span class="mdw-rel-ent">${_MDIC.ent}${escapeHtml(r.t)}</span>${_ARROW}<span class="mdw-rel-ent">${escapeHtml(e.name)}</span><span class="card-badge">${_cardShort(r.k)}</span><span class="mdw-rel-intra">Intra-model</span><span style="flex:1"></span>${r.srcId?`<a class="mdw-rel-open" onclick="mdSelectEnt('${m.id}','${r.srcId}')">Open ${escapeHtml(r.t)} →</a>`:''}</div>
+    <div class="mdw-rel-desc">${escapeHtml(r.t)} has many ${escapeHtml(e.name)}.</div>
+    <div class="mdw-rel-meta"><span class="mdw-rel-k">FK</span><code class="md-code">${ts}.${escapeHtml(r.via)}</code><span class="mdw-rel-sep">·</span><span class="mdw-rel-k">ON DELETE</span><b>${escapeHtml(r.del)}</b></div>
+  </div>`;
+}
+function _mdwRelationships(m,md,e){
+  const out=_mdwEnsureRels(m,md,e); const inc=_mdwIncoming(m,md,e); const crossN=out.filter(r=>r.cross).length;
+  const diagRels=out.map(r=>({target:r.t,cardShort:_cardShort(r.k),strong:!r.cross,dir:'Outgoing',del:r.del})).concat(inc.map(r=>({target:r.t,cardShort:_cardShort(r.k),strong:true,dir:'Incoming',del:r.del})));
+  return `<div class="mdw-rel-head"><span class="mdw-rel-h-t">${_HIC.link} Relationships</span><span class="mdw-rel-h-c">${out.length} outgoing · ${inc.length} incoming · ${crossN} cross-model</span></div>
+    ${diagRels.length?_relDiagram(e.name,diagRels):'<div class="placeholder" style="padding:28px">No relationships yet.</div>'}
+    <div class="mdw-rel-toolbar"><label class="dsf-search" style="max-width:260px;height:34px">${_HIC.search}<input type="text" placeholder="Search related entity…" oninput="toast('Search — prototype')" autocomplete="off"></label><span style="flex:1"></span><button class="btn btn-primary" style="height:34px" onclick="openMdwRelForm('${m.id}','${e.id}',null)">${_MDIC.plus} New relationship</button></div>
+    <div class="mdw-rel-list">${out.map((r,i)=>_mdwRelCard(m,e,r,i)).join('')||'<div class="placeholder" style="padding:24px">No outgoing relationships yet.</div>'}</div>
+    ${inc.length?`<div class="mdw-rel-inc-h">Incoming relationships from other entities <span class="mdw-rel-h-c">${inc.length}</span></div><div class="mdw-rel-list">${inc.map(r=>_mdwIncCard(m,e,r)).join('')}</div>`:''}`;
+}
+function openMdwRelForm(mid,eid,idx){
+  const c=_mdCtx(mid); if(!c) return; const e=c.md.ents.find(x=>x.id===eid); if(!e) return; const rels=_mdwEnsureRels(c.m,c.md,e); const r=(idx!=null&&idx>=0)?rels[idx]:null;
+  const sibs=c.md.ents.filter(x=>x.id!==eid).map(x=>({v:x.name,cross:''})); const cross=MODELS.filter(x=>x.id!==mid).map(x=>({v:x.name,cross:x.name}));
+  const opts=sibs.concat(cross); if(r&&!opts.find(o=>o.v===r.t)) opts.unshift({v:r.t,cross:r.cross||''});
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${r?'Edit relationship':'New relationship'}</div><div class="so-internal">${escapeHtml(e.name)} · ${escapeHtml(c.m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Related entity',null,`<select class="minput" id="wr_target">${opts.map(o=>`<option value="${escapeHtml(o.v)}" data-cross="${escapeHtml(o.cross)}" ${r&&r.t===o.v?'selected':''}>${escapeHtml(o.v)}${o.cross?' (cross-model)':''}</option>`).join('')}</select>`,1)}
+      ${_RIF('Cardinality',null,`<select class="minput" id="wr_card">${_CARD_OPTS.map(([v,l])=>`<option value="${v}" ${(r?r.k:'one-to-many')===v?'selected':''}>${l}</option>`).join('')}</select>`)}
+      ${_RIF('Foreign key',null,`<input class="minput md-name-mono" id="wr_via" value="${r?escapeHtml(r.via):''}" placeholder="e.g. account_id" autocomplete="off">`,0,'field')}
+      ${_RIF('On delete',null,`<select class="minput" id="wr_del">${_REL_DEL.map(d=>`<option ${(r?r.del:'Restrict')===d?'selected':''}>${d}</option>`).join('')}</select>`)}
+      ${_RIF('Description',null,`<textarea class="mtextarea" id="wr_desc" placeholder="What this relationship represents.">${r?escapeHtml(r.desc):''}</textarea>`)}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveMdwRel('${mid}','${eid}',${idx==null?'null':idx})">${_MDIC.plus}${r?'Save changes':'Add relationship'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('wr_target'); if(el)el.focus();},60);
+}
+function saveMdwRel(mid,eid,idx){
+  const c=_mdCtx(mid); if(!c) return; const e=c.md.ents.find(x=>x.id===eid); const rels=_mdwEnsureRels(c.m,c.md,e);
+  const sel=$('wr_target'); const t=sel.value; if(!t){ toast('Pick a related entity'); return; }
+  const cross=sel.options[sel.selectedIndex].getAttribute('data-cross')||null;
+  const rel={ t, k:$('wr_card').value, via:($('wr_via').value||'').trim().toLowerCase().replace(/\s+/g,'_')||_rsnip(t)+'_id', del:$('wr_del').value, cross:cross||null, desc:($('wr_desc').value||'').trim()||(e.name+' → '+t+'.') };
+  if(idx!=null&&idx>=0&&rels[idx]) rels[idx]=rel; else rels.push(rel);
+  _mdEdited(c.m); closeSlideout(); toast('Relationship '+(idx!=null?'updated':'added'),'ok'); modelDetailState.ent.subtab='relationships'; renderModelDetail(mid);
+}
+function _mdwRelMenu(mid,eid,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit',act:`openMdwRelForm('${mid}','${eid}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove',act:`_mdwRemoveRel('${mid}','${eid}',${idx})`,danger:true},
+  ]); }
+function _mdwRemoveRel(mid,eid,idx){ const c=_mdCtx(mid); if(!c) return; const e=c.md.ents.find(x=>x.id===eid); const rels=_mdwEnsureRels(c.m,c.md,e); rels.splice(idx,1); _mdEdited(c.m); toast('Relationship removed','ok'); renderModelDetail(mid); }
+
+/* ── Workspace: Privileges (standard + custom + permission browser) ── */
+const _STD_PRIVS=[['Read','read','Allows reading records of this entity through APIs and views.'],['Create','create','Allows creating new records of this entity.'],['Update','update','Allows updating existing records of this entity.'],['Delete','delete','Allows soft-deleting records of this entity.'],['List','list','Allows listing records of this entity through paginated queries.']];
+function _mdwEnsureCprivs(m,e){
+  if(e._wcprivs) return e._wcprivs; const es=_rsnip(e.name);
+  e._wcprivs=[
+    {n:'Approve',sym:es+'_approve_flow',desc:'Allows approving '+e.name+' records in the review workflow before they go live.',perms:[[e.name+' · Update','data'],[e.name+' · Read','data']],desc2:0},
+    {n:'Bulk read',sym:es+'_bulk_read',desc:'Allows reading '+e.name+' records in bulk, including listing and field-level access.',perms:[[e.name+' · Read','data'],[e.name+' · List','data']],desc2:5},
+  ]; return e._wcprivs;
+}
+function _mdwPrivileges(m,md,e){
+  const cprivs=_mdwEnsureCprivs(m,e);
+  const std=_STD_PRIVS.map(([n,sym,d])=>`<div class="mdw-priv-row"><span class="mdw-priv-lock">${_MDIC.lock}</span><div class="mdw-priv-b"><div class="mdw-priv-n">${n} <code class="mdw-priv-sym">${sym}</code></div><div class="mdw-priv-d">${escapeHtml(d)}</div></div><span class="mdw-priv-std">Standard</span></div>`).join('');
+  const cust=cprivs.map((pv,i)=>`<div class="mdw-cpriv"><div class="mdw-cpriv-top"><span class="mdw-cpriv-ic">${_MDIC.key||_HIC.link}</span><span class="mdw-cpriv-n">${escapeHtml(pv.n)}</span><code class="mdw-priv-sym">${escapeHtml(pv.sym)}</code><span style="flex:1"></span><span class="mdw-cpriv-scope">This entity only</span><button class="lrow-menu" onclick="_mdwPrivMenu('${m.id}','${e.id}',${i},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div>
+      <div class="mdw-cpriv-d">${escapeHtml(pv.desc)}</div>
+      <div class="mdw-cpriv-foot"><span class="mdw-cpriv-c">${_MDIC.lock}${pv.perms.length} permission${pv.perms.length===1?'':'s'}</span>${pv.desc2?`<span class="mdw-rel-sep">·</span><a class="mdw-cpriv-desc2">+ ${pv.desc2} descendant permissions included</a>`:''}</div></div>`).join('');
+  return `<div class="mdw-sec-t" style="margin-top:4px">Standard privileges</div><div class="mdw-priv-sub">These privileges are automatically defined for every entity and cannot be edited.</div>
+    <div class="mdw-priv-list">${std}</div>
+    <div class="mdw-cpriv-head"><div><span class="mdw-sec-t" style="margin:0">Custom privileges</span> <span class="mdw-rel-h-c">${cprivs.length}</span><div class="mdw-priv-sub" style="margin-top:2px">Domain-specific privileges you define for ${escapeHtml(e.name)}, composed from the tenant permission catalog.</div></div><button class="btn btn-primary" style="height:34px" onclick="openMdwPrivForm('${m.id}','${e.id}',null)">${_MDIC.plus} New custom privilege</button></div>
+    <div class="mdw-cpriv-list">${cust||'<div class="placeholder" style="padding:24px">No custom privileges yet.</div>'}</div>
+    <div class="mdw-priv-note">${_HIC.shield} Privileges defined here are assigned to roles and users in <b>Admin Studio</b>. <a onclick="toast('Admin Studio · Roles — prototype')">Go to Admin Studio › Roles →</a></div>`;
+}
+function _mdwPrivMenu(mid,eid,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit',act:`openMdwPrivForm('${mid}','${eid}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove',act:`_mdwRemovePriv('${mid}','${eid}',${idx})`,danger:true},
+  ]); }
+function _mdwRemovePriv(mid,eid,idx){ const c=_mdCtx(mid); if(!c) return; const e=c.md.ents.find(x=>x.id===eid); _mdwEnsureCprivs(c.m,e).splice(idx,1); _mdEdited(c.m); toast('Privilege removed','ok'); renderModelDetail(mid); }
+/* Create / edit custom privilege — draft holds picked permissions */
+let _mdwPrivDraft=null;
+function openMdwPrivForm(mid,eid,idx){
+  const c=_mdCtx(mid); if(!c) return; const e=c.md.ents.find(x=>x.id===eid); const cprivs=_mdwEnsureCprivs(c.m,e); const pv=(idx!=null&&idx>=0)?cprivs[idx]:null;
+  _mdwPrivDraft={mid,eid,idx, name:pv?pv.n:'', sym:pv?pv.sym:'', desc:pv?pv.desc:'', perms:(pv?pv.perms.slice():[])};
+  _renderMdwPrivForm();
+}
+function _renderMdwPrivForm(){
+  const d=_mdwPrivDraft; const c=_mdCtx(d.mid); const e=c.md.ents.find(x=>x.id===d.eid);
+  $('modalScrim').innerHTML=`<div class="modal" style="max-width:560px"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_MDIC.lock}</div><div class="modal-title">${d.idx!=null?'Edit custom privilege':'Create custom privilege'}</div><div style="font-size:12px;color:var(--t3);margin-top:2px">For entity: <b style="color:var(--primary)">${escapeHtml(e.name)}</b></div></div>
+    <div class="modal-body">
+      <div class="mfield"><label class="mfield-l">Privilege name <span style="color:var(--field-text-error)">*</span></label><input class="minput" id="cp_name" value="${escapeHtml(d.name)}" placeholder="e.g. Approve" oninput="_mdwPrivDraft.name=this.value${d.idx!=null?'':`;if(!_mdwPrivDraft._symTouched)_mdwPrivDraft.sym='${_rsnip(e.name)}_'+this.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,''),document.getElementById('cp_sym').value=_mdwPrivDraft.sym`}"></div>
+      <div class="mfield"><label class="mfield-l">Internal symbol <span style="color:var(--field-text-error)">*</span></label><input class="minput md-name-mono" id="cp_sym" value="${escapeHtml(d.sym)}" placeholder="${_rsnip(e.name)}_approve" oninput="_mdwPrivDraft.sym=this.value;_mdwPrivDraft._symTouched=true"><div class="md-field-hint" style="margin-top:4px">snake_case, unique within ${escapeHtml(e.name)} privileges.</div></div>
+      <div class="mfield"><label class="mfield-l">Description</label><textarea class="mtextarea" id="cp_desc" placeholder="What does this privilege control on ${escapeHtml(e.name)}? When does it apply?" oninput="_mdwPrivDraft.desc=this.value">${escapeHtml(d.desc)}</textarea></div>
+      <div class="mdw-cpriv-head" style="margin:16px 0 8px"><span class="mdw-sec-t" style="margin:0">Permissions in this privilege <span class="mdw-rel-h-c">${d.perms.length}</span></span><button class="btn" style="height:30px" onclick="openPermBrowser()">${_MDIC.plus} Add permission</button></div>
+      ${d.perms.length?`<div class="mdw-perm-chips">${d.perms.map((p,i)=>`<span class="perm-chip ${p[1]}">${escapeHtml(p[0])}<button class="md-tag-x" onclick="_mdwPrivDraft.perms.splice(${i},1);_renderMdwPrivForm()" aria-label="Remove">×</button></span>`).join('')}</div>`:`<div class="mdw-perm-empty">${_MDIC.lock}<div style="font-weight:600;color:var(--t2);margin-top:6px">No permissions yet</div><div style="font-size:12px;color:var(--t3)">This privilege won't grant anything until it includes at least one permission.</div></div>`}
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveMdwPriv()">${d.idx!=null?'Save changes':'Create privilege'}</button></div></div>`;
+  $('modalScrim').classList.add('open'); setTimeout(()=>{const el=$('cp_name'); if(el&&!d.name)el.focus();},50);
+}
+function saveMdwPriv(){
+  const d=_mdwPrivDraft; if(!d) return; const c=_mdCtx(d.mid); const e=c.md.ents.find(x=>x.id===d.eid); const cprivs=_mdwEnsureCprivs(c.m,e);
+  const name=(d.name||'').trim(); if(!name){ toast('Enter a privilege name'); return; }
+  const sym=(d.sym||'').trim()||_rsnip(e.name)+'_'+_rsnip(name); if(!d.perms.length){ toast('Add at least one permission'); return; }
+  const pv={n:name, sym, desc:(d.desc||'').trim()||('Custom privilege on '+e.name+'.'), perms:d.perms.slice(), desc2:0};
+  if(d.idx!=null&&d.idx>=0&&cprivs[d.idx]) cprivs[d.idx]=pv; else cprivs.push(pv);
+  _mdEdited(c.m); _mdwPrivDraft=null; closeModal(); toast('Privilege “'+name+'” '+(d.idx!=null?'updated':'created'),'ok'); modelDetailState.ent.subtab='privileges'; renderModelDetail(d.mid);
+}
+/* Permission browser — hierarchical drill-down (entity → permission → sub-permissions) */
+let _permBrowse=null;
+const _PERM_TREE=[
+  {n:'Read',ctrl:'API · Data',subs:[{n:'Read basic info',ch:2},{n:'Read PII',ch:1}]},
+  {n:'Create',ctrl:'API',subs:[]},{n:'Update',ctrl:'API · Data',subs:[{n:'Update status',ch:0},{n:'Update PII',ch:0}]},
+  {n:'Delete',ctrl:'API',subs:[]},{n:'List',ctrl:'API',subs:[]},
+  {n:'Manage',ctrl:'API · Screen',subs:[{n:'Manage schema',ch:0},{n:'Manage indexes',ch:0},{n:'Manage relationships',ch:0}]},
+  {n:'View screens',ctrl:'Screen',subs:[{n:'View detail',ch:0},{n:'View list',ch:0}]},
+];
+function openPermBrowser(){ const d=_mdwPrivDraft; const c=_mdCtx(d.mid); const e=c.md.ents.find(x=>x.id===d.eid);
+  _permBrowse={ent:e.name, sel:new Set(), focus:0}; _renderPermBrowser(); }
+function _renderPermBrowser(){
+  const b=_permBrowse; const es=_rsnip(b.ent); const p=_PERM_TREE[b.focus];
+  const sibs=_PERM_TREE.map((x,i)=>`<button class="pb-sib ${i===b.focus?'on':''}" onclick="_permBrowse.focus=${i};_renderPermBrowser()"><span class="pb-sib-n">${escapeHtml(x.n)}<span class="pb-sib-sym">${es}_${x.n.toLowerCase().replace(/ /g,'_')}</span></span>${x.subs.length?`<span class="pb-sib-c">+${x.subs.length}</span>`:''}<span class="pb-chev">${_MDIC.chev}</span></button>`).join('');
+  const key=b.ent+' · '+p.n;
+  const subs=p.subs.map(s=>{ const k=b.ent+' · '+s.n; return `<label class="pb-sub"><input type="checkbox" ${b.sel.has(k)?'checked':''} onchange="_permToggle('${escapeHtml(k)}')"><div class="pb-sub-b"><div class="pb-sub-n">${escapeHtml(s.n)} <code class="mdw-priv-sym">${es}_${s.n.toLowerCase().replace(/ /g,'_')}</code>${s.ch?`<span class="pb-sib-c">+${s.ch}children</span>`:''}</div><div class="pb-sub-d">${escapeHtml(s.n.includes('PII')?'Read sensitive personally-identifiable fields.':s.n.includes('basic')?'Read non-sensitive '+b.ent+' fields.':s.n+' on '+b.ent+'.')}</div></div></label>`; }).join('');
+  $('modalScrim').innerHTML=`<div class="modal" style="max-width:720px;padding:0;overflow:hidden"><div class="pb-head"><div><div class="modal-title" style="font-size:16px">Add permissions</div><div style="font-size:12px;color:var(--t3);margin-top:2px">For privilege: <b style="color:var(--primary)">${escapeHtml(_mdwPrivDraft.name||'new privilege')}</b></div></div><button class="so-close" onclick="_renderMdwPrivForm()" aria-label="Close">✕</button></div>
+    <div class="pb-crumbs">Entities <span class="pb-crumb-sep">›</span> <b>${escapeHtml(b.ent)}</b> <span class="pb-crumb-sep">›</span> <b style="color:var(--primary)">${escapeHtml(p.n)}</b></div>
+    <div class="pb-body"><div class="pb-left"><div class="pb-left-h">Siblings at this level</div><div class="pb-sibs">${sibs}</div></div>
+      <div class="pb-right"><div class="pb-right-h"><div><div class="pb-right-t">${escapeHtml(p.n)}</div><code class="mdw-priv-sym">${es}_${p.n.toLowerCase().replace(/ /g,'_')}</code></div><label class="pb-select"><input type="checkbox" ${b.sel.has(key)?'checked':''} onchange="_permToggle('${escapeHtml(key)}')"> Select this</label></div>
+        <div class="pb-badges"><span class="perm-chip">Standard</span><span class="perm-chip data">${escapeHtml(b.ent)}</span>${p.ctrl.split(' · ').map(x=>`<span class="perm-chip ${x==='Data'?'data':x==='API'?'api':''}">${x}</span>`).join('')}</div>
+        ${p.subs.length?`<div class="pb-sub-h">Sub-permissions <span class="mdw-rel-h-c">${p.subs.length}</span></div>${subs}`:'<div class="pb-nosubs">No sub-permissions.</div>'}
+      </div></div>
+    <div class="pb-foot"><span class="pb-foot-n">${b.sel.size} permission${b.sel.size===1?'':'s'} selected</span><div><button class="btn" onclick="_renderMdwPrivForm()">Cancel</button><button class="btn btn-primary" ${b.sel.size?'':'disabled style="opacity:.5"'} onclick="_permBrowserApply()">${_MDIC.plus} Add permissions</button></div></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _permToggle(k){ const s=_permBrowse.sel; s.has(k)?s.delete(k):s.add(k); _renderPermBrowser(); }
+function _permBrowserApply(){ const b=_permBrowse; const d=_mdwPrivDraft; b.sel.forEach(k=>{ if(!d.perms.find(p=>p[0]===k)) d.perms.push([k, k.includes('PII')?'data':'api']); }); _permBrowse=null; _renderMdwPrivForm(); }
 
 /* ── Tables tab ── */
 function mdTbl(k,v){ modelDetailState.tbl[k]=v; renderModelDetail(modelDetailState.id); if(k==='search') _mdRefocus('mdTblSearch',v); }
