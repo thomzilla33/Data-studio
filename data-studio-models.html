@@ -1487,6 +1487,11 @@ html.theme-light .rowmenu{background:#fff}
 .mp-stat{border:1px solid var(--card-border,var(--line)); border-radius:12px; padding:13px 14px; background:var(--card-bg,transparent)}
 .mp-stat-v{font-size:23px; font-weight:800; color:var(--t1); line-height:1}
 .mp-stat-l{font-size:11.5px; color:var(--t2); margin-top:6px}
+.mp-ai-h{display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; color:var(--primary); margin-bottom:9px; letter-spacing:.01em}
+.mp-head-l{display:flex; align-items:flex-start; gap:12px; min-width:0}
+.mp-head-r{display:flex; align-items:center; gap:8px; flex-shrink:0}
+.mp-title-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.mp-badges{margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap}
 /* interactive ER mini-diagram */
 .diag-wrap{position:relative; height:300px; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:10px 0 18px; background:var(--muted,#eef1f6)}
 html.theme-light .diag-wrap{background:#eef1f6}
@@ -2601,7 +2606,7 @@ function renderEntities(){
 }
 
 function entityRow(e){
-  return `<div class="lrow" onclick="navigate('entities/${e.id}')">
+  return `<div class="lrow" onclick="openEntityPreview('${e.id}')">
     <div class="lrow-top">
       <span class="lrow-ic">${_IC_ENTITY}</span>
       <span class="lrow-title">${escapeHtml(e.name)}</span>
@@ -3229,7 +3234,7 @@ function renderTablesList(){
 }
 function tableRow(t){
   const relN=(t.rels?t.rels.length:0);
-  return `<div class="lrow" onclick="navigate('tables/${t.id}')">
+  return `<div class="lrow" onclick="openTablePreview('${t.id}')">
     <div class="lrow-top">
       <span class="lrow-ic ic-tbl">${_IC_TABLE}</span>
       <span class="lrow-title">${escapeHtml(t.alias)}</span>
@@ -3926,7 +3931,7 @@ function renderReferenceList(){
     ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>` : refListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(refCard).join('')}</div>` : `<div class="lrows">${filtered.map(refRow).join('')}</div>`}`;
 }
 function refRow(r){
-  return `<div class="lrow" onclick="navigate('reference/${r.id}')">
+  return `<div class="lrow" onclick="openRefPreview('${r.id}')">
     <div class="lrow-top">
       ${_catIcon(r.category)}
       <span class="lrow-title">${escapeHtml(r.name)}</span>
@@ -4822,7 +4827,7 @@ function openModelPreview(id){
       <div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><button class="btn btn-primary" onclick="closeSlideout();navigate('models/${m.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v7M13 3L7 9"/><path d="M10 13H3V6"/></svg> Open</button><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
     </div>
     <div class="so-body">
-      <div class="mp-insights"><ul><li>${drift}</li><li>${added} columns added across the model in the last week.</li></ul></div>
+      ${_pvInsights([drift, added+' columns added across the model in the last week.'])}
       <div class="so-desc" style="margin-bottom:4px">${escapeHtml(m.desc)}</div>
       ${_modelDiagram(m)}
       <div class="mp-stats">${stats.map(([l,v])=>`<div class="mp-stat"><div class="mp-stat-v">${v}</div><div class="mp-stat-l">${l}</div></div>`).join('')}</div>
@@ -4831,6 +4836,57 @@ function openModelPreview(id){
     </div>`;
   $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
   _diagInit();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RICH PREVIEW SLIDEOUTS — entity · table · reference
+   (row-click on each list; "Open" → full detail). Mirrors the model
+   preview: AI Insights + mini ER diagram + stat tiles.
+   ══════════════════════════════════════════════════════════════ */
+const _SPARK='<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 4.3L14 7l-4.5 1.7L8 13l-1.5-4.3L2 7l4.5-1.7L8 1z"/></svg>';
+const _OPEN_IC='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v7M13 3L7 9"/><path d="M10 13H3V6"/></svg>';
+function _pvInsights(bullets){ return `<div class="mp-insights"><div class="mp-ai-h">${_SPARK} AI Insights</div><ul>${bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>`; }
+function _pvStats(stats){ return `<div class="mp-stats">${stats.map(([l,v])=>`<div class="mp-stat"><div class="mp-stat-v">${v}</div><div class="mp-stat-l">${l}</div></div>`).join('')}</div>`; }
+function _pvHead(icon,name,status,badges,openRoute){ return `<div class="so-head mp-head">
+    <div class="mp-head-l"><span class="lrow-ic" style="width:34px;height:34px;flex-shrink:0">${icon}</span>
+      <div style="min-width:0"><div class="mp-title-row"><span class="so-title">${escapeHtml(name)}</span>${status}</div><div class="mp-badges">${badges}</div></div></div>
+    <div class="mp-head-r"><button class="btn btn-primary" onclick="closeSlideout();navigate('${openRoute}')">${_OPEN_IC} Open</button><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+  </div>`; }
+function openEntityPreview(id){
+  const e=ENTITIES.find(x=>x.id===id); if(!e) return;
+  const tbls=e.tables||[]; const prim=tbls.find(t=>t.role==='Primary')||tbls[0]; const rels=e.rels||[];
+  const diagRels=tbls.filter(t=>t!==prim).map(t=>({target:t.alias,cardShort:'1:N',strong:true,dir:'Outgoing',del:'Restrict'}));
+  const cols=tbls.reduce((n,t)=>n+(t.cols||0),0); const added=1+(cols%4);
+  const drift=e.status==='Published'?'No drift detected against the catalog baseline.':e.status==='Draft'?'Draft — not yet published to the catalog.':e.status==='Pending changes'?'Pending changes awaiting publish — review before applying.':'Deprecated — superseded by another entity.';
+  const insights=[`${tbls.length} table${tbls.length===1?'':'s'} and ${rels.length} external relation${rels.length===1?'':'s'}, last touched ${escapeHtml(e.updated)}.`, drift, `${added} column${added===1?'':'s'} added in the last week.`];
+  const stats=[['Records',escapeHtml(e.records||'—')],['Tables',tbls.length],['Relations',rels.length],['Columns',cols]];
+  $('slideout').innerHTML=`${_pvHead(_IC_ENTITY,e.name,_stPill(e.status),`<span class="chip">${escapeHtml(e.domain)}</span>${_modelChip(e.model)}`,'entities/'+e.id)}
+    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(e.desc)}</div>${_relDiagram(prim?prim.alias:e.name, diagRels)}${_pvStats(stats)}</div>`;
+  _soOpen(); setTimeout(_diagInit,0);
+}
+function openTablePreview(id){
+  const t=_table(id); if(!t) return;
+  const out=(t.rels||[]).map(r=>({target:(_table(r.target)||{}).alias||_relTargetName(r.target)||r.target,cardShort:_cardShort(r.kind),strong:true,dir:'Outgoing',del:'Restrict'}));
+  const inc=TABLES.filter(x=>x.id!==t.id).flatMap(x=>(x.rels||[]).filter(r=>_refId(r.target)===t.id).map(r=>({target:x.alias,cardShort:_cardShort(_invKind(r.kind)),strong:true,dir:'Incoming',del:'Restrict'})));
+  const rels=out.concat(inc); const idx=_tblIndexes(t); const pk=(t.cols||[]).find(c=>c.pk);
+  const insights=[`${t.cols.length} column${t.cols.length===1?'':'s'} across ${rels.length} relation${rels.length===1?'':'s'}.`, pk?`Primary key on ${escapeHtml(pk.d||pk.n)} · ${idx.length} index${idx.length===1?'':'es'}.`:`${idx.length} index${idx.length===1?'':'es'} defined.`, `Sample of ${escapeHtml(t.rows||'0')} rows available in the Data tab.`];
+  const stats=[['Rows',escapeHtml(t.rows||'0')],['Columns',t.cols.length],['Relations',rels.length],['Indexes',idx.length]];
+  const badges=`<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_entityChip(t.entityId,t.entity)}${_modelChip(t.model)}`;
+  $('slideout').innerHTML=`${_pvHead(_IC_TABLE,t.alias,_stPill(t.status),badges,'tables/'+t.id)}
+    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(t.desc)}</div>${_relDiagram(t.alias, rels)}${_pvStats(stats)}</div>`;
+  _soOpen(); setTimeout(_diagInit,0);
+}
+function openRefPreview(id){
+  const r=_ref(id); if(!r) return;
+  const vals=r.values||[]; const active=vals.filter(v=>v.active).length; const relN=r.referencedBy>0?1:0;
+  const targets={crm:'Industry types',finance:'Currencies',operations:'Regions',compliance:'Data regions',business:'Segments'};
+  const to=targets[(r.category||'').toLowerCase()]||'Related list';
+  const diagRels=relN?[{target:to,cardShort:'N:1',strong:false,dir:'Uni',del:'Restrict'}]:[];
+  const insights=[`${vals.length} value${vals.length===1?'':'s'} · ${active} active.`, `Referenced by ${r.referencedBy||0} column${(r.referencedBy||0)===1?'':'s'} across the tenant.`, `${escapeHtml(r.category)} · ${escapeHtml(r.origin)}.`];
+  const stats=[['Values',vals.length],['Fields',r.fields||4],['Referenced by',r.referencedBy||0],['Active',active]];
+  $('slideout').innerHTML=`${_pvHead(_catIcon(r.category),r.name,_stPill(r.status),`${_catBadge(r.category)}${_originBadge(r.origin)}`,'reference/'+r.id)}
+    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(r.desc)}</div>${_relDiagram(r.name, diagRels)}${_pvStats(stats)}</div>`;
+  _soOpen(); setTimeout(_diagInit,0);
 }
 
 /* Model DETAIL (grouped entities / tables / reference data) */
