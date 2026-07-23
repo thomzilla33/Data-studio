@@ -2815,8 +2815,8 @@ const _REL_DIRS=['Outgoing','Incoming','Bidirectional'];
 const _REL_DEL=['Restrict','Set null','Cascade','No action'];
 
 /* ── Relationships CRUD (entity kind only; table/reference stay read-only) ── */
-function _relAdd(kind,id){ if(kind!=='entity'){ toast('Add relationship — available on entities'); return; } openRelForm(id,null); }
-function _relOpen(kind,id,i){ if(kind!=='entity'){ toast('Relationship detail — prototype'); return; } openRelDetail(id,i); }
+function _relAdd(kind,id){ if(kind==='entity') return openRelForm(id,null); if(kind==='table') return openAddRelationship(id); toast('Add relationship — available on entities & tables'); }
+function _relOpen(kind,id,i){ if(kind==='entity') return openRelDetail(id,i); if(kind==='table') return openTblRelDetail(id,i); toast('Relationship detail — prototype'); }
 function openRelForm(id,idx){
   const e=_entById(id); if(!e) return; const r=(idx!=null&&idx>=0)?(e.rels||[])[idx]:null;
   const names=ENTITIES.filter(x=>x.id!==id).map(x=>x.name); if(r&&r.t&&!names.includes(r.t)) names.unshift(r.t);
@@ -3326,8 +3326,9 @@ function _tblIndexes(t){
 function _idxCard(t,i){
   const typeLbl={unique:'Unique',regular:'Regular',partial:'Partial'}[i.type]||'Regular';
   const cols=i.cols.map((c,n)=>`<span class="idx-colchip"><span class="idx-colord">${n+1}</span>${escapeHtml(c.n||c.d||'col')}</span>`).join('<span class="idx-sep">›</span>');
+  const isPk=/_pkey$/.test(i.name);
   return `<div class="idx-card">
-    <div class="idx-top"><span class="idx-ic">${_HIC.hash}</span><span class="idx-name">${escapeHtml(i.name)}</span><span class="idx-type idx-type--${i.type}">${typeLbl}</span>${_stPill(i.status)}</div>
+    <div class="idx-top"><span class="idx-ic">${_HIC.hash}</span><span class="idx-name">${escapeHtml(i.name)}</span><span class="idx-type idx-type--${i.type}">${typeLbl}</span>${_stPill(i.status)}${isPk?'':`<button class="lrow-menu" style="margin-left:auto" onclick="_idxMenu('${t.id}','${escapeHtml(i.name)}',this)" aria-label="Index actions">${_MDIC.dots}</button>`}</div>
     <div class="idx-row"><span class="idx-row-l">Columns</span>${cols}</div>
     <div class="idx-row"><span class="idx-row-l">Config</span><span class="hsrc">${_HIC.db}${escapeHtml(i.method)}</span>${i.where?`<span class="idx-where">WHERE ${escapeHtml(i.where)}</span>`:''}</div>
     ${i.desc?`<div class="idx-desc">${escapeHtml(i.desc)}</div>`:''}
@@ -3364,6 +3365,17 @@ function saveNewIndex(tableId){
   t._idx.unshift({name,type,cols:[c],method:$('niMethod').value,where:where||null,desc:'',status:'Draft',by:t.owner||'sb',mod:'just now',created:'just now'});
   if(t.status==='Published') t.status='Draft'; closeModal(); toast('Index “'+name+'” added','ok'); renderTableDetail(tableId);
 }
+function _idxMenu(tid,name,btn){ _mdKebab(btn,[
+    {ic:_RM_IC.del,label:'Delete index',act:`confirmRemoveIndex('${tid}','${name}')`,danger:true},
+  ]); }
+function confirmRemoveIndex(tid,name){ const t=_table(tid); if(!t) return; _tblIndexes(t); const ix=(t._idx||[]).find(i=>i.name===name); if(!ix) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Delete index?</div></div>
+    <div class="modal-body">This drops <code>${escapeHtml(name)}</code>. Queries relying on it may slow down until another index covers them.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeIndex('${tid}','${name}')">Delete index</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeIndex(tid,name){ const t=_table(tid); if(!t) return; _tblIndexes(t); t._idx=(t._idx||[]).filter(i=>i.name!==name);
+  if(t.status==='Published') t.status='Draft'; closeModal(); toast('Index “'+name+'” deleted','ok'); renderTableDetail(tid); }
 function toggleSysCols(){ tableDetailState.showSys=!tableDetailState.showSys; renderTableDetail(tableDetailState.id); }
 /* ── Columns tab with subtabs Schema/Rules/Sensitivity/Display (port of TfdColumnsTab) ── */
 let _colsSub='schema';
@@ -3438,8 +3450,19 @@ function openColumn(tableId, colName){
       <div class="so-sec"><div class="so-sec-h">Display</div><div class="so-fields"><div class="so-field"><span class="so-field-l">Format</span><span class="so-field-v">${escapeHtml(c.fmt||'Default')}</span></div></div></div>
       <div class="so-sec"><div class="so-sec-h">References</div><div style="font-size:12.5px;color:var(--field-placeholder)">Where this column is used (queries · widgets · metrics) — <span style="color:var(--field-text)">V1.5</span></div></div>
     </div>
-    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Close</button><button class="btn btn-primary" onclick="openEditColumn('${tableId}','${colName}')">Edit column</button></div>`;
+    <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmDeleteColumn('${tableId}','${colName}')">${_RM_IC.del} Delete</button><button class="btn" onclick="closeSlideout()">Close</button><button class="btn btn-primary" onclick="openEditColumn('${tableId}','${colName}')">Edit column</button></div>`;
   $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
+function confirmDeleteColumn(tableId,colName){ const t=_table(tableId); const c=t?t.cols.find(x=>x.n===colName):null; if(!c) return;
+  if(c.pk){ toast('Can’t delete the primary key column'); return; }
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Delete “${escapeHtml(c.d)}”?</div></div>
+    <div class="modal-body">This drops the column <code>${escapeHtml(t.id)}.${escapeHtml(c.n)}</code> from the schema. On publish it runs against the physical tenant table and <b>can't be undone</b>.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_deleteColumn('${tableId}','${colName}')">Delete column</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _deleteColumn(tableId,colName){ const t=_table(tableId); if(!t) return; const c=t.cols.find(x=>x.n===colName); const nm=c?c.d:colName;
+  t.cols=t.cols.filter(x=>x.n!==colName); t.rels=(t.rels||[]).filter(r=>r.via!==colName); t._rows=null;
+  if(t.status==='Published') t.status='Draft'; closeModal(); closeSlideout(); toast('Column “'+nm+'” deleted','ok'); renderTableDetail(tableId);
 }
 
 /* Create / edit column (modal + pre-save safety) */
@@ -3548,6 +3571,38 @@ function saveRelationship(tid){
     if(t.status==='Published') t.status='Draft'; closeModal(); toast('Relationship added','ok');
   }
   renderTableDetail(tid);
+}
+/* Table relationship detail — outgoing (editable) vs incoming (read-only) */
+function openTblRelDetail(id,i){
+  const t=_table(id); if(!t) return; const out=t.rels||[]; const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  if(i<out.length){ const r=out[i]; const tgt=_table(_refId(r.target));
+    $('slideout').innerHTML=`
+      <div class="so-head"><div><div class="so-title">${escapeHtml(t.alias)} ${_ARROW} ${escapeHtml(tgt?tgt.alias:_refId(r.target))}</div><div class="so-internal">Outgoing relationship</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+      <div class="so-body"><div class="so-fields">
+        ${F('Related table',tgt?_entityChip(tgt.id,tgt.alias):escapeHtml(_refId(r.target)))}${F('Cardinality',`<span class="card-badge">${_cardShort(r.kind)}</span>`)}
+        ${F('Foreign key',`<span class="mono">${escapeHtml(r.via)}</span>`)}${F('On delete',escapeHtml(r.onDelete||'restrict'))}${F('On update',escapeHtml(r.onUpdate||'cascade'))}${F('Required',r.req?'<span class="cv-yes">Yes</span>':'<span class="cv-no">No</span>')}
+      </div></div>
+      <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmRemoveTblRel('${id}',${i})">${_RM_IC.del} Remove</button>${tgt?`<button class="btn btn-primary" onclick="closeSlideout();navigate('tables/${tgt.id}')">${_MDIC.open} Open table</button>`:''}</div>`;
+  } else {
+    const inc=TABLES.filter(x=>x.id!==t.id).flatMap(x=>(x.rels||[]).filter(r=>_refId(r.target)===t.id).map(r=>({src:x,via:r.via,kind:r.kind}))); const r=inc[i-out.length]; if(!r) return;
+    $('slideout').innerHTML=`
+      <div class="so-head"><div><div class="so-title">${escapeHtml(r.src.alias)} ${_ARROW} ${escapeHtml(t.alias)}</div><div class="so-internal">Incoming relationship</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+      <div class="so-body"><div class="so-desc">This relationship is defined on <b>${escapeHtml(r.src.alias)}</b> and points here. Edit it from that table.</div><div class="so-fields">
+        ${F('Source table',_entityChip(r.src.id,r.src.alias))}${F('Cardinality',`<span class="card-badge">${_cardShort(_invKind(r.kind))}</span>`)}${F('Foreign key',`<span class="mono">${escapeHtml(r.via)}</span>`)}
+      </div></div>
+      <div class="so-foot"><button class="btn btn-primary" onclick="closeSlideout();navigate('tables/${r.src.id}')">${_MDIC.open} Open ${escapeHtml(r.src.alias)}</button></div>`;
+  }
+  _soOpen();
+}
+function confirmRemoveTblRel(id,i){ const t=_table(id); if(!t) return; const r=(t.rels||[])[i]; if(!r) return; const tgt=_table(_refId(r.target));
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove relationship?</div></div>
+    <div class="modal-body">This removes the link <b>${escapeHtml(t.alias)} → ${escapeHtml(tgt?tgt.alias:_refId(r.target))}</b> and its <code>${escapeHtml(r.via)}</code> foreign key column. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_removeTblRel('${id}',${i})">Remove</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _removeTblRel(id,i){ const t=_table(id); if(!t) return; const r=(t.rels||[])[i]; if(!r) return;
+  t.rels.splice(i,1); t.cols=t.cols.filter(c=>!(c.t==='Reference'&&c.n===r.via&&c.ref===r.target)); t._rows=null;
+  if(t.status==='Published') t.status='Draft'; closeModal(); closeSlideout(); toast('Relationship removed','ok'); renderTableDetail(id);
 }
 
 /* Data grid + records */
