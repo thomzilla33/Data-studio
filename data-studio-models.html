@@ -4925,10 +4925,11 @@ function _erDiagram(nodes, edges, note){
   </div>`;
 }
 function _pvStats(stats){ return `<div class="mp-stats">${stats.map(([l,v])=>`<div class="mp-stat"><div class="mp-stat-v">${v}</div><div class="mp-stat-l">${l}</div></div>`).join('')}</div>`; }
-function _pvHead(icon,name,status,badges,openRoute){ return `<div class="so-head mp-head">
+const _pvOpenBtn=(route)=>`<button class="btn btn-primary" onclick="closeSlideout();navigate('${route}')">${_OPEN_IC} Open</button>`;
+function _pvHead(icon,name,status,badges,headBtn){ return `<div class="so-head mp-head">
     <div class="mp-head-l"><span class="lrow-ic" style="width:34px;height:34px;flex-shrink:0">${icon}</span>
       <div style="min-width:0"><div class="mp-title-row"><span class="so-title">${escapeHtml(name)}</span>${status}</div><div class="mp-badges">${badges}</div></div></div>
-    <div class="mp-head-r"><button class="btn btn-primary" onclick="closeSlideout();navigate('${openRoute}')">${_OPEN_IC} Open</button><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="mp-head-r">${headBtn||''}<button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
   </div>`; }
 function openEntityPreview(id){
   const e=ENTITIES.find(x=>x.id===id); if(!e) return;
@@ -4938,7 +4939,7 @@ function openEntityPreview(id){
   const insights=[`${tbls.length} table${tbls.length===1?'':'s'} and ${rels.length} external relation${rels.length===1?'':'s'}, last touched ${escapeHtml(e.updated)}.`, drift, `${added} column${added===1?'':'s'} added in the last week.`];
   const stats=[['Records',escapeHtml(e.records||'—')],['Tables',tbls.length],['Relations',rels.length],['Columns',cols]];
   const er=_erEntityNodes(e);
-  $('slideout').innerHTML=`${_pvHead(_IC_ENTITY,e.name,_stPill(e.status),`<span class="chip">${escapeHtml(e.domain)}</span>${_modelChip(e.model)}`,'entities/'+e.id)}
+  $('slideout').innerHTML=`${_pvHead(_IC_ENTITY,e.name,_stPill(e.status),`<span class="chip">${escapeHtml(e.domain)}</span>${_modelChip(e.model)}`,_pvOpenBtn('entities/'+e.id))}
     <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(e.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>`;
   _soOpen(); setTimeout(_diagInit,0);
 }
@@ -4951,7 +4952,7 @@ function openTablePreview(id){
   const stats=[['Rows',escapeHtml(t.rows||'0')],['Columns',t.cols.length],['Relations',rels.length],['Indexes',idx.length]];
   const badges=`<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_entityChip(t.entityId,t.entity)}${_modelChip(t.model)}`;
   const er=_erTableNodes(t);
-  $('slideout').innerHTML=`${_pvHead(_IC_TABLE,t.alias,_stPill(t.status),badges,'tables/'+t.id)}
+  $('slideout').innerHTML=`${_pvHead(_IC_TABLE,t.alias,_stPill(t.status),badges,_pvOpenBtn('tables/'+t.id))}
     <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(t.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>`;
   _soOpen(); setTimeout(_diagInit,0);
 }
@@ -4972,7 +4973,7 @@ function openRefPreview(id){
   const vals=r.values||[]; const active=vals.filter(v=>v.active).length;
   const stats=[['Items',vals.length],['Referenced by',r.referencedBy||0],['Active',active],['Fields',r.fields||_REF_SCHEMA.length]];
   const badges=`<span class="chip" style="font-family:'SF Mono',Menlo,monospace">${escapeHtml(_refInternal(r))}</span><span class="pv-hsep">·</span>${_originBadge(r.origin)}`;
-  $('slideout').innerHTML=`${_pvHead(_catIcon(r.category),r.name,_stPill(r.status),badges,'reference/'+r.id)}
+  $('slideout').innerHTML=`${_pvHead(_catIcon(r.category),r.name,_stPill(r.status),badges,_pvOpenBtn('reference/'+r.id))}
     <div class="so-body"><div class="so-desc" style="margin-bottom:2px">${escapeHtml(r.desc)}</div>${_refSchemaSection()}${_refItemsSection(r)}${_pvStats(stats)}</div>`;
   _soOpen();
 }
@@ -5401,7 +5402,7 @@ function _mdEntitiesTab(m,md){
       <button class="btn btn-primary" onclick="openMdAddEntity('${m.id}')">${_MDIC.plus} Add entity</button>
     </div>${body}`;
 }
-function _mdEntClick(e){ return e.real?`navigate('entities/${e.id}')`:`openMdEntityPreview('${modelDetailState.id}','${e.id}')`; }
+function _mdEntClick(e){ return `openMdEntityPreview('${modelDetailState.id}','${e.id}')`; }
 function _mdEntCard(m,e){
   return `<div class="md-ecard" onclick="${_mdEntClick(e)}">
     <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.ent}</span><span class="md-ecard-name">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div>
@@ -5570,23 +5571,18 @@ function saveMdEntity(id,entId){
   _mdSync(m,md); closeSlideout(); toast('Entity “'+name+'” added','ok'); modelDetailState.tab='entities'; renderModelDetail(id);
 }
 function openMdEntityPreview(id,entId){
-  const c=_mdCtx(id); if(!c) return; const {md}=c; const e=md.ents.find(x=>x.id===entId); if(!e) return;
-  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
-  const tbls=md.tables.filter(t=>t.entityId===entId); const primary=tbls.find(t=>t.role==='Primary')||tbls[0];
-  const cols=_mdColNames(primary?primary.cols:e.cols);
-  $('slideout').innerHTML=`
-    <div class="so-head"><div><div class="so-title">${escapeHtml(e.name)}${e.pii?' '+_piiBadge():''}</div><div class="so-internal"><span class="mono">entity.${escapeHtml(_slug(e.name))}</span></div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
-    <div class="so-body">
-      <div class="so-desc">${escapeHtml(e.desc)}</div>
-      <div class="so-fields" style="margin-bottom:18px">
-        ${F('Status',_stPill(e.status))}${F('Owner',`<span class="mtbl-inline">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span>`)}
-        ${F('Tables',e.tables)}${F('Columns',e.cols)}${F('PII',e.pii?'Yes':'No')}${F('Updated',escapeHtml(e.updated))}
-      </div>
-      <div class="so-sec"><div class="so-sec-h">Tables (${tbls.length})</div>${tbls.map(t=>`<div class="mdp-row"><span class="mdp-row-ic">${_MDIC.tbl}</span><span class="mdp-row-name">${escapeHtml(t.name)}</span><code class="md-code">${escapeHtml(t.code)}</code><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><span class="mdp-row-r">${t.cols} cols</span></div>`).join('')||'<div class="so-desc" style="margin:0">No tables.</div>'}</div>
-      <div class="so-sec"><div class="so-sec-h">Columns preview${primary?' · '+escapeHtml(primary.name):''}</div><div class="mdp-cols">${cols.map(cn=>`<span class="mdp-col">${cn}</span>`).join('')}</div></div>
-    </div>
-    <div class="so-foot"><button class="btn" onclick="openMdEditEntity('${id}','${entId}')">${_MDIC.edit} Edit</button>${e.real?`<button class="btn btn-primary" onclick="closeSlideout();navigate('entities/${e.id}')">${_MDIC.open} Open full entity</button>`:`<button class="btn btn-primary" onclick="closeSlideout();setModelTab('tables')">${_MDIC.tbl} View in tables</button>`}</div>`;
-  _soOpen();
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const e=md.ents.find(x=>x.id===entId); if(!e) return;
+  if(e.real && _entById(entId)) return openEntityPreview(entId);   // real entity → full catalog preview
+  const pseudo={name:e.name, tables:md.tables.filter(t=>t.entityId===entId).map(t=>({id:t.id,alias:t.name,role:t.role,cols:t.cols}))};
+  const er=_erEntityNodes(pseudo);
+  const drift=e.status==='Published'?'No drift detected against the catalog baseline.':e.status==='Draft'?'Draft — not yet published to the catalog.':e.status==='Pending changes'?'Pending changes awaiting publish.':'Deprecated — superseded.';
+  const insights=[`${e.tables} table${e.tables===1?'':'s'} in ${escapeHtml(m.name)}, last touched ${escapeHtml(e.updated)}.`, drift, `${e.cols} column${e.cols===1?'':'s'} total${e.pii?' · contains PII':''}.`];
+  const stats=[['Tables',e.tables],['Columns',e.cols],['PII',e.pii?'Yes':'No'],['Updated',escapeHtml(e.updated)]];
+  const badges=`${_modelChip(m.id)}${e.pii?_piiBadge():''}`;
+  $('slideout').innerHTML=`${_pvHead(_IC_ENTITY,e.name,_stPill(e.status),badges,'')}
+    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(e.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>
+    <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveEnt('${id}','${entId}')">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdEditEntity('${id}','${entId}')">${_MDIC.edit} Edit entity</button></div>`;
+  _soOpen(); setTimeout(_diagInit,0);
 }
 function mdEntMenu(id,entId,btn){ const e=_mdEnt(id,entId); if(!e) return;
   _mdKebab(btn,[
@@ -5639,20 +5635,16 @@ function saveMdTable(id,tblId){
   _mdSync(m,md); closeSlideout(); toast('Table “'+name+'” added','ok'); modelDetailState.tab='tables'; renderModelDetail(id);
 }
 function openMdTablePreview(id,tblId){
-  const c=_mdCtx(id); if(!c) return; const {md}=c; const t=md.tables.find(x=>x.id===tblId); if(!t) return;
-  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`; const cols=_mdColNames(t.cols);
-  $('slideout').innerHTML=`
-    <div class="so-head"><div><div class="so-title">${escapeHtml(t.name)}${t.pii?' '+_piiBadge():''}</div><div class="so-internal"><span class="mono">${escapeHtml(t.code)}</span> · <span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
-    <div class="so-body">
-      <div class="so-desc">${escapeHtml(t.desc)}</div>
-      <div class="so-fields" style="margin-bottom:18px">
-        ${F('Entity',_entityChip(t.entityId,t.entity))}${F('Status',_stPill(t.status))}${F('Owner',`<span class="mtbl-inline">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span>`)}
-        ${F('Columns',t.cols)}${F('Relations',t.rel)}${F('Updated',escapeHtml(t.updated))}
-      </div>
-      <div class="so-sec"><div class="so-sec-h">Columns preview</div><div class="mdp-cols">${cols.map(cn=>`<span class="mdp-col">${cn}</span>`).join('')}</div></div>
-    </div>
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const t=md.tables.find(x=>x.id===tblId); if(!t) return;
+  const er={nodes:[{label:t.name, role:t.role, cols:_erColsForTable(t)}], edges:[], note:''};
+  const drift=t.status==='Published'?'No drift detected against the catalog baseline.':t.status==='Draft'?'Draft — not yet published to the catalog.':'Pending changes awaiting publish.';
+  const insights=[`${t.cols} column${t.cols===1?'':'s'} · ${t.rel} relation${t.rel===1?'':'s'}.`, drift, `Backs the ${escapeHtml(t.entity)} entity in ${escapeHtml(m.name)}.`];
+  const stats=[['Columns',t.cols],['Relations',t.rel],['Role',t.role],['Updated',escapeHtml(t.updated)]];
+  const badges=`<span class="mono" style="font-size:12px;color:var(--t3)">${escapeHtml(t.code)}</span><span class="pv-hsep">·</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_entityChip(t.entityId,t.entity)}${t.pii?_piiBadge():''}`;
+  $('slideout').innerHTML=`${_pvHead(_IC_TABLE,t.name,_stPill(t.status),badges,'')}
+    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(t.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>
     <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveTbl('${id}','${tblId}')">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdEditTable('${id}','${tblId}')">${_MDIC.edit} Edit table</button></div>`;
-  _soOpen();
+  _soOpen(); setTimeout(_diagInit,0);
 }
 function _mdTblMenu(id,tblId,btn){ _mdKebab(btn,[
     {ic:_MD_EYE,label:'Preview',act:`openMdTablePreview('${id}','${tblId}')`},
@@ -5704,18 +5696,19 @@ function saveMdComp(id,sub,idx){
   _mdSync(m,md); closeSlideout(); modelDetailState.tab='components'; renderModelDetail(id);
 }
 function openMdCompPreview(id,sub,idx){
-  const c=_mdCtx(id); if(!c) return; const {md}=c; const x=md[sub][idx]; if(!x) return;
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const x=md[sub][idx]; if(!x) return;
   const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
   const kind={widgets:'Widget',queries:'Saved query',metrics:'Metric',datasets:'Derived dataset'}[sub];
+  const detail = sub==='widgets'?`${x.type} · ${x.studio}` : sub==='metrics'?`current value ${x.val}` : `${x.rows} rows`;
   const extra = sub==='widgets' ? F('Type',escapeHtml(x.type))+F('Studio',escapeHtml(x.studio))
     : sub==='metrics' ? F('Value',escapeHtml(x.val)) : F('Rows',escapeHtml(x.rows));
-  $('slideout').innerHTML=`
-    <div class="so-head"><div><div class="so-title">${escapeHtml(x.name)}</div><div class="so-internal">${kind}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
-    <div class="so-body">
-      <div class="so-desc">${escapeHtml(kind)} built on the <b>${escapeHtml(x.entity)}</b> entity of this model.</div>
-      <div class="so-fields">
+  const insights=[`${kind} consuming the ${escapeHtml(x.entity)} entity of ${escapeHtml(m.name)}.`, `${escapeHtml(detail)}.`, `Owned by ${escapeHtml(P(x.owner).n)}.`];
+  const badges=`<span class="chip">${_COMP_IC[sub]}${kind}</span><span class="md-ccard-ent" style="font-size:12px;color:var(--t3)">${_MDIC.ent}${escapeHtml(x.entity)}</span>`;
+  $('slideout').innerHTML=`${_pvHead(_COMP_IC[sub],x.name,'',badges,'')}
+    <div class="so-body">${_pvInsights(insights)}
+      <div class="so-sec"><div class="so-sec-h">Details</div><div class="so-fields">
         ${F('Kind',escapeHtml(kind))}${F('Source entity',_entityChip('',x.entity))}${extra}${F('Owner',`<span class="mtbl-inline">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span>`)}
-      </div>
+      </div></div>
     </div>
     <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveComp('${id}','${sub}',${idx})">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdCompForm('${id}','${sub}',${idx})">${_MDIC.edit} Edit</button></div>`;
   _soOpen();
