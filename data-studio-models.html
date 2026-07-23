@@ -2338,6 +2338,18 @@ html.theme-light .rel-cardb{fill:#fff}
 .md-stewards{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
 .md-steward-chip{display:inline-flex; align-items:center; gap:6px; background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:20px; padding:2px 8px 2px 3px; font-size:12px; color:var(--t1)}
 .md-steward-chip .md-tag-x{border:none; background:none; color:var(--t3); cursor:pointer; font-size:14px; line-height:1; padding:0}
+/* Models-inside CRUD: card kebab, form check, previews */
+.md-cardkb{margin-left:auto; width:26px; height:26px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:none; background:transparent; color:var(--t3); border-radius:7px; cursor:pointer; transition:background .12s, color .12s}
+.md-cardkb:hover{background:var(--hover); color:var(--t1)}
+.mde-check{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--t2); cursor:pointer; margin-top:2px}
+.mde-check input{width:15px; height:15px; accent-color:var(--primary); cursor:pointer}
+.mdp-row{display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--card-border,var(--line))}
+.mdp-row:last-child{border-bottom:none}
+.mdp-row-ic{color:var(--t3); display:inline-flex}
+.mdp-row-name{font-size:13px; color:var(--t1); font-weight:600}
+.mdp-row-r{margin-left:auto; font-size:11.5px; color:var(--t3); flex-shrink:0}
+.mdp-cols{display:flex; flex-wrap:wrap; gap:6px}
+.mdp-col{font-family:var(--mono,ui-monospace,monospace); font-size:11.5px; color:var(--t2); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:6px; padding:3px 8px}
 .md-steward-chip .md-tag-x:hover{color:var(--field-text-error,#dc2626)}
 </style>
 </head>
@@ -4995,19 +5007,19 @@ function _mdEntitiesTab(m,md){
       <button class="md-pii-toggle ${st.pii?'on':''}" onclick="mdEnt('pii',${st.pii?'false':'true'})">${_MDIC.lock} PII</button>
       <span class="tbar-spring"></span>
       ${viewToggle(st,'mdEntView')}
-      <button class="btn btn-primary" onclick="toast('Add entity to ${escapeHtml(m.name)}')">${_MDIC.plus} Add entity ${_MDIC.chevd}</button>
+      <button class="btn btn-primary" onclick="openMdAddEntity('${m.id}')">${_MDIC.plus} Add entity</button>
     </div>${body}`;
 }
-function _mdEntClick(e){ return e.real?`navigate('entities/${e.id}')`:`toast('Open ${escapeHtml(e.name)} · entity')`; }
+function _mdEntClick(e){ return e.real?`navigate('entities/${e.id}')`:`openMdEntityPreview('${modelDetailState.id}','${e.id}')`; }
 function _mdEntCard(m,e){
   return `<div class="md-ecard" onclick="${_mdEntClick(e)}">
-    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.ent}</span><span class="md-ecard-name">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}</div>
+    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.ent}</span><span class="md-ecard-name">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div>
     <div class="md-ecard-desc">${escapeHtml(e.desc)}</div>
     <div class="md-ecard-meta">${_stPill(e.status)}<span class="metaico">${_MDIC.tbl}${e.tables} tables</span><span class="metaico">${_MDIC.col}${e.cols} cols</span></div>
     <div class="md-ecard-foot"><span class="mcard-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="mcard-date">${escapeHtml(e.updated)}</span></div></div>`;
 }
 function _mdEntListRow(m,e){
-  return `<div class="lrow" onclick="${_mdEntClick(e)}"><div class="lrow-top"><span class="lrow-ic">${_MDIC.ent}</span><span class="lrow-title">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<span class="lrow-right">${_stPill(e.status)}<span class="lrow-time">${escapeHtml(e.updated)}</span></span></div>
+  return `<div class="lrow" onclick="${_mdEntClick(e)}"><div class="lrow-top"><span class="lrow-ic">${_MDIC.ent}</span><span class="lrow-title">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<span class="lrow-right">${_stPill(e.status)}<span class="lrow-time">${escapeHtml(e.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();mdEntMenu('${modelDetailState.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></span></div>
     <div class="lrow-desc">${escapeHtml(e.desc)}</div>
     <div class="lrow-foot"><span class="lrow-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.tbl}${e.tables} tables</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.col}${e.cols} columns</span></div></div>`;
 }
@@ -5038,7 +5050,7 @@ function _mdTablesTab(m,md){
       <button class="flt-btn" onclick="toast('More table filters')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters</button>
       <span class="tbar-spring"></span>
       ${viewToggle(st,'mdTblView')}
-      <button class="btn btn-primary" onclick="toast('Add table to ${escapeHtml(m.name)}')">${_MDIC.plus} Add Table ${_MDIC.chevd}</button>
+      <button class="btn btn-primary" onclick="openMdAddTable('${m.id}')">${_MDIC.plus} Add table</button>
     </div>${body}`;
 }
 function _mdTblRow(m,t){
@@ -5048,15 +5060,15 @@ function _mdTblRow(m,t){
       <span class="md-trow-ic">${_MDIC.tbl}</span><span class="md-trow-av">${av(P(t.owner),'sm')}</span>
       <span class="md-trow-name">${escapeHtml(t.name)}</span><code class="md-code">${escapeHtml(t.code)}</code>
       ${_entityChip(t.entityId,t.entity)}<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${t.pii?_piiBadge():''}
-      <span class="md-trow-right">${_stPill(t.status)}<span class="lrow-time">${escapeHtml(t.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();toast('Table actions')" aria-label="Actions">${_MDIC.dots}</button><span class="md-trow-caret">${_MDIC.chev}</span></span>
+      <span class="md-trow-right">${_stPill(t.status)}<span class="lrow-time">${escapeHtml(t.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();_mdTblMenu('${m.id}','${t.id}',this)" aria-label="Table actions">${_MDIC.dots}</button><span class="md-trow-caret">${_MDIC.chev}</span></span>
     </div>
     <div class="md-trow-desc">${escapeHtml(t.desc)}</div>
     <div class="md-trow-foot"><span class="lrow-metric">${_MDIC.col}${t.cols} columns</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.rel}${t.rel} relations</span><span class="lrow-sep">·</span><span>${escapeHtml(P(t.owner).n)}</span></div>
-    ${open?`<div class="md-trow-exp"><span class="md-exp-note">Open the full table to edit columns, relationships and data.</span><button class="btn" onclick="toast('Open ${escapeHtml(t.name)}')">${_MDIC.open} Open table</button></div>`:''}</div>`;
+    ${open?`<div class="md-trow-exp"><span class="md-exp-note">Preview the table's columns, or open it to edit relationships and data.</span><button class="btn" onclick="event.stopPropagation();openMdTablePreview('${m.id}','${t.id}')">${_MD_EYE} Preview table</button></div>`:''}</div>`;
 }
 function _mdTblCard(m,t){
-  return `<div class="md-ecard" onclick="toast('Open ${escapeHtml(t.name)}')">
-    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.tbl}</span><span class="md-ecard-name">${escapeHtml(t.name)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div>
+  return `<div class="md-ecard" onclick="openMdTablePreview('${m.id}','${t.id}')">
+    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.tbl}</span><span class="md-ecard-name">${escapeHtml(t.name)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><button class="md-cardkb" onclick="event.stopPropagation();_mdTblMenu('${m.id}','${t.id}',this)" aria-label="Table actions">${_MDIC.dots}</button></div>
     <div class="md-ecard-desc">${escapeHtml(t.desc)}</div>
     <div class="md-ecard-meta">${_stPill(t.status)}<span class="metaico">${_MDIC.col}${t.cols} cols</span><span class="metaico">${_MDIC.rel}${t.rel} rel</span></div>
     <div class="md-ecard-foot"><span class="mcard-owner">${av(P(t.owner),'sm')}${escapeHtml(t.entity)}</span><span class="mcard-date">${escapeHtml(t.updated)}</span></div></div>`;
@@ -5077,7 +5089,7 @@ function _mdComponentsTab(m,md){
   const cards = rows.length===0 ? `<div class="empty" style="margin-top:0"><div class="empty-t">${st.sub==='datasets'?'No derived datasets yet':'Nothing matches'}</div>${st.sub==='datasets'?'This model has no derived datasets.':'Try a different search.'}</div>`
     : st.view==='table' ? _mdMiniTable(['Name','Detail','Source entity','Owner'], rows.map(x=>[
         `<span class="mtbl-name">${escapeHtml(x.name)}</span>`, escapeHtml(_mdCompSub(st.sub,x)), escapeHtml(x.entity), `<span class="mtbl-inline">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span>`]))
-    : `<div class="mcard-grid md-comp-grid">${rows.map(x=>_mdCompCard(st.sub,x)).join('')}</div>`;
+    : `<div class="mcard-grid md-comp-grid">${rows.map(x=>_mdCompCard(m.id,st.sub,x,data.indexOf(x))).join('')}</div>`;
   return `<div class="md-comp">
     <div class="md-comp-nav">${subs.map(([id,label,cnt])=>`<button class="md-comp-navbtn ${st.sub===id?'on':''}" onclick="mdComp('sub','${id}')"><span class="md-comp-navic">${_COMP_IC[id]}</span><span class="md-comp-navlbl">${label}</span><span class="md-comp-navcnt">${cnt}</span></button>`).join('')}</div>
     <div class="md-comp-main">
@@ -5087,16 +5099,251 @@ function _mdComponentsTab(m,md){
         ${dsfDrop('mdCompEn','Source entity',null,[{label:'All entities',selected:true,onclick:"dsfPickSingle()"}].concat(ents.map(e=>({label:e,selected:false,onclick:"dsfPickSingle()"}))))}
         <span class="tbar-spring"></span>
         ${_mdViewToggle2(st.view,'mdCompView')}
+        <button class="btn btn-primary" onclick="openMdAddComp('${m.id}')">${_MDIC.plus} Add ${_COMP_SING[st.sub]}</button>
       </div>
       ${cards}</div></div>`;
 }
+const _COMP_SING={widgets:'widget',queries:'query',metrics:'metric',datasets:'dataset'};
 function _mdCompSub(sub,x){ return sub==='widgets'?`${x.type} · ${x.studio}` : sub==='queries'?`Query · ${x.rows} rows` : sub==='metrics'?`Metric · ${x.val}` : `Dataset · ${x.rows} rows`; }
-function _mdCompCard(sub,x){
-  return `<div class="md-ccard" onclick="toast('Open ${escapeHtml(x.name)}')">
-    <div class="md-ccard-h"><span class="md-ccard-ic">${_COMP_IC[sub]}</span><span class="md-ccard-name">${escapeHtml(x.name)}</span></div>
+function _mdCompCard(mid,sub,x,idx){
+  return `<div class="md-ccard" onclick="openMdCompPreview('${mid}','${sub}',${idx})">
+    <div class="md-ccard-h"><span class="md-ccard-ic">${_COMP_IC[sub]}</span><span class="md-ccard-name">${escapeHtml(x.name)}</span><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
     <div class="md-ccard-sub">${escapeHtml(_mdCompSub(sub,x))}</div>
     <div class="md-ccard-foot"><span class="md-ccard-ent">${_MDIC.ent}${escapeHtml(x.entity)}</span>${av(P(x.owner),'sm')}</div></div>`;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   MODELS-INSIDE CRUD — entities · tables · components + previews
+   Operates on the cached _md(m) object so adds/edits/removes persist
+   across re-renders (until publish resets the cache).
+   ══════════════════════════════════════════════════════════════ */
+const _MD_EYE='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>';
+function _mdCtx(id){ const m=_model(id); return m?{m,md:_md(m)}:null; }
+function _mdSync(m,md){
+  md.counts.entities=md.ents.length; md.counts.tables=md.tables.length;
+  md.compTotal=md.widgets.length+md.queries.length+md.metrics.length+md.datasets.length;
+  md.counts.components=md.compTotal;
+  md.dg=_diagModel2(m,md.ents); md.relations=md.dg.edges.length;
+  md.draftEnts=md.ents.filter(x=>x.status!=='Published').length;
+  m.entities=md.ents.length; _mdEdited(m);
+}
+function _mdColNames(n){ const base=['id','name','code','status','description','created_at','updated_at','owner_id','external_id','is_active','notes','type','source','region','amount','priority']; return base.slice(0,Math.max(1,Math.min(base.length,n||6))); }
+function _soOpen(){ $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open'); }
+function _mdKebab(btn,items){
+  closeRowMenu();
+  const it=x=> x==='sep' ? '<div class="rowmenu-sep"></div>' : `<button class="rowmenu-item ${x.danger?'danger':''}" onclick="closeRowMenu();${x.act}">${x.ic}${x.label}</button>`;
+  const div=document.createElement('div'); div.id='rowmenu'; div.className='rowmenu'; div.innerHTML=items.filter(Boolean).map(it).join('');
+  document.body.appendChild(div);
+  const r=btn.getBoundingClientRect(), w=div.offsetWidth||200;
+  div.style.left=Math.max(8,Math.min(r.right-w,window.innerWidth-w-8))+'px';
+  let top=r.bottom+6; if(top+div.offsetHeight>window.innerHeight-8) top=Math.max(8,r.top-div.offsetHeight-6);
+  div.style.top=top+'px';
+  setTimeout(()=>{ document.addEventListener('click',_rowMenuOutside,true); document.addEventListener('keydown',_rowMenuEsc,true); },0);
+}
+const _RIF=(disp,id,ctrl,req,type)=>`<div class="ri-field"><div class="ri-flabel"><span class="ri-fdisp">${disp}${req?' <span style="color:var(--field-text-error)">*</span>':''}</span>${type?`<span class="ri-ftype">${type}</span>`:''}</div>${ctrl}</div>`;
+
+/* ── ENTITIES ─────────────────────────────────────────────── */
+function _mdEnt(id,entId){ const c=_mdCtx(id); return c?c.md.ents.find(e=>e.id===entId):null; }
+function openMdAddEntity(id){ openMdEntityForm(id,null); }
+function openMdEditEntity(id,entId){ openMdEntityForm(id,entId); }
+function openMdEntityForm(id,entId){
+  const c=_mdCtx(id); if(!c) return; const {m}=c; const e=entId?_mdEnt(id,entId):null; const owners=_mdOwners();
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${e?'Edit entity':'Add entity'}</div><div class="so-internal">${escapeHtml(m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="mde_name" value="${e?escapeHtml(e.name):''}" placeholder="e.g. Contact" autocomplete="off">`,1,'string')}
+      ${_RIF('Description',null,`<textarea class="mtextarea" id="mde_desc" placeholder="What this entity represents.">${e?escapeHtml(e.desc):''}</textarea>`)}
+      ${_RIF('Owner',null,`<select class="minput" id="mde_owner">${owners.map(k=>`<option value="${k}" ${e&&e.owner===k?'selected':''}>${escapeHtml(P(k).n)}</option>`).join('')}</select>`)}
+      ${_RIF('Status',null,`<select class="minput" id="mde_status">${['Draft','Published'].map(s=>`<option ${(e?e.status===s:s==='Draft')?'selected':''}>${s}</option>`).join('')}</select>`)}
+      ${e?'':_RIF('Tables',null,`<select class="minput" id="mde_tables"><option value="1">1 — primary only</option><option value="2">2 — primary + detail</option><option value="3">3 — primary + detail + link</option></select>`,0,'1–3')}
+      <label class="mde-check"><input type="checkbox" id="mde_pii" ${e&&e.pii?'checked':''}> Contains PII</label>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveMdEntity('${id}','${entId||''}')">${_MDIC.plus}${e?'Save changes':'Add entity'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('mde_name'); if(el)el.focus();},60);
+}
+function saveMdEntity(id,entId){
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c;
+  const name=($('mde_name').value||'').trim(); if(!name){ toast('Enter a name'); return; }
+  const desc=($('mde_desc').value||'').trim(), owner=$('mde_owner').value, status=$('mde_status').value, pii=$('mde_pii').checked;
+  if(entId){ const e=md.ents.find(x=>x.id===entId); if(e){ e.name=name; e.desc=desc; e.owner=owner; e.status=status; e.pii=pii; e.updated='just now';
+      md.tables.filter(t=>t.entityId===entId).forEach(t=>{ t.entity=name; t.owner=owner; if(t.role==='Primary'){ t.pii=pii; t.status=status; } }); }
+    _mdSync(m,md); closeSlideout(); toast('Entity “'+name+'” updated','ok'); renderModelDetail(id); return; }
+  let base=_slug(name), uid=base, k=2; while(md.ents.find(e=>e.id===uid)) uid=base+'-'+(k++);
+  const nT=parseInt(($('mde_tables')||{}).value||'1',10)||1; const cols=6*nT;
+  md.ents.unshift({ id:uid, name, real:false, pii, tables:nT, cols, status, owner, updated:'just now', desc:desc||('The '+name.toLowerCase()+' entity and its records.') });
+  const SF=[{s:'',code:'',role:'Primary'},{s:' Detail',code:'_detail',role:'Secondary'},{s:' Link',code:'_link',role:'Secondary'}];
+  for(let i=0;i<nT;i++){ const sf=SF[Math.min(i,2)], isP=i===0, code=uid.replace(/-/g,'_')+sf.code;
+    md.tables.push({ id:m.id+'__'+code, name:name+sf.s, code, entity:name, entityId:uid, role:isP?'Primary':sf.role, pii:isP&&pii,
+      cols:isP?Math.max(4,Math.round(cols*0.55)):Math.max(3,Math.round(cols*0.4)), rel:isP?2:1, status, owner, updated:'just now',
+      desc:isP?('The primary table backing the '+name+' entity.'):('Holds the extended attributes for each '+name+'.') }); }
+  _mdSync(m,md); closeSlideout(); toast('Entity “'+name+'” added','ok'); modelDetailState.tab='entities'; renderModelDetail(id);
+}
+function openMdEntityPreview(id,entId){
+  const c=_mdCtx(id); if(!c) return; const {md}=c; const e=md.ents.find(x=>x.id===entId); if(!e) return;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  const tbls=md.tables.filter(t=>t.entityId===entId); const primary=tbls.find(t=>t.role==='Primary')||tbls[0];
+  const cols=_mdColNames(primary?primary.cols:e.cols);
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${escapeHtml(e.name)}${e.pii?' '+_piiBadge():''}</div><div class="so-internal"><span class="mono">entity.${escapeHtml(_slug(e.name))}</span></div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="so-desc">${escapeHtml(e.desc)}</div>
+      <div class="so-fields" style="margin-bottom:18px">
+        ${F('Status',_stPill(e.status))}${F('Owner',`<span class="mtbl-inline">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span>`)}
+        ${F('Tables',e.tables)}${F('Columns',e.cols)}${F('PII',e.pii?'Yes':'No')}${F('Updated',escapeHtml(e.updated))}
+      </div>
+      <div class="so-sec"><div class="so-sec-h">Tables (${tbls.length})</div>${tbls.map(t=>`<div class="mdp-row"><span class="mdp-row-ic">${_MDIC.tbl}</span><span class="mdp-row-name">${escapeHtml(t.name)}</span><code class="md-code">${escapeHtml(t.code)}</code><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><span class="mdp-row-r">${t.cols} cols</span></div>`).join('')||'<div class="so-desc" style="margin:0">No tables.</div>'}</div>
+      <div class="so-sec"><div class="so-sec-h">Columns preview${primary?' · '+escapeHtml(primary.name):''}</div><div class="mdp-cols">${cols.map(cn=>`<span class="mdp-col">${cn}</span>`).join('')}</div></div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="openMdEditEntity('${id}','${entId}')">${_MDIC.edit} Edit</button>${e.real?`<button class="btn btn-primary" onclick="closeSlideout();navigate('entities/${e.id}')">${_MDIC.open} Open full entity</button>`:`<button class="btn btn-primary" onclick="closeSlideout();setModelTab('tables')">${_MDIC.tbl} View in tables</button>`}</div>`;
+  _soOpen();
+}
+function mdEntMenu(id,entId,btn){ const e=_mdEnt(id,entId); if(!e) return;
+  _mdKebab(btn,[
+    {ic:_MD_EYE,label:'Preview',act:`openMdEntityPreview('${id}','${entId}')`},
+    e.real?{ic:_RM_IC.open,label:'Open full entity',act:`navigate('entities/${entId}')`}:null,
+    {ic:_MDIC.edit,label:'Edit',act:`openMdEditEntity('${id}','${entId}')`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove from model',act:`confirmMdRemoveEnt('${id}','${entId}')`,danger:true},
+  ]);
+}
+function confirmMdRemoveEnt(id,entId){ const e=_mdEnt(id,entId); if(!e) return; const mn=(_model(id)||{}).name||'this model';
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(e.name)}”?</div></div>
+    <div class="modal-body">This removes the entity and its ${e.tables} table${e.tables===1?'':'s'} from <b>${escapeHtml(mn)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_mdRemoveEnt('${id}','${entId}')">Remove entity</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _mdRemoveEnt(id,entId){ const c=_mdCtx(id); if(!c) return; const {m,md}=c; const e=md.ents.find(x=>x.id===entId); const nm=e?e.name:'Entity';
+  md.ents=md.ents.filter(x=>x.id!==entId); md.tables=md.tables.filter(t=>t.entityId!==entId);
+  _mdSync(m,md); closeModal(); closeSlideout(); toast('“'+nm+'” removed','ok'); renderModelDetail(id); }
+
+/* ── TABLES ───────────────────────────────────────────────── */
+function openMdAddTable(id){ openMdTableForm(id,null); }
+function openMdEditTable(id,tblId){ openMdTableForm(id,tblId); }
+function openMdTableForm(id,tblId){
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const t=tblId?md.tables.find(x=>x.id===tblId):null; const owners=_mdOwners();
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${t?'Edit table':'Add table'}</div><div class="so-internal">${escapeHtml(m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="mdt_name" value="${t?escapeHtml(t.name):''}" placeholder="e.g. Contact Detail" autocomplete="off">`,1,'string')}
+      ${_RIF('Code',null,`<input class="minput md-name-mono" id="mdt_code" value="${t?escapeHtml(t.code):''}" placeholder="auto from name" autocomplete="off">`,0,'code')}
+      ${_RIF('Entity',null,`<select class="minput" id="mdt_entity">${md.ents.map(e=>`<option value="${e.id}" ${t&&t.entityId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')||'<option value="">— no entities —</option>'}</select>`)}
+      ${_RIF('Type',null,`<select class="minput" id="mdt_type">${['Primary','Secondary'].map(r=>`<option ${(t?t.role===r:r==='Secondary')?'selected':''}>${r}</option>`).join('')}</select>`)}
+      ${_RIF('Status',null,`<select class="minput" id="mdt_status">${['Draft','Published'].map(s=>`<option ${(t?t.status===s:s==='Draft')?'selected':''}>${s}</option>`).join('')}</select>`)}
+      ${_RIF('Columns',null,`<input class="minput" id="mdt_cols" type="number" min="1" max="60" value="${t?t.cols:6}">`,0,'int')}
+      ${_RIF('Description',null,`<textarea class="mtextarea" id="mdt_desc" placeholder="What this table stores.">${t?escapeHtml(t.desc):''}</textarea>`)}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveMdTable('${id}','${tblId||''}')">${_MDIC.plus}${t?'Save changes':'Add table'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('mdt_name'); if(el)el.focus();},60);
+}
+function saveMdTable(id,tblId){
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c;
+  const name=($('mdt_name').value||'').trim(); if(!name){ toast('Enter a name'); return; }
+  let code=($('mdt_code').value||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,''); if(!code) code=_slug(name).replace(/-/g,'_');
+  const entId=$('mdt_entity').value; const ent=md.ents.find(e=>e.id===entId)||{name:'—',owner:m.owner};
+  const role=$('mdt_type').value, status=$('mdt_status').value, cols=Math.max(1,parseInt($('mdt_cols').value,10)||6), desc=($('mdt_desc').value||'').trim();
+  if(tblId){ const t=md.tables.find(x=>x.id===tblId); if(t){ t.name=name; t.code=code; t.entity=ent.name; t.entityId=entId; t.role=role; t.status=status; t.cols=cols; t.desc=desc; t.updated='just now'; }
+    _mdSync(m,md); closeSlideout(); toast('Table “'+name+'” updated','ok'); renderModelDetail(id); return; }
+  let uid=m.id+'__'+code, k=2; while(md.tables.find(x=>x.id===uid)) uid=m.id+'__'+code+'_'+(k++);
+  md.tables.push({ id:uid, name, code, entity:ent.name, entityId:entId, role, pii:false, cols, rel:role==='Primary'?2:1, status, owner:ent.owner||m.owner, updated:'just now', desc:desc||('Table backing the '+ent.name+' entity.') });
+  _mdSync(m,md); closeSlideout(); toast('Table “'+name+'” added','ok'); modelDetailState.tab='tables'; renderModelDetail(id);
+}
+function openMdTablePreview(id,tblId){
+  const c=_mdCtx(id); if(!c) return; const {md}=c; const t=md.tables.find(x=>x.id===tblId); if(!t) return;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`; const cols=_mdColNames(t.cols);
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${escapeHtml(t.name)}${t.pii?' '+_piiBadge():''}</div><div class="so-internal"><span class="mono">${escapeHtml(t.code)}</span> · <span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="so-desc">${escapeHtml(t.desc)}</div>
+      <div class="so-fields" style="margin-bottom:18px">
+        ${F('Entity',_entityChip(t.entityId,t.entity))}${F('Status',_stPill(t.status))}${F('Owner',`<span class="mtbl-inline">${av(P(t.owner),'sm')}${escapeHtml(P(t.owner).n)}</span>`)}
+        ${F('Columns',t.cols)}${F('Relations',t.rel)}${F('Updated',escapeHtml(t.updated))}
+      </div>
+      <div class="so-sec"><div class="so-sec-h">Columns preview</div><div class="mdp-cols">${cols.map(cn=>`<span class="mdp-col">${cn}</span>`).join('')}</div></div>
+    </div>
+    <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveTbl('${id}','${tblId}')">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdEditTable('${id}','${tblId}')">${_MDIC.edit} Edit table</button></div>`;
+  _soOpen();
+}
+function _mdTblMenu(id,tblId,btn){ _mdKebab(btn,[
+    {ic:_MD_EYE,label:'Preview',act:`openMdTablePreview('${id}','${tblId}')`},
+    {ic:_MDIC.edit,label:'Edit',act:`openMdEditTable('${id}','${tblId}')`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove from model',act:`confirmMdRemoveTbl('${id}','${tblId}')`,danger:true},
+  ]); }
+function confirmMdRemoveTbl(id,tblId){ const c=_mdCtx(id); if(!c) return; const t=c.md.tables.find(x=>x.id===tblId); if(!t) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(t.name)}”?</div></div>
+    <div class="modal-body">This removes the table from <b>${escapeHtml(c.m.name)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_mdRemoveTbl('${id}','${tblId}')">Remove table</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _mdRemoveTbl(id,tblId){ const c=_mdCtx(id); if(!c) return; const {m,md}=c; const t=md.tables.find(x=>x.id===tblId); const nm=t?t.name:'Table';
+  md.tables=md.tables.filter(x=>x.id!==tblId); _mdSync(m,md); closeModal(); closeSlideout(); toast('“'+nm+'” removed','ok'); renderModelDetail(id); }
+
+/* ── COMPONENTS (widgets · queries · metrics · datasets) ──── */
+function openMdAddComp(id){ openMdCompForm(id,modelDetailState.comp.sub,null); }
+function openMdCompForm(id,sub,idx){
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const arr=md[sub]; const x=(idx!=null&&idx>=0)?arr[idx]:null;
+  const singular={widgets:'widget',queries:'saved query',metrics:'metric',datasets:'derived dataset'}[sub];
+  const ents=md.ents.map(e=>e.name); const owners=_mdOwners();
+  let extra='';
+  if(sub==='widgets'){ const TY=['Timeline','Table','Chart'], STUD=['Exec summary','Team board','Sales studio · Overview','Ops studio · Live','Finance · Monthly'];
+    extra=_RIF('Type',null,`<select class="minput" id="mdk_type">${TY.map(o=>`<option ${x&&x.type===o?'selected':''}>${o}</option>`).join('')}</select>`)
+        + _RIF('Studio',null,`<select class="minput" id="mdk_studio">${STUD.map(o=>`<option ${x&&x.studio===o?'selected':''}>${o}</option>`).join('')}</select>`); }
+  else if(sub==='metrics'){ extra=_RIF('Value',null,`<input class="minput" id="mdk_val" value="${x?escapeHtml(x.val):''}" placeholder="e.g. 98%" autocomplete="off">`,0,'string'); }
+  else { extra=_RIF('Rows',null,`<input class="minput" id="mdk_rows" value="${x?escapeHtml(x.rows):''}" placeholder="e.g. 1.2K" autocomplete="off">`,0,'string'); }
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${x?'Edit '+singular:'Add '+singular}</div><div class="so-internal">${escapeHtml(m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Name',null,`<input class="minput" id="mdk_name" value="${x?escapeHtml(x.name):''}" placeholder="e.g. Pipeline overview" autocomplete="off">`,1,'string')}
+      ${_RIF('Source entity',null,`<select class="minput" id="mdk_entity">${ents.map(e=>`<option ${x&&x.entity===e?'selected':''}>${escapeHtml(e)}</option>`).join('')||'<option>—</option>'}</select>`)}
+      ${extra}
+      ${_RIF('Owner',null,`<select class="minput" id="mdk_owner">${owners.map(k=>`<option value="${k}" ${x&&x.owner===k?'selected':''}>${escapeHtml(P(k).n)}</option>`).join('')}</select>`)}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveMdComp('${id}','${sub}',${idx==null?'null':idx})">${_MDIC.plus}${x?'Save changes':'Add '+singular}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('mdk_name'); if(el)el.focus();},60);
+}
+function saveMdComp(id,sub,idx){
+  const c=_mdCtx(id); if(!c) return; const {m,md}=c; const arr=md[sub];
+  const name=($('mdk_name').value||'').trim(); if(!name){ toast('Enter a name'); return; }
+  const obj={ name, entity:$('mdk_entity').value, owner:$('mdk_owner').value };
+  if(sub==='widgets'){ obj.type=$('mdk_type').value; obj.studio=$('mdk_studio').value; }
+  else if(sub==='metrics'){ obj.val=($('mdk_val').value||'').trim()||'—'; }
+  else { obj.rows=($('mdk_rows').value||'').trim()||'0'; }
+  if(idx!=null&&idx>=0&&arr[idx]){ Object.assign(arr[idx],obj); toast('“'+name+'” updated','ok'); }
+  else { arr.unshift(obj); toast('“'+name+'” added','ok'); }
+  _mdSync(m,md); closeSlideout(); modelDetailState.tab='components'; renderModelDetail(id);
+}
+function openMdCompPreview(id,sub,idx){
+  const c=_mdCtx(id); if(!c) return; const {md}=c; const x=md[sub][idx]; if(!x) return;
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`;
+  const kind={widgets:'Widget',queries:'Saved query',metrics:'Metric',datasets:'Derived dataset'}[sub];
+  const extra = sub==='widgets' ? F('Type',escapeHtml(x.type))+F('Studio',escapeHtml(x.studio))
+    : sub==='metrics' ? F('Value',escapeHtml(x.val)) : F('Rows',escapeHtml(x.rows));
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${escapeHtml(x.name)}</div><div class="so-internal">${kind}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="so-desc">${escapeHtml(kind)} built on the <b>${escapeHtml(x.entity)}</b> entity of this model.</div>
+      <div class="so-fields">
+        ${F('Kind',escapeHtml(kind))}${F('Source entity',_entityChip('',x.entity))}${extra}${F('Owner',`<span class="mtbl-inline">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span>`)}
+      </div>
+    </div>
+    <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveComp('${id}','${sub}',${idx})">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdCompForm('${id}','${sub}',${idx})">${_MDIC.edit} Edit</button></div>`;
+  _soOpen();
+}
+function _mdCompMenu(id,sub,idx,btn){ _mdKebab(btn,[
+    {ic:_MD_EYE,label:'Preview',act:`openMdCompPreview('${id}','${sub}',${idx})`},
+    {ic:_MDIC.edit,label:'Edit',act:`openMdCompForm('${id}','${sub}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove from model',act:`confirmMdRemoveComp('${id}','${sub}',${idx})`,danger:true},
+  ]); }
+function confirmMdRemoveComp(id,sub,idx){ const c=_mdCtx(id); if(!c) return; const x=c.md[sub][idx]; if(!x) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-error-bg,rgba(224,82,82,0.14));color:var(--tag-error-fg,#f87171);border-color:var(--tag-error-bd,rgba(224,82,82,0.3))">${_RM_IC.del}</div><div class="modal-title">Remove “${escapeHtml(x.name)}”?</div></div>
+    <div class="modal-body">This removes the component from <b>${escapeHtml(c.m.name)}</b>. This can't be undone.</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="_mdRemoveComp('${id}','${sub}',${idx})">Remove</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _mdRemoveComp(id,sub,idx){ const c=_mdCtx(id); if(!c) return; const {m,md}=c; const x=md[sub][idx]; const nm=x?x.name:'Component';
+  md[sub].splice(idx,1); _mdSync(m,md); closeModal(); closeSlideout(); toast('“'+nm+'” removed','ok'); renderModelDetail(id); }
+
 function openCreateModel(){
   $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></div><div class="modal-title">New model</div></div>
     <div class="modal-body"><div class="mform">
