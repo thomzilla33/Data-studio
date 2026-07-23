@@ -2295,6 +2295,44 @@ html.theme-light .rel-cardb{fill:#fff}
 .rel-cardt{fill:var(--t2); font-size:10px; font-weight:700; text-anchor:middle; dominant-baseline:middle}
 .diag-top-hub{fill:var(--primary)!important}
 .diag-hub .diag-box{stroke:var(--primary); stroke-width:1.5}
+
+/* ── Reference Data: filters slideout · kebab count · record nav · import wizard · bulk ── */
+.mk-fcount{margin-left:6px; font-size:10px; font-weight:700; background:var(--primary); color:#fff; border-radius:8px; padding:0 5px; line-height:16px; display:inline-block}
+.ttd-tool.has-active{border-color:var(--primary); color:var(--primary)}
+.flt-sec{margin-bottom:20px}
+.flt-sec-h{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--t3); margin-bottom:10px}
+.flt-radio{display:flex; align-items:center; gap:9px; padding:7px 0; font-size:13px; color:var(--t1); cursor:pointer}
+.flt-radio input{accent-color:var(--primary)}
+.so-head-nav{display:flex; align-items:center; gap:8px}
+.so-navbtn{width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--card-border); border-radius:7px; background:var(--field-bg); color:var(--t2); cursor:pointer}
+.so-navbtn:hover:not([disabled]){color:var(--t1); border-color:var(--field-border-hover,var(--line-strong))}
+.so-navbtn[disabled]{opacity:.4; cursor:not-allowed}
+.so-nav-ind{font-size:11.5px; color:var(--t3); white-space:nowrap}
+.modal-imp{width:min(560px,94vw)}
+.imp-steps{display:flex; align-items:center; gap:6px; margin-bottom:18px; flex-wrap:wrap}
+.imp-step{display:flex; align-items:center; gap:6px; opacity:.5}
+.imp-step.on,.imp-step.done{opacity:1}
+.imp-step-n{width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:var(--muted); color:var(--t2); border:1px solid var(--card-border)}
+.imp-step.on .imp-step-n{background:var(--primary); color:#fff; border-color:transparent}
+.imp-step.done .imp-step-n{background:var(--tag-success-bg,rgba(16,185,129,.15)); color:var(--tag-success-fg,#16a34a); border-color:transparent}
+.imp-step-l{font-size:11.5px; font-weight:600; color:var(--t2)}
+.imp-step.on .imp-step-l{color:var(--t1)}
+.imp-body{min-height:210px}
+.imp-drop{border:1.5px dashed var(--card-border,var(--line)); border-radius:12px; padding:30px; text-align:center; color:var(--t2); cursor:pointer}
+.imp-drop:hover{border-color:var(--primary)}
+.imp-map{display:flex; align-items:center; gap:12px; padding:6px 0}
+.imp-map-src{min-width:120px; font-size:12.5px}
+.imp-strat{display:block; border:1px solid var(--card-border); border-radius:10px; padding:12px 14px; margin-bottom:10px; cursor:pointer}
+.imp-strat.on{border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+.imp-strat-t{display:block; font-size:13px; font-weight:700; color:var(--t1)}
+.imp-strat-d{display:block; font-size:12px; color:var(--t3); margin-top:2px}
+.imp-dry{display:flex; gap:10px; flex-wrap:wrap}
+.imp-dry-c{flex:1; min-width:110px; border:1px solid var(--card-border); border-radius:10px; padding:14px; font-size:12.5px; color:var(--t2); text-align:center}
+.imp-dry-c b{display:block; font-size:22px; color:var(--t1); margin-bottom:2px}
+.imp-add b{color:var(--tag-success-fg,#16a34a)}
+.imp-upd b{color:var(--tag-informative-fg,#2563eb)}
+.imp-rem b{color:var(--field-text-error,#dc2626)}
+.imp-done{text-align:center; padding:24px 0}
 </style>
 </head>
 <body>
@@ -3679,6 +3717,7 @@ function refDataTab(r){
   const COLS=[{key:'label',disp:'Label',name:'label'},{key:'code',disp:'Code',name:'code',mono:1},{key:'description',disp:'Description',name:'description'},{key:'status',disp:'Status',name:'status'}];
   let vals=r.values.slice();
   if(sf==='active') vals=vals.filter(v=>v.active); else if(sf==='deprecated') vals=vals.filter(v=>!v.active);
+  if(s.descFilter==='has') vals=vals.filter(v=>v.description); else if(s.descFilter==='missing') vals=vals.filter(v=>!v.description);
   if(q) vals=vals.filter(v=>(v.code+' '+v.label+' '+(v.description||'')).toLowerCase().includes(q));
   if(s.sortCol){ const c=s.sortCol; vals.sort((a,b)=>{ const va=c==='status'?(a.active?1:0):(''+(a[c]||'')).toLowerCase(), vb=c==='status'?(b.active?1:0):(''+(b[c]||'')).toLowerCase(); const cmp=va<vb?-1:va>vb?1:0; return s.sortDir==='desc'?-cmp:cmp; }); }
   const total=vals.length, pages=Math.max(1,Math.ceil(total/per)), page=Math.min(Math.max(1,s.page||1),pages);
@@ -3692,16 +3731,16 @@ function refDataTab(r){
      <div class="ttd-head-l">
        <label class="dsf-search" style="max-width:230px;height:34px"><svg class="dsf-search-ic" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="refValSearch" type="text" placeholder="Search items…" value="${escapeHtml(s.search||'')}" oninput="refSearchInput('${r.id}',this.value)" autocomplete="off"></label>
        ${dsfDrop('refStatus','Status',sChip,[{label:'All statuses',selected:sf==='all',onclick:`dsfPickSingle();refDataStatus('${r.id}','all')`},{label:'Active',selected:sf==='active',onclick:`dsfPickSingle();refDataStatus('${r.id}','active')`},{label:'Deprecated',selected:sf==='deprecated',onclick:`dsfPickSingle();refDataStatus('${r.id}','deprecated')`}])}
-       <button class="btn ttd-tool" style="height:34px" onclick="toast('Advanced filters — coming soon')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg> Filters</button>
+       <button class="btn ttd-tool ${s.descFilter&&s.descFilter!=='all'?'has-active':''}" style="height:34px" onclick="openRefFilters('${r.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg> Filters${s.descFilter&&s.descFilter!=='all'?'<span class="mk-fcount">1</span>':''}</button>
      </div>
      <div class="ttd-head-r">
        <span class="ttd-fresh">Updated ${escapeHtml(r.updated)}</span>
        <button class="tb-ico ttd-iconbtn" title="Refresh data" aria-label="Refresh" onclick="toast('Data refreshed','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3v3h-3M3 13v-3h3M13 6A5 5 0 0 0 4 4.5M3 10a5 5 0 0 0 9 1.5"/></svg></button>
-       <button class="tb-ico ttd-iconbtn" title="More" aria-label="More" onclick="toast('Import · Export · Columns — coming soon')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
+       <button class="tb-ico ttd-iconbtn" title="More" aria-label="More" onclick="_refDataKebab(this,'${r.id}')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button>
        <button class="btn btn-primary" style="height:34px" onclick="openAddRefValue('${r.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add item</button>
      </div>
    </div>
-   ${selN?`<div class="ttd-bulk"><span class="ttd-bulk-n">${selN} selected</span><button class="ttd-bulk-x" onclick="refSelClear('${r.id}')">Deselect all</button><span class="ttd-bulk-sep"></span><button class="ttd-bulk-a" onclick="toast('Change status — coming soon')">Change status</button><button class="ttd-bulk-a" onclick="toast('Exported ${selN} items','ok')">Export selected</button><button class="ttd-bulk-a danger" onclick="toast('Delete — coming soon')">Delete</button></div>`:''}
+   ${selN?`<div class="ttd-bulk"><span class="ttd-bulk-n">${selN} selected</span><button class="ttd-bulk-x" onclick="refSelClear('${r.id}')">Deselect all</button><span class="ttd-bulk-sep"></span><button class="ttd-bulk-a" onclick="openRefBulkStatus('${r.id}')">Change status</button><button class="ttd-bulk-a" onclick="toast('Exported ${selN} items','ok')">Export selected</button><button class="ttd-bulk-a danger" onclick="openRefBulkDelete('${r.id}')">Delete</button></div>`:''}
    <div class="ttd-table">
      <div class="ttd-thead" style="${gt}">
        ${cb(allSel,`refSelAll('${r.id}',${JSON.stringify(codes).replace(/"/g,'&quot;')})`)}
@@ -3859,9 +3898,11 @@ function openRefByDetail(refId,i){
 
 /* Reference value — slide-out + create/edit */
 function openRefValue(refId, code){
-  const r=_ref(refId); const v=r.values.find(x=>x.code===code); if(!v) return;
+  const r=_ref(refId); const vals=r.values; const idx=vals.findIndex(x=>x.code===code); const v=vals[idx]; if(!v) return;
+  const prev=idx>0?vals[idx-1].code:null, next=idx<vals.length-1?vals[idx+1].code:null;
   $('slideout').innerHTML=`
-    <div class="so-head"><div><div class="so-title">${escapeHtml(v.label)}</div><div class="so-internal">${escapeHtml(r.id)} · ${escapeHtml(v.code)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-head"><div><div class="so-title">${escapeHtml(v.label)}</div><div class="so-internal">${escapeHtml(r.id)} · ${escapeHtml(v.code)}</div></div>
+      <div class="so-head-nav"><button class="so-navbtn" ${prev?'':'disabled'} onclick="openRefValue('${refId}','${prev?escapeHtml(prev):''}')" aria-label="Previous record"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg></button><span class="so-nav-ind">${idx+1} of ${vals.length}</span><button class="so-navbtn" ${next?'':'disabled'} onclick="openRefValue('${refId}','${next?escapeHtml(next):''}')" aria-label="Next record"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg></button><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div></div>
     <div class="so-body">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px"><span class="rstat ${v.active?'on':'off'}"><span class="rstat-dot"></span>${v.active?'Active':'Inactive'}</span></div>
       <div class="so-sec"><div class="so-sec-h">Value</div><div class="so-fields">
@@ -3872,9 +3913,17 @@ function openRefValue(refId, code){
         <div class="so-field"><span class="so-field-l">Valid to</span><span class="so-field-v">${escapeHtml(v.valid_to||'—')}</span></div>
       </div><div style="font-size:12px;color:var(--field-text);margin-top:10px;line-height:1.5">${escapeHtml(v.description||'No description.')}</div></div>
     </div>
-    <div class="so-foot"><button class="btn" onclick="toggleRefValueActive('${refId}','${escapeHtml(v.code)}')">${v.active?'Deactivate':'Reactivate'}</button><button class="btn btn-primary" onclick="openEditRefValue('${refId}','${escapeHtml(v.code)}')">Edit value</button></div>`;
+    <div class="so-foot"><button class="btn" onclick="toggleRefValueActive('${refId}','${escapeHtml(v.code)}')">${v.active?'Deactivate':'Reactivate'}</button><button class="btn" style="color:var(--field-text-error,#dc2626)" onclick="openRefItemDelete('${refId}','${escapeHtml(v.code)}')">Delete</button><span style="flex:1"></span><button class="btn btn-primary" onclick="openEditRefValue('${refId}','${escapeHtml(v.code)}')">Edit item</button></div>`;
   $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
 }
+function openRefItemDelete(refId, code){
+  const r=_ref(refId); const v=r.values.find(x=>x.code===code); if(!v) return; closeSlideout();
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5 1 13.5h14L8 1.5Z"/><path d="M8 6.5v3M8 11.5h.01" stroke-linecap="round"/></svg></div><div class="modal-title">Delete “${escapeHtml(v.label)}”?</div></div>
+    <div class="modal-body">Removes <code>${escapeHtml(v.code)}</code> from <b>${escapeHtml(r.name)}</b>.${r.referencedBy>0?` <span style="color:var(--field-text-error,#dc2626)">${r.referencedBy} columns reference this list.</span>`:''}</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" style="background:var(--field-text-error,#dc2626);border-color:transparent" onclick="_delRefItem('${refId}','${escapeHtml(code)}')">Delete</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _delRefItem(refId,code){ const r=_ref(refId); r.values=r.values.filter(v=>v.code!==code); if(r.status==='Published') r.status='Draft'; closeModal(); toast('Item deleted','ok'); renderReferenceDetail(refId); }
 function toggleRefValueActive(refId, code){
   const r=_ref(refId); const v=r.values.find(x=>x.code===code); if(!v) return;
   v.active=!v.active; if(r.status==='Published') r.status='Draft'; closeSlideout(); toast('“'+v.label+'” '+(v.active?'reactivated':'deactivated'),'ok'); renderReferenceDetail(refId);
@@ -3929,6 +3978,68 @@ function saveRefItem(refId, mode, code){
   else { const c=($('ri_code').value||'').trim().toLowerCase().replace(/\s+/g,'_'); if(!c){ toast('Enter a code'); return; } if(r.values.find(x=>x.code===c)){ toast('That code already exists'); return; } r.values.unshift(RV(c,label,desc,active,'')); toast('Item “'+label+'” added','ok'); }
   if(r.status==='Published') r.status='Draft'; closeSlideout(); renderReferenceDetail(refId);
 }
+/* ── Reference Data: advanced filters slideout ── */
+function refApplyFilter(id,key,v){ refDetailState[key]=v; refDetailState.page=1; }
+function applyRefFilters(id){ closeSlideout(); renderReferenceDetail(id); }
+function clearRefFilters(id){ refDetailState.statusFilter='all'; refDetailState.descFilter='all'; refDetailState.page=1; closeSlideout(); renderReferenceDetail(id); }
+function openRefFilters(id){
+  const s=refDetailState; const sf=s.statusFilter||'all', df=s.descFilter||'all';
+  const radio=(name,key,val,cur,label)=>`<label class="flt-radio"><input type="radio" name="${name}" ${val===cur?'checked':''} onclick="refApplyFilter('${id}','${key}','${val}')"><span>${label}</span></label>`;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div class="so-title">Filters</div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="flt-sec"><div class="flt-sec-h">Status</div>${radio('fltStatus','statusFilter','all',sf,'All statuses')}${radio('fltStatus','statusFilter','active',sf,'Active only')}${radio('fltStatus','statusFilter','deprecated',sf,'Deprecated only')}</div>
+      <div class="flt-sec"><div class="flt-sec-h">Description</div>${radio('fltDesc','descFilter','all',df,'Any')}${radio('fltDesc','descFilter','has',df,'Has description')}${radio('fltDesc','descFilter','missing',df,'Missing description')}</div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="clearRefFilters('${id}')">Clear all</button><button class="btn btn-primary" onclick="applyRefFilters('${id}')">Apply filters</button></div>`;
+  $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
+}
+/* ── Reference Data: overflow kebab (import / export) ── */
+function _refDataKebab(btn,id){ _openPop(btn, `
+  <button class="pop-item" onclick="_closePop();openImportWizard('${id}')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2M5 5l3-3 3 3M3 11v2h10v-2"/></svg>Import items…</button>
+  <button class="pop-item" onclick="_closePop();toast('Exported items to CSV','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>Export all as CSV</button>
+  <button class="pop-item" onclick="_closePop();toast('Exported items to JSON','ok')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h6l3 3v9H4V2Z"/><path d="M6.5 8h3M6.5 10.5h3"/></svg>Export all as JSON</button>`); }
+/* ── Reference Data: bulk change status ── */
+function openRefBulkStatus(id){
+  const sel=refDetailState.sel||new Set(); const n=sel.size; if(!n) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8h8M10 5l3 3-3 3"/></svg></div><div class="modal-title">Change status · ${n} item${n===1?'':'s'}</div></div>
+    <div class="modal-body"><div class="mform"><div class="mfield"><label class="mfield-l">New status</label><select class="mselect" id="bulkStatus"><option value="Active">Active</option><option value="Deprecated">Deprecated</option><option value="Archived">Archived</option></select></div><div style="font-size:12.5px;color:var(--t2);margin-top:6px">Applies to the ${n} selected item${n===1?'':'s'}. Deprecated / Archived items stay for history but are hidden from new records.</div></div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="applyRefBulkStatus('${id}')">Apply</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function applyRefBulkStatus(id){ const r=_ref(id); const sel=refDetailState.sel||new Set(); const n=sel.size; const active=($('bulkStatus').value==='Active'); r.values.forEach(v=>{ if(sel.has(v.code)) v.active=active; }); if(r.status==='Published') r.status='Draft'; refDetailState.sel=new Set(); closeModal(); toast('Status updated for '+n+' item'+(n===1?'':'s'),'ok'); renderReferenceDetail(id); }
+/* ── Reference Data: bulk delete ── */
+function openRefBulkDelete(id){
+  const r=_ref(id); const sel=refDetailState.sel||new Set(); const n=sel.size; if(!n) return;
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5 1 13.5h14L8 1.5Z"/><path d="M8 6.5v3M8 11.5h.01" stroke-linecap="round"/></svg></div><div class="modal-title">Delete ${n} item${n===1?'':'s'}?</div></div>
+    <div class="modal-body">This removes the selected value${n===1?'':'s'} from <b>${escapeHtml(r.name)}</b>.${r.referencedBy>0?` <span style="color:var(--field-text-error,#dc2626)">${r.referencedBy} columns reference this list — records using ${n===1?'it':'them'} would fail validation.</span>`:''}</div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" style="background:var(--field-text-error,#dc2626);border-color:transparent" onclick="applyRefBulkDelete('${id}')">Delete</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function applyRefBulkDelete(id){ const r=_ref(id); const sel=refDetailState.sel||new Set(); const n=sel.size; r.values=r.values.filter(v=>!sel.has(v.code)); if(r.status==='Published') r.status='Draft'; refDetailState.sel=new Set(); closeModal(); toast(n+' item'+(n===1?'':'s')+' deleted','ok'); renderReferenceDetail(id); }
+/* ── Reference Data: import wizard (5 steps) ── */
+let _impState={step:0,format:'CSV',strategy:'append'};
+function openImportWizard(id){ _impState={step:0,format:'CSV',strategy:'append'}; _renderImport(id); }
+function _impNav(id,d){ _impState.step=Math.max(0,Math.min(4,_impState.step+d)); _renderImport(id); }
+function _impSet(k,v){ _impState[k]=v; }
+function _renderImport(id){
+  const r=_ref(id); const STEPS=['Upload','Mapping','Merge','Preview','Confirm']; const st=_impState.step;
+  const stepper=`<div class="imp-steps">${STEPS.map((s,i)=>`<div class="imp-step ${i===st?'on':''} ${i<st?'done':''}"><span class="imp-step-n">${i<st?'✓':i+1}</span><span class="imp-step-l">${s}</span></div>`).join('')}</div>`;
+  let body='';
+  if(st===0){ body=`<div class="imp-drop"><svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2M5 5l3-3 3 3M3 11v2h10v-2"/></svg><div style="margin-top:8px;font-weight:600">Drop a file or click to upload</div><div style="font-size:12px;color:var(--t3);margin-top:2px">CSV or JSON · first row = headers</div></div>
+    <div class="mfield" style="margin-top:14px;max-width:200px"><label class="mfield-l">Format</label><select class="mselect" onchange="_impSet('format',this.value)"><option ${_impState.format==='CSV'?'selected':''}>CSV</option><option ${_impState.format==='JSON'?'selected':''}>JSON</option></select></div>`; }
+  else if(st===1){ body=`<div style="font-size:12.5px;color:var(--t2);margin-bottom:12px">Map incoming columns to reference fields.</div>${['label','code','description','status'].map(f=>`<div class="imp-map"><span class="imp-map-src mono">${f}</span>${_ARROW}<select class="mselect" style="max-width:180px"><option>${f}</option><option>— skip —</option></select></div>`).join('')}`; }
+  else if(st===2){ const opt=(v,tt,d)=>`<label class="imp-strat ${_impState.strategy===v?'on':''}" onclick="_impSet('strategy','${v}');_renderImport('${id}')"><span class="imp-strat-t">${tt}</span><span class="imp-strat-d">${d}</span></label>`; body=`${opt('append','Append','Add new items; keep existing.')}${opt('update','Update existing','Match on code; update matched, add new.')}${opt('replace','Replace all','Delete all current items, then import.')}`; }
+  else if(st===3){ body=`<div class="imp-dry"><div class="imp-dry-c imp-add"><b>12</b> to add</div><div class="imp-dry-c imp-upd"><b>3</b> to update</div><div class="imp-dry-c imp-rem"><b>${_impState.strategy==='replace'?r.values.length:0}</b> to remove</div></div>
+    <div style="font-size:12px;color:var(--t3);margin:14px 0 6px">Preview · first rows</div>${_mdMiniTable(['Code','Label','Status'],[['emea','EMEA region','Active'],['apac','APAC region','Active'],['latam','LATAM region','Active']])}`; }
+  else { body=`<div class="imp-done"><svg width="34" height="34" viewBox="0 0 16 16" fill="none" stroke="var(--tag-success-fg,#16a34a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M5 8.2l2 2 4-4.4"/></svg><div style="margin-top:10px;font-weight:600">Ready to import</div><div style="font-size:12.5px;color:var(--t2);margin-top:4px">15 items · ${_impState.strategy} · ${_impState.format}.</div></div>`; }
+  const isLast=st===4;
+  $('modalScrim').innerHTML=`<div class="modal modal-imp"><div class="modal-head"><div class="modal-title">Import items · ${escapeHtml(r.name)}</div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
+    <div class="modal-body">${stepper}<div class="imp-body">${body}</div></div>
+    <div class="modal-foot"><button class="btn" onclick="${st===0?'closeModal()':`_impNav('${id}',-1)`}">${st===0?'Cancel':'Back'}</button><button class="btn btn-primary" onclick="${isLast?`_impFinish('${id}')`:`_impNav('${id}',1)`}">${isLast?'Import 15 items':'Continue'}</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _impFinish(id){ const r=_ref(id); [['emea','EMEA region'],['apac','APAC region'],['latam','LATAM region']].forEach(a=>{ if(!r.values.find(v=>v.code===a[0])) r.values.push(RV(a[0],a[1],'Imported region.',true,'')); }); if(r.status==='Published') r.status='Draft'; closeModal(); toast('Imported 15 items','ok'); renderReferenceDetail(id); }
 function openEditRefValue(refId, code){ openRefItem(refId,'edit',code); }
 function saveRefValue(refId, code){
   const r=_ref(refId);
