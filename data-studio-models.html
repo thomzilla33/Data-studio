@@ -2452,6 +2452,7 @@ html:not(.theme-light) .mdw-seg.on{background:var(--surface-raised,#131C2E)}
 .pb-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-top:1px solid var(--card-border,var(--line))}
 .pb-foot-n{font-size:12.5px; color:var(--t2)}
 .pb-foot>div{display:flex; gap:8px}
+.mdtw-data-wrap{overflow-x:auto; border-radius:11px}
 
 /* ── Reference Data: filters slideout · kebab count · record nav · import wizard · bulk ── */
 .mk-fcount{margin-left:6px; font-size:10px; font-weight:700; background:var(--primary); color:#fff; border-radius:8px; padding:0 5px; line-height:16px; display:inline-block}
@@ -5902,9 +5903,66 @@ function _mdtwIdxMenu(mid,tid,n,btn){ _mdKebab(btn,[
     {ic:_RM_IC.del,label:'Delete index',act:`_mdtwRemoveIdx('${mid}','${tid}',${n})`,danger:true},
   ]); }
 function _mdtwRemoveIdx(mid,tid,n){ const c=_mdCtx(mid); if(!c) return; const t=c.md.tables.find(x=>x.id===tid); _mdtwIndexes(t).splice(n,1); _mdEdited(c.m); toast('Index deleted','ok'); renderModelDetail(mid); }
-/* Phase B placeholders */
-function _mdtwRelationships(m,md,t){ return _mdwSoon('Relationships','Relationships graph and list for this table.'); }
-function _mdtwData(m,md,t){ return _mdwSoon('Data','A sample of records for this table.'); }
+/* ── Table workspace: Relationships (phase B) ── */
+function _mdtwEnsureRels(m,md,t){
+  if(t._wrels) return t._wrels; const rels=[]; const sibs=md.tables.filter(x=>x.id!==t.id); const others=MODELS.filter(x=>x.id!==m.id);
+  if(sibs.length){ const s=sibs[0]; rels.push({t:s.name, k:'many-to-one', via:_rsnip(s.entity||s.name)+'_id', del:'Restrict', cross:null, desc:t.name+' references one '+s.name+'.'}); }
+  if(others.length){ const o=others[0]; rels.push({t:o.name, k:'one-to-one', via:_rsnip(o.name)+'_id', del:'Set null', cross:o.name, desc:t.name+' links to one '+o.name+' (cross-model).'}); }
+  t._wrels=rels; return rels;
+}
+function _mdtwIncoming(m,md,t){ const sibs=md.tables.filter(x=>x.id!==t.id); return sibs.length>1?[{t:sibs[1].name, k:'one-to-many', via:_rsnip(t.entity||t.name)+'_id', del:'Cascade'}]:[]; }
+function _mdtwRelCard(m,t,r,idx){ const es=_rsnip(t.entity||t.name), ts=_rsnip(r.t);
+  return `<div class="mdw-rel-card"><div class="mdw-rel-top"><span class="mdw-rel-ent">${_MDIC.tbl}${escapeHtml(t.name)}</span>${_ARROW}<span class="mdw-rel-ent">${escapeHtml(r.t)}</span><span class="card-badge">${_cardShort(r.k)}</span>${r.cross?`<span class="mdw-rel-cross">${_OPEN_IC} Cross-model · ${escapeHtml(r.cross)}</span>`:''}<span style="flex:1"></span><button class="lrow-menu" onclick="_mdtwRelMenu('${m.id}','${t.id}',${idx},this)" aria-label="Relationship actions">${_MDIC.dots}</button></div>
+    <div class="mdw-rel-desc">${escapeHtml(r.desc)}</div>
+    <div class="mdw-rel-meta"><span class="mdw-rel-k">FK</span><code class="md-code">${escapeHtml((r.cross?ts:es)+'.'+r.via)}</code><span class="mdw-rel-sep">·</span><span class="mdw-rel-k">ON DELETE</span><b>${escapeHtml(r.del)}</b></div></div>`;
+}
+function _mdtwRelationships(m,md,t){
+  const out=_mdtwEnsureRels(m,md,t); const inc=_mdtwIncoming(m,md,t); const crossN=out.filter(r=>r.cross).length;
+  const diagRels=out.map(r=>({target:r.t,cardShort:_cardShort(r.k),strong:!r.cross,dir:'Outgoing',del:r.del})).concat(inc.map(r=>({target:r.t,cardShort:_cardShort(r.k),strong:true,dir:'Incoming',del:r.del})));
+  return `<div class="mdw-rel-head"><span class="mdw-rel-h-t">${_HIC.link} Relationships</span><span class="mdw-rel-h-c">${out.length} outgoing · ${inc.length} incoming · ${crossN} cross-model</span></div>
+    ${diagRels.length?_relDiagram(t.name,diagRels):'<div class="placeholder" style="padding:28px">No relationships yet.</div>'}
+    <div class="mdw-rel-toolbar"><label class="dsf-search" style="max-width:260px;height:34px">${_HIC.search}<input type="text" placeholder="Search related table…" oninput="toast('Search — prototype')" autocomplete="off"></label><span style="flex:1"></span><button class="btn btn-primary" style="height:34px" onclick="openMdtwRelForm('${m.id}','${t.id}',null)">${_MDIC.plus} New relationship</button></div>
+    <div class="mdw-rel-list">${out.map((r,i)=>_mdtwRelCard(m,t,r,i)).join('')||'<div class="placeholder" style="padding:24px">No outgoing relationships yet.</div>'}</div>
+    ${inc.length?`<div class="mdw-rel-inc-h">Incoming relationships from other tables <span class="mdw-rel-h-c">${inc.length}</span></div><div class="mdw-rel-list">${inc.map(r=>`<div class="mdw-rel-card mdw-rel-inc"><div class="mdw-rel-top"><span class="mdw-rel-ent">${_MDIC.tbl}${escapeHtml(r.t)}</span>${_ARROW}<span class="mdw-rel-ent">${escapeHtml(t.name)}</span><span class="card-badge">${_cardShort(r.k)}</span><span class="mdw-rel-intra">Intra-model</span></div><div class="mdw-rel-desc">${escapeHtml(r.t)} has many ${escapeHtml(t.name)}.</div><div class="mdw-rel-meta"><span class="mdw-rel-k">FK</span><code class="md-code">${_rsnip(t.entity||t.name)}.${escapeHtml(r.via)}</code><span class="mdw-rel-sep">·</span><span class="mdw-rel-k">ON DELETE</span><b>${escapeHtml(r.del)}</b></div></div>`).join('')}</div>`:''}`;
+}
+function openMdtwRelForm(mid,tid,idx){
+  const c=_mdCtx(mid); if(!c) return; const t=c.md.tables.find(x=>x.id===tid); const rels=_mdtwEnsureRels(c.m,c.md,t); const r=(idx!=null&&idx>=0)?rels[idx]:null;
+  const sibs=c.md.tables.filter(x=>x.id!==tid).map(x=>({v:x.name,cross:''})); const cross=MODELS.filter(x=>x.id!==mid).map(x=>({v:x.name,cross:x.name}));
+  const opts=sibs.concat(cross); if(r&&!opts.find(o=>o.v===r.t)) opts.unshift({v:r.t,cross:r.cross||''});
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">${r?'Edit relationship':'New relationship'}</div><div class="so-internal">${escapeHtml(t.name)} · ${escapeHtml(c.m.name)}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      ${_RIF('Related table',null,`<select class="minput" id="wtr_target">${opts.map(o=>`<option value="${escapeHtml(o.v)}" data-cross="${escapeHtml(o.cross)}" ${r&&r.t===o.v?'selected':''}>${escapeHtml(o.v)}${o.cross?' (cross-model)':''}</option>`).join('')}</select>`,1)}
+      ${_RIF('Cardinality',null,`<select class="minput" id="wtr_card">${_CARD_OPTS.map(([v,l])=>`<option value="${v}" ${(r?r.k:'many-to-one')===v?'selected':''}>${l}</option>`).join('')}</select>`)}
+      ${_RIF('Foreign key',null,`<input class="minput md-name-mono" id="wtr_via" value="${r?escapeHtml(r.via):''}" placeholder="e.g. account_id" autocomplete="off">`,0,'field')}
+      ${_RIF('On delete',null,`<select class="minput" id="wtr_del">${_REL_DEL.map(d=>`<option ${(r?r.del:'Restrict')===d?'selected':''}>${d}</option>`).join('')}</select>`)}
+      ${_RIF('Description',null,`<textarea class="mtextarea" id="wtr_desc" placeholder="What this relationship represents.">${r?escapeHtml(r.desc):''}</textarea>`)}
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveMdtwRel('${mid}','${tid}',${idx==null?'null':idx})">${_MDIC.plus}${r?'Save changes':'Add relationship'}</button></div>`;
+  _soOpen(); setTimeout(()=>{const el=$('wtr_target'); if(el)el.focus();},60);
+}
+function saveMdtwRel(mid,tid,idx){
+  const c=_mdCtx(mid); if(!c) return; const t=c.md.tables.find(x=>x.id===tid); const rels=_mdtwEnsureRels(c.m,c.md,t);
+  const sel=$('wtr_target'); const tgt=sel.value; if(!tgt){ toast('Pick a related table'); return; }
+  const cross=sel.options[sel.selectedIndex].getAttribute('data-cross')||null;
+  const rel={ t:tgt, k:$('wtr_card').value, via:($('wtr_via').value||'').trim().toLowerCase().replace(/\s+/g,'_')||_rsnip(tgt)+'_id', del:$('wtr_del').value, cross:cross||null, desc:($('wtr_desc').value||'').trim()||(t.name+' → '+tgt+'.') };
+  if(idx!=null&&idx>=0&&rels[idx]) rels[idx]=rel; else rels.push(rel);
+  t.rel=(t.rel||0)+ (idx!=null?0:1); _mdEdited(c.m); closeSlideout(); toast('Relationship '+(idx!=null?'updated':'added'),'ok'); renderModelDetail(mid);
+}
+function _mdtwRelMenu(mid,tid,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit',act:`openMdtwRelForm('${mid}','${tid}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove',act:`_mdtwRemoveRel('${mid}','${tid}',${idx})`,danger:true},
+  ]); }
+function _mdtwRemoveRel(mid,tid,idx){ const c=_mdCtx(mid); if(!c) return; const t=c.md.tables.find(x=>x.id===tid); _mdtwEnsureRels(c.m,c.md,t).splice(idx,1); if(t.rel)t.rel--; _mdEdited(c.m); toast('Relationship removed','ok'); renderModelDetail(mid); }
+/* ── Table workspace: Data (sample grid, read-only preview) ── */
+function _mdtwData(m,md,t){
+  const cols=_mdtwCols(t).slice(0,7); const N=8; const gt='display:grid;grid-template-columns:repeat('+cols.length+',minmax(108px,1fr))';
+  const rows=[]; for(let i=0;i<N;i++){ const r={}; cols.forEach(c=>r[c.n]=_mockVal(c,i)); rows.push(r); }
+  const total=((_mdtwCols(t).length*211+t.rel*97)%9000)+1000; const totalFmt=String(total).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return `<div class="dsec-h" style="margin-bottom:12px"><div class="dsec-t">Data preview<span class="dsec-sub">sample of ${N} of ${totalFmt} rows${cols.length<_mdtwCols(t).length?' · first '+cols.length+' columns':''}</span></div><button class="btn" style="height:34px" onclick="toast('Exported sample to CSV','ok')">${_EXP_IC} Export</button></div>
+    <div class="mdtw-data-wrap"><div class="ttd-table"><div class="ttd-thead cv-thead" style="${gt}">${cols.map(c=>`<span class="cv-th">${escapeHtml(c.d||c.n)}</span>`).join('')}</div>${rows.map(r=>`<div class="ttd-tr cv-static" style="${gt}">${cols.map(c=>`<span class="cv-td">${_fmtVal(c,r[c.n])}</span>`).join('')}</div>`).join('')}</div></div>`;
+}
 
 /* ── Components tab ── */
 function mdComp(k,v){ modelDetailState.comp[k]=v; if(k==='sub'){ modelDetailState.comp.search=''; } renderModelDetail(modelDetailState.id); if(k==='search') _mdRefocus('mdCompSearch',v); }
