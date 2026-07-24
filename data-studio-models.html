@@ -5231,7 +5231,7 @@ function renderModelDetail(id){
   if(tab==='overview' && modelDetailState.sec.diagram && md.counts.entities) _diagInit();
   if(tab==='entities' && modelDetailState.ent.selEntId && (modelDetailState.ent.subtab==='diagram'||modelDetailState.ent.subtab==='relationships')) setTimeout(_diagInit,0);
 }
-function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; renderModelDetail(modelDetailState.id); }
+function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; if(t==='entities') modelDetailState.ent.selEntId=null; renderModelDetail(modelDetailState.id); }
 function mdSection(k){ modelDetailState.sec[k]=!modelDetailState.sec[k]; renderModelDetail(modelDetailState.id); }
 function publishModel(id){ const m=_model(id); if(m){ m.status='Published'; _mdReset(id); } toast('“'+(m?m.name:'Model')+'” published','ok'); renderModelDetail(id); }
 function openModelSettings(id){
