@@ -2453,6 +2453,26 @@ html:not(.theme-light) .mdw-seg.on{background:var(--surface-raised,#131C2E)}
 .pb-foot-n{font-size:12.5px; color:var(--t2)}
 .pb-foot>div{display:flex; gap:8px}
 .mdtw-data-wrap{overflow-x:auto; border-radius:11px}
+/* Component workspace */
+.mdw-rail-grp{display:flex; align-items:center; justify-content:space-between; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); padding:10px 10px 5px}
+.mdw-rail-grpc{font-weight:700; color:var(--t3)}
+.mdcw-preview-h{display:flex; align-items:center; justify-content:space-between; font-size:12px; font-weight:600; color:var(--t2); margin-bottom:10px}
+.mdcw-preview-badge{font-size:10.5px; font-weight:600; color:var(--t3); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:5px; padding:2px 8px}
+.mdcw-preview{border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); padding:20px; min-height:150px}
+.mdcw-metric{display:flex; align-items:center; justify-content:space-between; gap:20px}
+.mdcw-metric-v{font-size:40px; font-weight:800; color:var(--t1); line-height:1}
+.mdcw-metric-l{font-size:13px; color:var(--t2); margin-top:8px}
+.mdcw-spark{width:200px; height:54px; flex-shrink:0}
+.mdcw-bars{display:flex; align-items:flex-end; gap:12px; height:150px; padding:6px 0}
+.mdcw-bars span{flex:1; background:linear-gradient(180deg,var(--primary),rgba(43,127,255,0.35)); border-radius:5px 5px 0 0; min-height:8px}
+.mdcw-lineage{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.mdcw-ln-node{display:flex; align-items:center; gap:9px; border:1px solid var(--card-border,var(--line)); border-radius:11px; background:var(--card-bg,var(--bg2)); padding:12px 14px; min-width:0}
+.mdcw-ln-node.on{border-color:var(--primary); background:rgba(43,127,255,0.06)}
+.mdcw-ln-ic{width:30px; height:30px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:8px; background:var(--muted); color:var(--t2)}
+.mdcw-ln-node.on .mdcw-ln-ic{background:rgba(43,127,255,0.14); color:var(--primary)}
+.mdcw-ln-t{font-size:13px; font-weight:700; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px}
+.mdcw-ln-s{font-size:11px; color:var(--t3)}
+.mdcw-ln-arr{color:var(--field-placeholder); flex-shrink:0}
 
 /* ── Reference Data: filters slideout · kebab count · record nav · import wizard · bulk ── */
 .mk-fcount{margin-left:6px; font-size:10px; font-weight:700; background:var(--primary); color:#fff; border-radius:8px; padding:0 5px; line-height:16px; display:inline-block}
@@ -5070,7 +5090,7 @@ function openRefPreview(id){
 let modelDetailState = { id:null, tab:'overview',
   ent:{search:'',status:'all',owner:'all',pii:false,view:'grid',selEntId:null,subtab:'overview',diagMode:'columns'},
   tbl:{search:'',type:'all',entity:'all',status:'all',view:'list',exp:{},selTblId:null,subtab:'overview',diagMode:'columns'},
-  comp:{sub:'widgets',search:'',view:'grid'},
+  comp:{sub:'widgets',search:'',view:'grid',selSub:null,selIdx:null,wsub:'overview'},
   sec:{diagram:true,about:true,activity:true} };
 function _modelEntities(id){ return ENTITIES.filter(e=>e.model===id); }
 function _modelTables(id){ return TABLES.filter(t=>t.model===id); }
@@ -5233,7 +5253,7 @@ function renderModelDetail(id){
   if(tab==='entities' && modelDetailState.ent.selEntId && (modelDetailState.ent.subtab==='diagram'||modelDetailState.ent.subtab==='relationships')) setTimeout(_diagInit,0);
   if(tab==='tables' && modelDetailState.tbl.selTblId && modelDetailState.tbl.subtab==='relationships') setTimeout(_diagInit,0);
 }
-function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; if(t==='entities') modelDetailState.ent.selEntId=null; if(t==='tables') modelDetailState.tbl.selTblId=null; renderModelDetail(modelDetailState.id); }
+function setModelTab(t){ modelDetailState.tab=t; _dsfOpen=null; if(t==='entities') modelDetailState.ent.selEntId=null; if(t==='tables') modelDetailState.tbl.selTblId=null; if(t==='components') modelDetailState.comp.selIdx=null; renderModelDetail(modelDetailState.id); }
 function mdSection(k){ modelDetailState.sec[k]=!modelDetailState.sec[k]; renderModelDetail(modelDetailState.id); }
 function publishModel(id){ const m=_model(id); if(m){ m.status='Published'; _mdReset(id); } toast('“'+(m?m.name:'Model')+'” published','ok'); renderModelDetail(id); }
 function openModelSettings(id){
@@ -5969,6 +5989,7 @@ function mdComp(k,v){ modelDetailState.comp[k]=v; if(k==='sub'){ modelDetailStat
 function mdCompView(v){ modelDetailState.comp.view=v; renderModelDetail(modelDetailState.id); }
 function _mdComponentsTab(m,md){
   const st=modelDetailState.comp;
+  if(st.selSub && st.selIdx!=null){ const arr=md[st.selSub]; if(arr&&arr[st.selIdx]) return _mdCompWorkspace(m,md,st.selSub,st.selIdx); st.selIdx=null; st.selSub=null; }
   const subs=[['widgets','Widgets',md.widgets.length],['queries','Saved Queries',md.queries.length],['metrics','Metrics',md.metrics.length],['datasets','Derived Datasets',md.datasets.length]];
   const data={widgets:md.widgets,queries:md.queries,metrics:md.metrics,datasets:md.datasets}[st.sub];
   const title={widgets:'Widgets',queries:'Saved Queries',metrics:'Metrics',datasets:'Derived Datasets'}[st.sub];
@@ -5996,10 +6017,62 @@ function _mdComponentsTab(m,md){
 const _COMP_SING={widgets:'widget',queries:'query',metrics:'metric',datasets:'dataset'};
 function _mdCompSub(sub,x){ return sub==='widgets'?`${x.type} · ${x.studio}` : sub==='queries'?`Query · ${x.rows} rows` : sub==='metrics'?`Metric · ${x.val}` : `Dataset · ${x.rows} rows`; }
 function _mdCompCard(mid,sub,x,idx){
-  return `<div class="md-ccard" onclick="openMdCompPreview('${mid}','${sub}',${idx})">
+  return `<div class="md-ccard" onclick="mdSelectComp('${mid}','${sub}',${idx})">
     <div class="md-ccard-h"><span class="md-ccard-ic">${_COMP_IC[sub]}</span><span class="md-ccard-name">${escapeHtml(x.name)}</span><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
     <div class="md-ccard-sub">${escapeHtml(_mdCompSub(sub,x))}</div>
     <div class="md-ccard-foot"><span class="md-ccard-ent">${_MDIC.ent}${escapeHtml(x.entity)}</span>${av(P(x.owner),'sm')}</div></div>`;
+}
+
+/* ── Component WORKSPACE (master-detail inside a model) ── */
+const _COMP_KIND={widgets:'Widget',queries:'Saved query',metrics:'Metric',datasets:'Derived dataset'};
+const _COMP_GRP={widgets:'Widgets',queries:'Saved queries',metrics:'Metrics',datasets:'Derived datasets'};
+function mdSelectComp(mid,sub,idx){ modelDetailState.tab='components'; modelDetailState.comp.selSub=sub; modelDetailState.comp.selIdx=idx; modelDetailState.comp.wsub='overview'; renderModelDetail(mid); }
+function mdBackToComps(mid){ modelDetailState.comp.selIdx=null; modelDetailState.comp.selSub=null; renderModelDetail(mid); }
+function mdCompWsTab(mid,t){ modelDetailState.comp.wsub=t; renderModelDetail(mid); }
+function _mdCompWorkspace(m,md,sub,idx){
+  const x=md[sub][idx]; const wsub=modelDetailState.comp.wsub||'overview';
+  const rail=['widgets','queries','metrics','datasets'].map(s=>{ const arr=md[s]; if(!arr.length) return '';
+    return `<div class="mdw-rail-grp">${_COMP_GRP[s]}<span class="mdw-rail-grpc">${arr.length}</span></div>`+arr.map((it,i)=>`<button class="mdw-rail-item ${(s===sub&&i===idx)?'on':''}" onclick="mdSelectComp('${m.id}','${s}',${i})"><span class="mdw-rail-ic">${_COMP_IC[s]}</span><span class="mdw-rail-name">${escapeHtml(it.name)}</span></button>`).join(''); }).join('');
+  const tabs=[['overview','Overview'],['preview','Preview'],['lineage','Lineage']];
+  const body=wsub==='preview'?_mdcwPreview(m,sub,x):wsub==='lineage'?_mdcwLineage(m,md,sub,x):_mdcwOverview(m,md,sub,idx,x);
+  return `<div class="mdw">
+    <aside class="mdw-rail"><div class="mdw-rail-h"><button class="mdw-browse" onclick="mdBackToComps('${m.id}')">${_CHEVL} Browse</button></div><div class="mdw-rail-list">${rail}</div></aside>
+    <section class="mdw-main">
+      <div class="mdw-head"><div class="mdw-head-l"><span class="mdw-title">${escapeHtml(x.name)}</span><span class="chip">${_COMP_IC[sub]}${_COMP_KIND[sub]}</span></div>
+        <button class="btn btn-primary" onclick="openMdCompForm('${m.id}','${sub}',${idx})">${_MDIC.edit} Edit</button></div>
+      <div class="mdw-tabs">${tabs.map(([tid,l])=>`<button class="mdw-tab ${wsub===tid?'on':''}" onclick="mdCompWsTab('${m.id}','${tid}')">${l}</button>`).join('')}</div>
+      <div class="mdw-body">${body}</div>
+    </section></div>`;
+}
+function _mdcwOverview(m,md,sub,idx,x){
+  const F=(l,v)=>`<div class="so-field"><span class="so-field-l">${l}</span><span class="so-field-v">${v}</span></div>`; const kind=_COMP_KIND[sub];
+  const spec = sub==='widgets'?F('Type',escapeHtml(x.type))+F('Studio',escapeHtml(x.studio)) : sub==='metrics'?F('Current value',escapeHtml(x.val)) : F('Rows',escapeHtml(x.rows));
+  const insights=[`${kind} consuming the ${escapeHtml(x.entity)} entity of ${escapeHtml(m.name)}.`, sub==='metrics'?`Current value ${escapeHtml(x.val)}.`:sub==='widgets'?`${escapeHtml(x.type)} rendered in ${escapeHtml(x.studio)}.`:`${escapeHtml(x.rows)} rows materialized.`, `Owned by ${escapeHtml(P(x.owner).n)}.`];
+  return `<div style="display:flex;align-items:flex-start;gap:12px">
+      <span class="lrow-ic" style="width:34px;height:34px;flex-shrink:0">${_COMP_IC[sub]}</span>
+      <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="dh-title" style="font-size:20px">${escapeHtml(x.name)}</span><span class="mdw-badges"><span class="chip">${escapeHtml(kind)}</span>${_entityChip('',x.entity)}${_modelChip(m.id)}</span></div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-top:10px">${escapeHtml(kind)} built on the ${escapeHtml(x.entity)} entity. ${sub==='widgets'?'Rendered in '+escapeHtml(x.studio)+'.':sub==='metrics'?'Computed and refreshed on read.':'Materialized from a saved query on the model.'}</div>
+        <div class="lrow-foot" style="margin-left:0;margin-top:12px"><span class="lrow-owner">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span><span class="lrow-sep">·</span><span style="font-size:12px;color:var(--t3)">source ${escapeHtml(x.entity)}</span></div>
+      </div></div>
+    ${_pvInsights(insights)}
+    <div class="mdw-sec-t">Details</div><div class="so-fields">${F('Kind',escapeHtml(kind))}${F('Source entity',_entityChip('',x.entity))}${spec}${F('Owner',`<span class="mtbl-inline">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span>`)}${F('Scope','This model')}</div>
+    ${_mdwActivity(m,{name:x.name,owner:x.owner,updated:'2h ago'})}`;
+}
+function _mdcwSpark(){ const pts=[12,18,10,22,16,26,20,30,24,34,28,40]; const W=200,H=54,mx=Math.max(...pts); const d=pts.map((p,i)=>`${(i/(pts.length-1)*W).toFixed(1)},${(H-p/mx*(H-8)-4).toFixed(1)}`).join(' '); return `<svg class="mdcw-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline points="${d}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/></svg>`; }
+function _mdcwMiniTable(x){ const cols=['id','label','value']; return `<table class="pv-it-tbl"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${Array.from({length:5},(_,i)=>`<tr><td>${_mockId(i)}</td><td class="pv-it-code">${escapeHtml((x.entity||'Row')+' '+(i+1))}</td><td>${100+i*37}</td></tr>`).join('')}</tbody></table>`; }
+function _mdcwPreview(m,sub,x){
+  let body;
+  if(sub==='metrics') body=`<div class="mdcw-metric"><div class="mdcw-metric-l-wrap"><div class="mdcw-metric-v">${escapeHtml(x.val)}</div><div class="mdcw-metric-l">${escapeHtml(x.name)}</div></div>${_mdcwSpark()}</div>`;
+  else if(sub==='widgets'&&x.type==='Chart') body=`<div class="mdcw-bars">${[62,88,45,73,95,58,80,52].map(h=>`<span style="height:${h}%"></span>`).join('')}</div>`;
+  else if(sub==='widgets'&&x.type==='Timeline') body=`<div class="md-timeline" style="padding:4px 0">${['Created','Updated','Published','Reviewed'].map((d,i)=>`<div class="md-tl-item ${i===3?'last':''}"><span class="md-tl-dot"></span><div class="md-tl-b"><div class="md-tl-t">${d} ${escapeHtml(x.entity)}</div><div class="md-tl-m">sample event · ${i+1}d ago</div></div></div>`).join('')}</div>`;
+  else body=_mdcwMiniTable(x);
+  return `<div class="mdcw-preview-h"><span>Live preview</span><span class="mdcw-preview-badge">Sample data</span></div><div class="mdcw-preview">${body}</div>`;
+}
+function _mdcwLineage(m,md,sub,x){
+  const down = sub==='widgets'?x.studio : sub==='queries'?'Query API' : sub==='metrics'?'Dashboards & KPIs' : 'Downstream datasets';
+  const node=(ic,lbl,s2,accent)=>`<div class="mdcw-ln-node ${accent?'on':''}"><span class="mdcw-ln-ic">${ic}</span><div class="mdcw-ln-b"><div class="mdcw-ln-t">${escapeHtml(lbl)}</div><div class="mdcw-ln-s">${escapeHtml(s2)}</div></div></div>`;
+  return `<div class="mdw-sec-t" style="margin-top:4px">Lineage</div><div class="mdw-priv-sub" style="margin-bottom:16px">How this ${_COMP_KIND[sub].toLowerCase()} connects upstream to data and downstream to where it renders.</div>
+    <div class="mdcw-lineage">${node(_MDIC.ent,x.entity,'source entity')}<span class="mdcw-ln-arr">${_ARROW}</span>${node(_COMP_IC[sub],x.name,_COMP_KIND[sub],1)}<span class="mdcw-ln-arr">${_ARROW}</span>${node(_MDIC.widget,down,'consumed by')}</div>`;
 }
 
 /* ══════════════════════════════════════════════════════════════
