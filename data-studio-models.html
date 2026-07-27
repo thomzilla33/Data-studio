@@ -2052,6 +2052,18 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .ov-sub{margin-top:18px}
 .ov-preview-foot{display:flex; justify-content:flex-end; margin-top:10px}
 .ov-empty{padding:26px; text-align:center; color:var(--t3); font-size:12.5px}
+/* Entity Overview — governance grid + internal-structure controls */
+.ent-ident{padding:18px 20px}
+.ent-gov{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:30px}
+@media(max-width:880px){.ent-gov{grid-template-columns:1fr; gap:18px}}
+.ov-flabel{font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--t3)}
+.theme-light .ov-flabel{color:#475569}  /* --t3 is #bababa in light mode → too faint for these labels */
+.ov-ftext{font-size:13px; color:var(--t2); line-height:1.6; margin-top:5px}
+.ov-tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:7px}
+.ov-addtag{border:1px dashed var(--line); background:transparent; color:var(--t3); border-radius:999px; padding:3px 10px; font-size:12px; cursor:pointer; font-weight:500}
+.ov-addtag:hover{color:var(--t1); border-color:var(--t3)}
+.ent-er-ctrls{display:flex; align-items:center; gap:10px}
+.sens-dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; vertical-align:middle}
 .ref-preview{width:100%; border-collapse:collapse; font-size:12.5px}
 .ref-preview th{text-align:left; font-weight:600; color:var(--t3); padding:7px 10px; border-bottom:1px solid var(--card-border); font-size:11px; text-transform:uppercase; letter-spacing:.03em}
 .ref-preview td{padding:8px 10px; border-bottom:1px solid var(--card-border); color:var(--t1)}
@@ -2896,7 +2908,7 @@ function renderEntityDetail(id){
     </div>
     <div class="mtabs">${tabs.map(([tid,label])=>`<button class="mtab ${tab===tid?'active':''}" onclick="setDetailTab('${tid}')">${label}${cnt[tid]!=null?` <span style="font-size:11px;font-weight:700;color:var(--t3);background:var(--hover);padding:1px 6px;border-radius:6px;margin-left:2px">${cnt[tid]}</span>`:''}</button>`).join('')}</div>
     <div id="dpanel">${renderDetailTab(e,tab,endpoints)}</div>`;
-  if(tab==='relationships'&&_relViewMode==='diagram') setTimeout(_diagInit,0);
+  if(tab==='overview' || (tab==='relationships'&&_relViewMode==='diagram')) setTimeout(_diagInit,0);
 }
 function setDetailTab(t){ detailState.tab=t; renderEntityDetail(detailState.id); }
 
@@ -2908,6 +2920,9 @@ function renderDetailTab(e,tab,endpoints){
   if(tab==='history') return _historyTab('entity',e);
   return tablesTab(e);
 }
+let _entErMode='columns';
+function setEntErMode(m){ _entErMode=m; renderEntityDetail(detailState.id); }
+function _sensDot(s){ const c=(s==='Confidential'||s==='PII')?'var(--tag-error-fg,#f87171)':s==='Financial'?'var(--tag-alert-fg,#facc15)':'var(--tag-informative-fg,#7db1ff)'; return `<span class="sens-dot" style="background:${c}"></span>`; }
 function entityOverviewTab(e){
   const tbls=e.tables||[]; const prim=tbls.filter(t=>t.role==='Primary').length; const sec=tbls.length-prim;
   const rels=e.rels||[]; const out=rels.filter(r=>!/many-to-one/.test(r.k||'')).length; const inc=rels.length-out;
@@ -2919,13 +2934,37 @@ function entityOverviewTab(e){
     _ovTile(priv,'Privileges', `5 standard · ${custPriv} custom`, KEY),
     _ovTile(escapeHtml(e.records||'—'),'Records', 'Updated '+(e.updated||'—'), _HIC.db),
   ];
-  const tblPrev=tbls.length?_mdMiniTable(['Table','Role','Columns','Rows'], tbls.map(t=>[
-     `<span class="mtbl-name">${escapeHtml(t.alias)}</span>`, `<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>`, t.cols, escapeHtml(t.rows)
-  ])):`<div class="ov-empty">No tables yet.</div>`;
-  const def=`The ${escapeHtml(e.name)} entity represents the canonical business concept used across the ${escapeHtml(e.model||'model')} model. It groups the tables, relationships and privileges that downstream teams rely on when they reason about ${escapeHtml((e.name||'').toLowerCase())} records, and acts as the contract between the data platform and the products that consume it.`;
-  return `<div class="md-tiles">${tiles.join('')}</div>
-    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Business definition</div></div><div style="font-size:13px;color:var(--t2);line-height:1.6">${def}</div></div>
-    <div class="dsec ov-sub"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${tbls.length} table${tbls.length===1?'':'s'} · exactly one primary</span></div><a class="md-sec-link" onclick="setDetailTab('tables')">Manage tables →</a></div>${tblPrev}</div>
+  const m=_model(e.model); const mName=m?m.name:(e.model||'model');
+  const def=`The ${escapeHtml(e.name)} entity represents the canonical business concept used across the ${escapeHtml(mName)} model. It groups the tables, relationships and privileges that downstream teams rely on when they reason about ${escapeHtml((e.name||'').toLowerCase())} records, and acts as the contract between the data platform and the products that consume it.`;
+  const tags=(e.tags&&e.tags.length)?e.tags:((m&&m.tags)||[]);
+  const sens=e.pii?'Confidential':'Internal'; const cat=e.pii?'Restricted':'Internal'; const own=P(e.owner);
+  const gov=`<div class="ent-gov">
+      <div class="ent-gov-l">
+        <div class="ov-flabel">Description</div><div class="ov-ftext">${escapeHtml(e.desc||'—')}</div>
+        <div class="ov-flabel" style="margin-top:15px">Business definition</div><div class="ov-ftext">${def}</div>
+        <div class="ov-flabel" style="margin-top:15px">Tags</div>
+        <div class="ov-tags">${tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}<button class="ov-addtag" onclick="toast('Editing tags — prototype')">+ Add tag</button></div>
+      </div>
+      <div class="ent-gov-r so-fields">
+        <div class="so-field"><span class="so-field-l">Owner</span><span class="so-field-v"><span class="mtbl-inline">${av(own,'sm')}${escapeHtml(own.n)}</span></span></div>
+        <div class="so-field"><span class="so-field-l">Stewards</span><span class="so-field-v"><span class="mtbl-inline">${av(own,'sm')}${escapeHtml(own.n)}</span><span style="color:var(--t3);font-size:12px;margin-left:6px">+1 steward</span></span></div>
+        <div class="so-field"><span class="so-field-l">Category</span><span class="so-field-v">${cat}</span></div>
+        <div class="so-field"><span class="so-field-l">Domain</span><span class="so-field-v">${escapeHtml(e.domain||'—')}</span></div>
+        <div class="so-field"><span class="so-field-l">Sensitivity</span><span class="so-field-v">${_sensDot(sens)}${sens}</span></div>
+        <div class="so-field"><span class="so-field-l">Last modified</span><span class="so-field-v">${escapeHtml(own.n)} · ${escapeHtml(e.updated||'—')}</span></div>
+      </div>
+    </div>`;
+  const er=_erEntityNodes(e);
+  const nodes = _entErMode==='keys' ? er.nodes.map(n=>({label:n.label,role:n.role,cols:(n.cols||[]).filter(c=>c.pk||c.fk)})) : er.nodes;
+  const seg=(mode,label)=>`<button class="rel-vw-btn ${_entErMode===mode?'on':''}" onclick="setEntErMode('${mode}')">${label}</button>`;
+  const DL='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>';
+  const internal=`<div class="dsec"><div class="dsec-h"><div class="dsec-t">Internal structure<span class="dsec-sub">${tbls.length} table${tbls.length===1?'':'s'} · ${prim} primary</span></div>
+      <div class="ent-er-ctrls"><div class="rel-vw">${seg('columns','Columns')}${seg('keys','Keys')}</div><button class="btn" style="height:32px" onclick="toast('Export — prototype')">${DL} Export</button></div></div>
+    ${_erDiagram(nodes, er.edges, er.note)}</div>`;
+  return `<div class="dsec ent-ident">${gov}</div>
+    <div class="ov-flabel" style="margin:2px 0 9px">Key metrics</div>
+    <div class="md-tiles">${tiles.join('')}</div>
+    ${internal}
     ${_ovActivity('entity',e)}`;
 }
 function tablesTab(e){
