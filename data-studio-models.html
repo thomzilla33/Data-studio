@@ -2453,6 +2453,30 @@ html:not(.theme-light) .mdw-seg.on{background:var(--surface-raised,#131C2E)}
 .pb-foot-n{font-size:12.5px; color:var(--t2)}
 .pb-foot>div{display:flex; gap:8px}
 .mdtw-data-wrap{overflow-x:auto; border-radius:11px}
+/* Associate standalone entities slideout */
+.ase-tbar{display:flex; align-items:center; gap:8px; margin-bottom:12px}
+.ase-sel{height:38px; width:auto; min-width:110px; flex-shrink:0}
+.ase-count{font-size:12.5px; color:var(--t3); margin-bottom:10px}
+.ase-list{display:flex; flex-direction:column; gap:10px}
+.ase-card{display:flex; align-items:flex-start; gap:12px; border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); padding:14px 15px; cursor:pointer; transition:border-color .12s, box-shadow .12s}
+.ase-card:hover{border-color:var(--line-strong,#c3ccd8)}
+.ase-card.on{border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+.ase-check{width:18px; height:18px; flex-shrink:0; margin-top:2px; border:1.5px solid var(--line-strong,#c3ccd8); border-radius:5px; display:flex; align-items:center; justify-content:center}
+.ase-check.on{background:var(--primary); border-color:var(--primary)}
+.ase-ic{width:30px; height:30px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:8px; background:rgba(43,127,255,0.1); color:var(--primary)}
+.ase-b{flex:1; min-width:0}
+.ase-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.ase-name{font-size:14px; font-weight:700; color:var(--t1)}
+.ase-badge{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--t3); border:1px dashed var(--line-strong,#c3ccd8); border-radius:20px; padding:2px 9px}
+.ase-time{margin-left:auto; font-size:11.5px; color:var(--t3)}
+.ase-desc{font-size:12.5px; color:var(--t2); line-height:1.5; margin:8px 0}
+.ase-meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--t3)}
+.ase-owner{display:inline-flex; align-items:center; gap:6px; color:var(--t2)}
+.ase-m b{color:var(--t1); font-weight:700}
+.ase-foot-n{flex:1; text-align:center; font-size:12.5px; color:var(--t3)}
+.assoc-chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+.assoc-chip{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--t1); background:var(--muted); border:1px solid var(--card-border,var(--line)); border-radius:8px; padding:5px 10px}
+.assoc-chip svg{color:var(--t3)}
 /* Component workspace */
 .mdw-rail-grp{display:flex; align-items:center; justify-content:space-between; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); padding:10px 10px 5px}
 .mdw-rail-grpc{font-weight:700; color:var(--t3)}
@@ -5511,7 +5535,7 @@ function _mdEntitiesTab(m,md){
       <button class="md-pii-toggle ${st.pii?'on':''}" onclick="mdEnt('pii',${st.pii?'false':'true'})">${_MDIC.lock} PII</button>
       <span class="tbar-spring"></span>
       ${viewToggle(st,'mdEntView')}
-      <button class="btn btn-primary" onclick="openMdAddEntity('${m.id}')">${_MDIC.plus} Add entity</button>
+      <button class="btn btn-primary" onclick="_addEntityMenu('${m.id}',this)">${_MDIC.plus} Add entity ${_MDIC.chevd}</button>
     </div>${body}`;
 }
 function _mdEntClick(e){ return `mdSelectEnt('${modelDetailState.id}','${e.id}')`; }
@@ -6107,6 +6131,74 @@ const _RIF=(disp,id,ctrl,req,type)=>`<div class="ri-field"><div class="ri-flabel
 
 /* ── ENTITIES ─────────────────────────────────────────────── */
 function _mdEnt(id,entId){ const c=_mdCtx(id); return c?c.md.ents.find(e=>e.id===entId):null; }
+
+/* Add-entity split menu: Associate (slideout) vs New entity (modal) */
+function _addEntityMenu(mid,btn){ _openPop(btn, `
+  <button class="pop-item" onclick="_closePop();openAssociateEntities('${mid}')">${_HIC.link} Associate entity</button>
+  <button class="pop-item" onclick="_closePop();openMdAddEntity('${mid}')">${_MDIC.plus} New entity</button>`); }
+
+/* Standalone-entity pool (entities not yet contained in any model) */
+let STANDALONE_ENTS=[
+  {id:'campaign',name:'Campaign',status:'Draft',updated:'3h ago',owner:'mr',records:'12.4K',tables:2,extRel:1,cat:'Marketing',domain:'Customer-facing',tags:['marketing','growth'],pii:false,cols:12,desc:'Marketing campaign definitions — channel, budget, schedule and attribution window.'},
+  {id:'territory',name:'Territory',status:'Published',updated:'2d ago',owner:'jc',records:'842',tables:1,extRel:2,cat:'Sales',domain:'Operational',tags:['sales','geo'],pii:false,cols:8,desc:'Sales territory boundaries mapping regions and accounts to owning reps.'},
+  {id:'segment',name:'Segment',status:'Draft',updated:'5d ago',owner:'sc',records:'31',tables:1,extRel:0,cat:'Analytics',domain:'Analytical',tags:['analytics','marketing'],pii:false,cols:9,desc:'Dynamic audience segments computed from behavioural and firmographic signals.'},
+  {id:'webhook_endpoint',name:'Webhook Endpoint',status:'Published',updated:'Apr 28, 2026',owner:'dn',records:'156',tables:2,extRel:1,cat:'Integration',domain:'Operational',tags:['integration','platform'],pii:false,cols:10,desc:'Registered outbound webhook endpoints with secret, retry policy and delivery log.'},
+];
+const _CUBE_IC='<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 2 2.5 5v6L8 14l5.5-3V5L8 2Z"/><path d="M2.5 5 8 8l5.5-3M8 8v6"/></svg>';
+let _assocSel=null, _assocState=null;
+function openAssociateEntities(mid){ _assocSel=new Set(); _assocState={search:'',cat:'all',domain:'all'}; _renderAssociate(mid); _soOpen(); }
+function _assocPool(mid){ const c=_mdCtx(mid); const have=new Set((c?c.md.ents:[]).map(e=>e.id));
+  return STANDALONE_ENTS.filter(s=>!have.has(s.id)); }
+function _assocToggle(mid,id){ _assocSel.has(id)?_assocSel.delete(id):_assocSel.add(id); _renderAssociate(mid); }
+function _assocSet(mid,k,v){ _assocState[k]=v; _renderAssociate(mid); if(k==='search') setTimeout(()=>{const el=$('aseSearch'); if(el){el.focus(); el.setSelectionRange(v.length,v.length);}},0); }
+function _renderAssociate(mid){
+  const c=_mdCtx(mid); if(!c) return; const {m}=c; const st=_assocState;
+  const pool=_assocPool(mid); const total=pool.length;
+  const cats=[...new Set(_assocPool(mid).map(s=>s.cat))], doms=[...new Set(_assocPool(mid).map(s=>s.domain))];
+  const q=st.search.toLowerCase();
+  const rows=pool.filter(s=>{ if(st.cat!=='all'&&s.cat!==st.cat) return false; if(st.domain!=='all'&&s.domain!==st.domain) return false;
+    if(q&&!(s.name.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q))) return false; return true; });
+  const card=s=>{ const on=_assocSel.has(s.id);
+    return `<div class="ase-card ${on?'on':''}" onclick="_assocToggle('${mid}','${s.id}')">
+      <span class="ase-check ${on?'on':''}">${on?'<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 7 12l5.5-7"/></svg>':''}</span>
+      <span class="ase-ic">${_MDIC.ent}</span>
+      <div class="ase-b"><div class="ase-top"><span class="ase-name">${escapeHtml(s.name)}</span><span class="ase-badge">${_CUBE_IC}Standalone</span>${_stPill(s.status)}<span class="ase-time">${escapeHtml(s.updated)}</span></div>
+        <div class="ase-desc">${escapeHtml(s.desc)}</div>
+        <div class="ase-meta"><span class="ase-owner">${av(P(s.owner),'sm')}${escapeHtml(P(s.owner).n)}</span><span class="ase-m"><b>${escapeHtml(s.records)}</b> records</span><span class="ase-m"><b>${s.tables}</b> table${s.tables===1?'':'s'}</span><span class="ase-m"><b>${s.extRel}</b> external relation${s.extRel===1?'':'s'}</span>${s.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </div></div>`; };
+  const n=_assocSel.size;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title">Associate standalone entities</div><div class="so-internal" style="max-width:420px;white-space:normal;line-height:1.5">Select one or more standalone entities from your studio to associate with ${escapeHtml(m.name)}.</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="ase-tbar"><label class="dsf-search" style="flex:1">${_MDIC.search}<input id="aseSearch" type="text" placeholder="Search standalone entities…" value="${escapeHtml(st.search)}" oninput="_assocSet('${mid}','search',this.value)" autocomplete="off"></label>
+        <select class="minput ase-sel" onchange="_assocSet('${mid}','cat',this.value)"><option value="all" ${st.cat==='all'?'selected':''}>Category</option>${cats.map(x=>`<option ${st.cat===x?'selected':''}>${escapeHtml(x)}</option>`).join('')}</select>
+        <select class="minput ase-sel" onchange="_assocSet('${mid}','domain',this.value)"><option value="all" ${st.domain==='all'?'selected':''}>Domain</option>${doms.map(x=>`<option ${st.domain===x?'selected':''}>${escapeHtml(x)}</option>`).join('')}</select></div>
+      <div class="ase-count">${n} of ${total} selected</div>
+      <div class="ase-list">${rows.map(card).join('')||'<div class="placeholder" style="padding:36px">No standalone entities match. Everything in your studio is already associated to a model.</div>'}</div>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><span class="ase-foot-n">${n} standalone entit${n===1?'y':'ies'} selected</span><button class="btn btn-primary" ${n?'':'disabled style="opacity:.5"'} onclick="confirmAssociateEntities('${mid}')">${_HIC.link} Associate ${n} entit${n===1?'y':'ies'}</button></div>`;
+}
+function confirmAssociateEntities(mid){ const ids=[..._assocSel]; if(!ids.length) return; const pool=_assocPool(mid);
+  const picks=ids.map(id=>pool.find(s=>s.id===id)).filter(Boolean); const m=_model(mid);
+  const chips=picks.map(s=>`<span class="assoc-chip">${_MDIC.ent}${escapeHtml(s.name)}</span>`).join('');
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_HIC.link}</div><div class="modal-title">Associate ${picks.length} standalone entit${picks.length===1?'y':'ies'} to ${escapeHtml(m.name)}?</div></div>
+    <div class="modal-body">You're about to associate ${picks.length} standalone entit${picks.length===1?'y':'ies'} to <b>${escapeHtml(m.name)}</b>. This changes their status from Standalone to being contained in ${escapeHtml(m.name)}.
+      <div class="assoc-chips">${chips}</div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="_doAssociate('${mid}')">Confirm and associate</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function _doAssociate(mid){
+  const c=_mdCtx(mid); if(!c) return; const {m,md}=c; const ids=[..._assocSel];
+  const SF=[{s:'',code:'',role:'Primary'},{s:' Detail',code:'_detail',role:'Secondary'},{s:' Link',code:'_link',role:'Secondary'}];
+  let n=0;
+  ids.forEach(id=>{ const s=STANDALONE_ENTS.find(x=>x.id===id); if(!s) return;
+    md.ents.unshift({id:s.id, name:s.name, real:false, pii:s.pii, tables:s.tables, cols:s.cols, status:s.status, owner:s.owner, updated:'just now', desc:s.desc});
+    for(let i=0;i<s.tables;i++){ const sf=SF[Math.min(i,2)], isP=i===0, code=s.id.replace(/-/g,'_')+sf.code;
+      md.tables.push({id:m.id+'__'+code, name:s.name+sf.s, code, entity:s.name, entityId:s.id, role:isP?'Primary':sf.role, pii:isP&&s.pii, cols:isP?Math.max(4,Math.round(s.cols*0.55)):Math.max(3,Math.round(s.cols*0.4)), rel:isP?2:1, status:s.status, owner:s.owner, updated:'just now', desc:isP?('The primary table backing the '+s.name+' entity.'):('Holds the extended attributes for each '+s.name+'.')}); }
+    STANDALONE_ENTS=STANDALONE_ENTS.filter(x=>x.id!==id); n++;
+  });
+  _mdSync(m,md); _assocSel=null; closeModal(); closeSlideout(); toast(n+' entit'+(n===1?'y':'ies')+' associated to “'+m.name+'”','ok'); modelDetailState.tab='entities'; renderModelDetail(mid);
+}
 function openMdAddEntity(id){ openMdEntityForm(id,null); }
 function openMdEditEntity(id,entId){ openMdEntityForm(id,entId); }
 function openMdEntityForm(id,entId){
