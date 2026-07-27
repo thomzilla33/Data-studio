@@ -6194,7 +6194,7 @@ function _doAssociate(mid){
   });
   _mdSync(m,md); _assocSel=null; closeModal(); closeSlideout(); toast(n+' entit'+(n===1?'y':'ies')+' associated to “'+m.name+'”','ok'); modelDetailState.tab='entities'; renderModelDetail(mid);
 }
-function openMdAddEntity(id){ openCreateEntityModal(id); }
+function openMdAddEntity(id){ openEntityMarketplaceModal(id); }
 function openMdEditEntity(id,entId){ openMdEntityForm(id,entId); }
 function openCreateEntityModal(mid){
   const c=_mdCtx(mid); if(!c) return; const owners=_mdOwners();
@@ -6277,7 +6277,7 @@ function _mdRemoveEnt(id,entId){ const c=_mdCtx(id); if(!c) return; const {m,md}
   _mdSync(m,md); closeModal(); closeSlideout(); toast('“'+nm+'” removed','ok'); renderModelDetail(id); }
 
 /* ── TABLES ───────────────────────────────────────────────── */
-function openMdAddTable(id){ openMdTableForm(id,null); }
+function openMdAddTable(id){ openTableMarketplaceModal(id); }
 function openMdEditTable(id,tblId){ openMdTableForm(id,tblId); }
 function openMdTableForm(id,tblId){
   const c=_mdCtx(id); if(!c) return; const {m,md}=c; const t=tblId?md.tables.find(x=>x.id===tblId):null; const owners=_mdOwners();
@@ -6996,7 +6996,12 @@ function _emktFiltered(){
   else if(emktState.sort==='az') a=a.slice().sort((x,y)=>x.name.localeCompare(y.name));
   return a;
 }
-function openEntityMarketplaceModal(){
+let _mktModel=null;   /* when set, marketplace creates INTO this model */
+function _mktScratchEnt(){ if(_mktModel){ const mid=_mktModel; _mktModel=null; closeModal(); openCreateEntityModal(mid); } else navigate('entities/new/scratch'); }
+function _mktScratchTbl(){ if(_mktModel){ const mid=_mktModel; _mktModel=null; closeModal(); openMdTableForm(mid,null); } else navigate('tables/new/scratch'); }
+function _mktAI(kind){ if(_mktModel){ toast('AI assist — prototype'); } else navigate(kind+'/new/ai'); }
+function openEntityMarketplaceModal(mid){
+  _mktModel=mid||null;
   emktState.cat='all'; emktState.q=''; emktState.cx='all'; emktState.preview=null;
   $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Entity marketplace">
     <div class="mkt-modal-head"><div><div class="modal-title">Entity marketplace</div><div class="mkt-modal-sub">Browse a proven reference entity from the AIMS OS catalog, or start your own.</div></div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
@@ -7017,8 +7022,8 @@ function _renderEmktBody(){
   }
   body.innerHTML=_emktChooserHTML();
   foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
-    <button class="btn" onclick="navigate('entities/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
-    <button class="btn btn-primary" onclick="navigate('entities/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+    <button class="btn" onclick="_mktScratchEnt()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="_mktAI('entities')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
 }
 function emktPreview(id){ emktState.preview=id; _renderEmktBody(); }
 function emktBack(){ emktState.preview=null; _renderEmktBody(); }
@@ -7101,6 +7106,13 @@ function _emktPreviewHTML(t){
 }
 function _entTplUse(id){
   const t=ENT_TEMPLATES.find(x=>x.id===id); if(!t) return;
+  if(_mktModel){ const c=_mdCtx(_mktModel); if(c){ const {m,md}=c; let base=_slug(t.name),uid=base,k=2; while(md.ents.find(e=>e.id===uid)) uid=base+'-'+(k++);
+    const nT=Math.max(1,t.t||1), cols=nT*6;
+    md.ents.unshift({id:uid,name:t.name,real:false,pii:false,tables:nT,cols,status:'Draft',owner:m.owner,updated:'just now',desc:t.desc});
+    const SF=[{s:'',code:'',role:'Primary'},{s:' Detail',code:'_detail',role:'Secondary'},{s:' Link',code:'_link',role:'Secondary'}];
+    for(let i=0;i<nT;i++){ const sf=SF[Math.min(i,2)],isP=i===0,code=uid.replace(/-/g,'_')+sf.code;
+      md.tables.push({id:m.id+'__'+code,name:t.name+sf.s,code,entity:t.name,entityId:uid,role:isP?'Primary':sf.role,pii:false,cols:isP?Math.max(4,Math.round(cols*0.55)):Math.max(3,Math.round(cols*0.4)),rel:isP?2:1,status:'Draft',owner:m.owner,updated:'just now',desc:isP?('The primary table backing the '+t.name+' entity.'):('Holds the extended attributes for each '+t.name+'.')}); }
+    _mdSync(m,md); const mid=_mktModel; _mktModel=null; closeModal(); toast('Added “'+t.name+'” from template','ok'); modelDetailState.tab='entities'; renderModelDetail(mid); return; } }
   const u=_entNewId(t.name);
   const tables=Array.from({length:t.t},(_,i)=>({id:u+(i?'_t'+i:''), alias:t.name+(i?' '+['detail','link','history'][i-1]:''), role:i?'Secondary':'Primary', cols:i?5:9, rows:'0'}));
   ENTITIES.unshift({ id:u, name:t.name, model:MODELS[0].id, domain:'Customer-facing', status:'Draft', updated:'just now', owner:'sb', collab:[], external:0, records:'0', tags:[t.cat], desc:t.desc, tables, rels:[], cperms:[], cprivs:[], ceps:[] });
@@ -7319,7 +7331,8 @@ function _tmktFiltered(){
   else if(tmktState.sort==='az') a=a.slice().sort((x,y)=>x.display.localeCompare(y.display));
   return a;
 }
-function openTableMarketplaceModal(){
+function openTableMarketplaceModal(mid){
+  _mktModel=mid||null;
   tmktState.cat='all'; tmktState.q=''; tmktState.cx='all'; tmktState.preview=null;
   $('modalScrim').innerHTML=`<div class="modal modal-lg mkt-modal" role="dialog" aria-modal="true" aria-label="Table marketplace">
     <div class="mkt-modal-head"><div><div class="modal-title">Table marketplace</div><div class="mkt-modal-sub">Browse a proven reference table from the AIMS OS catalog, or start your own.</div></div><button class="so-close" onclick="closeModal()" aria-label="Close">✕</button></div>
@@ -7340,8 +7353,8 @@ function _renderTmktBody(){
   }
   body.innerHTML=_tmktChooserHTML();
   foot.innerHTML=`<span class="mkt-foot-lbl">Prefer to start your own?</span><span class="tbar-spring"></span>
-    <button class="btn" onclick="navigate('tables/new/scratch')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
-    <button class="btn btn-primary" onclick="navigate('tables/new/ai')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
+    <button class="btn" onclick="_mktScratchTbl()"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Start from scratch</button>
+    <button class="btn btn-primary" onclick="_mktAI('tables')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 1.5l1.4 3.7 3.7 1.4-3.7 1.4L8 11.7 6.6 8 2.9 6.6l3.7-1.4L8 1.5Z"/></svg> Create with AI assist</button>`;
 }
 function tmktPreview(id){ tmktState.preview=id; _renderTmktBody(); }
 function tmktBack(){ tmktState.preview=null; _renderTmktBody(); }
@@ -7427,6 +7440,11 @@ function _tblNewId(nm){ let base=_slug(nm),u=base,k=2; while(TABLES.find(t=>t.id
 function _tblAnchorEntity(){ return ENTITIES[0]||{id:'',name:'—',model:(MODELS[0]||{}).id}; }
 function _tblTplUse(id){
   const t=TBL_TEMPLATES.find(x=>x.id===id); if(!t) return;
+  if(_mktModel){ const c=_mdCtx(_mktModel); if(c){ const {m,md}=c; const ent=md.ents[0]||{name:'—',id:''};
+    const codeb=_slug(t.display).replace(/-/g,'_'); let uid=m.id+'__'+codeb,k=2; while(md.tables.find(x=>x.id===uid)) uid=m.id+'__'+codeb+'_'+(k++);
+    const cols=(t.schema&&t.schema.length)||6;
+    md.tables.push({id:uid,name:t.display,code:codeb,entity:ent.name,entityId:ent.id,role:'Primary',pii:false,cols,rel:2,status:'Draft',owner:m.owner,updated:'just now',desc:t.desc});
+    _mdSync(m,md); const mid=_mktModel; _mktModel=null; closeModal(); toast('Added “'+t.display+'” from template','ok'); modelDetailState.tab='tables'; renderModelDetail(mid); return; } }
   const e=_tblAnchorEntity(); const u=_tblNewId(t.name);
   TABLES.unshift({ id:u, alias:t.display, model:e.model||(MODELS[0]||{}).id, entity:e.name, entityId:e.id, role:'Primary', status:'Draft', updated:'just now', owner:'sb', collab:[], rows:'0', tags:[t.cat], desc:t.desc, cols:_schemaToCols(t.schema), rels:[] });
   toast('Added “'+t.display+'” from template','ok');
@@ -7894,7 +7912,7 @@ function _refAiPrevReady(){
 }
 
 function route(){
-  _dsfOpen = null; _pgnOpenId = null; closeSlideout(); closeModal();
+  _dsfOpen = null; _pgnOpenId = null; _mktModel = null; closeSlideout(); closeModal();
   const parts = (location.hash.replace(/^#\/?/,'') || 'models').split('/');
   const r = parts[0];
   if(r==='models' && parts[1]==='new'){ if(parts[2]==='scratch') renderFromScratch(); else if(parts[2]==='ai'){ _aiReset(); renderAIAssist(); } else { renderModels(); openMarketplaceModal(); } }
