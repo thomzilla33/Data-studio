@@ -4985,7 +4985,7 @@ function _erModelNodes(m, md){
 function openModelPreview(id){
   const m=_model(id); if(!m) return;
   const e=m.entities; const md=_md(m); const er=_erModelNodes(m, md);
-  const stats=[['Entities',md.counts.entities],['Tables',md.counts.tables],['Relations',md.relations],['Reference',_mdModelRefs(m).length]];
+  const stats=[['Entities',md.counts.entities],['Tables',md.counts.tables],['Relations',md.relations],['Components',md.counts.components]];
   const drift = m.status==='Pending changes' ? 'Pending changes awaiting publish — review before applying.' : m.status==='Draft' ? 'Draft — not yet published to the catalog.' : m.status==='Deprecated' ? 'Deprecated — superseded by another model.' : 'No drift detected against the catalog baseline.';
   const added = 2 + (e % 5);
   $('slideout').innerHTML=`
@@ -5115,7 +5115,6 @@ let modelDetailState = { id:null, tab:'overview',
   ent:{search:'',status:'all',owner:'all',pii:false,view:'grid',selEntId:null,subtab:'overview',diagMode:'columns'},
   tbl:{search:'',type:'all',entity:'all',status:'all',view:'list',exp:{},selTblId:null,subtab:'overview',diagMode:'columns'},
   comp:{sub:'widgets',search:'',view:'grid',selSub:null,selIdx:null,wsub:'overview'},
-  ref:{search:''},
   sec:{diagram:true,about:true,activity:true} };
 function _modelEntities(id){ return ENTITIES.filter(e=>e.model===id); }
 function _modelTables(id){ return TABLES.filter(t=>t.model===id); }
@@ -5258,12 +5257,12 @@ function renderModelDetail(id){
   if(!m.internal) m.internal=_slug(m.name);
   _dsfRerender=()=>renderModelDetail(modelDetailState.id);
   const md=_md(m); const tab=modelDetailState.tab; const pending=m.status!=='Published';
-  const tabs=[['overview','Overview',null],['entities','Entities',md.counts.entities],['tables','Tables',md.counts.tables],['reference','Reference Data',_mdModelRefs(m).length]];
+  const tabs=[['overview','Overview',null],['entities','Entities',md.counts.entities],['tables','Tables',md.counts.tables],['components','Components',md.counts.components]];
   const acts=`<span class="md-userav" title="You">SB</span>
     <button class="btn md-hbtn" onclick="setModelTab('overview');modelDetailState.sec.about=true;renderModelDetail('${id}')">${_MDIC.edit} Edit</button>
     <button class="btn btn-primary md-hbtn" onclick="publishModel('${id}')">${_MDIC.pub} Publish</button>
     <button class="md-icobtn" onclick="event.stopPropagation();openRowMenu('models','${id}',this)" aria-label="More actions">${_MDIC.dots}</button>`;
-  const body = tab==='entities'?_mdEntitiesTab(m,md) : tab==='tables'?_mdTablesTab(m,md) : tab==='reference'?_mdReferenceTab(m,md) : _mdOverview(m,md);
+  const body = tab==='entities'?_mdEntitiesTab(m,md) : tab==='tables'?_mdTablesTab(m,md) : tab==='components'?_mdComponentsTab(m,md) : _mdOverview(m,md);
   $('content').innerHTML=`
     <div class="md-crumbrow">${_crumbs([{label:'Models',href:'#/models'},{label:m.name}])}<div class="md-pageacts">${acts}</div></div>
     <div class="detail-head md-head"><div class="dh-l">
@@ -5323,7 +5322,7 @@ function _mdOverview(m,md){
     _mdTile(md.counts.entities,'Entities',_MDIC.ent),
     _mdTile(md.counts.tables,'Tables',_MDIC.tbl),
     _mdTile(md.relations,'Relations',_MDIC.rel),
-    _mdTile(_mdModelRefs(m).length,'Reference lists',_HIC.db),
+    _mdTile(md.counts.components,'Components',_MDIC.widget),
     _mdTile(md.crossN,'Cross-model',_MDIC.open),
     `<div class="md-tile md-tile-pub"><div class="md-tile-l" style="margin:0 0 6px">Last published</div><div class="md-tile-pubv">1d ago · ${escapeHtml(P(m.owner).n)}</div>${md.draftEnts?`<a class="md-tile-warn" onclick="setModelTab('entities')">${_MDIC.warn}${md.draftEnts} draft entit${md.draftEnts===1?'y':'ies'} to publish</a>`:`<span class="md-tile-ok">All entities published</span>`}</div>`,
   ];
@@ -6012,22 +6011,6 @@ function _mdtwData(m,md,t){
 /* ── Components tab ── */
 function mdComp(k,v){ modelDetailState.comp[k]=v; if(k==='sub'){ modelDetailState.comp.search=''; } renderModelDetail(modelDetailState.id); if(k==='search') _mdRefocus('mdCompSearch',v); }
 function mdCompView(v){ modelDetailState.comp.view=v; renderModelDetail(modelDetailState.id); }
-/* ── Model → Reference Data tab (reference lists used by this model) ── */
-function _mdModelRefs(m){ const real=_modelRefs(m.id); if(real.length) return real;
-  const n=Math.max(4, Math.min(REFDATA.length, Math.round((m.entities||8)*0.7))); const span=Math.max(1,REFDATA.length-n); const start=(m.id.length*3)%span;
-  return REFDATA.slice(start, start+n); }
-function mdRef(k,v){ modelDetailState.ref[k]=v; renderModelDetail(modelDetailState.id); if(k==='search') _mdRefocus('mdRefSearch',v); }
-function _mdReferenceTab(m,md){
-  const st=modelDetailState.ref; const all=_mdModelRefs(m); const q=(st.search||'').toLowerCase();
-  const rows=all.filter(r=>!q||r.name.toLowerCase().includes(q)||(r.desc||'').toLowerCase().includes(q)||(r.category||'').toLowerCase().includes(q));
-  const body = rows.length===0 ? `<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search.</div>`
-    : `<div class="lrows">${rows.map(refRow).join('')}</div>`;
-  return `<div class="tbar md-tbar">
-      <label class="dsf-search">${_MDIC.search}<input id="mdRefSearch" type="text" placeholder="Search reference lists…" value="${escapeHtml(st.search)}" oninput="mdRef('search',this.value)" autocomplete="off"></label>
-      <span class="tbar-spring"></span>
-      <button class="btn btn-primary" onclick="openRefMarketplaceModal()">${_MDIC.plus} New reference list</button>
-    </div>${body}`;
-}
 function _mdComponentsTab(m,md){
   const st=modelDetailState.comp;
   if(st.selSub && st.selIdx!=null){ const arr=md[st.selSub]; if(arr&&arr[st.selIdx]) return _mdCompWorkspace(m,md,st.selSub,st.selIdx); st.selIdx=null; st.selSub=null; }
