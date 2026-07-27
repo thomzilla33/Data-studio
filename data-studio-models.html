@@ -2863,11 +2863,14 @@ function _defaultEndpoints(e){
 }
 
 let detailState = { id:null, tab:'overview' };
+/* Bridge: model-generated entities (md.ents) rendered in the full-page entity detail.
+   Keyed by entity id; real catalog entities resolve from ENTITIES directly. */
+const _bridgeEnts = {};
 const _ARROW = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--t3)" stroke-width="1.5"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const _CHK = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4.5"/></svg>';
 
 function renderEntityDetail(id){
-  const e = ENTITIES.find(x=>x.id===id);
+  const e = _entById(id);
   if(!e){ location.hash='#/entities'; return; }
   const endpoints = _defaultEndpoints(e).concat(e.ceps||[]);
   const tab = detailState.tab;
@@ -2875,7 +2878,9 @@ function renderEntityDetail(id){
   const cnt = { overview:null, tables:e.tables.length, relationships:(e.rels||[]).length, privileges:5+(e.cprivs||[]).length, api:endpoints.length, history:null };
   const tabs = [['overview','Overview'],['tables','Tables'],['relationships','Relationships'],['privileges','Privileges'],['api','API contracts'],['history','History']];
   $('content').innerHTML = `
-    ${_crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:e.name}])}
+    ${(()=>{ const mm=_model(e.model); return mm
+        ? _crumbs([{label:'Models',href:'#/models'},{label:mm.name,href:'#/models/'+mm.id},{label:'Entities',href:'#/models/'+mm.id},{label:e.name}])
+        : _crumbs([{label:'Models',href:'#/models'},{label:'Entities',href:'#/entities'},{label:e.name}]); })()}
     <div class="detail-head">
       <div class="dh-l">
         <div class="dh-title-row"><span class="lrow-ic" style="width:30px;height:30px">${_IC_ENTITY}</span><span class="dh-title">${escapeHtml(e.name)}</span>${_modelChip(e.model)}<span class="chip">${escapeHtml(e.domain)}</span>${_stPill(e.status)}</div>
@@ -3005,7 +3010,7 @@ function confirmPublish(id){ const e=ENTITIES.find(x=>x.id===id); if(e) e.status
 /* ══════════════════════════════════════════════════════════════
    ENTITY DETAIL — deep CRUD: relationships · privileges · tables
    ══════════════════════════════════════════════════════════════ */
-function _entById(id){ return ENTITIES.find(x=>x.id===id); }
+function _entById(id){ return ENTITIES.find(x=>x.id===id) || _bridgeEnts[id] || null; }
 function _entEdited(e){ if(e.status==='Published') e.status='Pending changes'; e.updated='just now'; }
 const _CARD_OPTS=[['one-to-one','1:1 · One to one'],['one-to-many','1:N · One to many'],['many-to-one','N:1 · Many to one'],['many-to-many','N:M · Many to many']];
 const _REL_DIRS=['Outgoing','Incoming','Bidirectional'];
@@ -5565,7 +5570,7 @@ function _mdEntWorkspace(m,md,e){
     </aside>
     <section class="mdw-main">
       <div class="mdw-head"><div class="mdw-head-l"><span class="mdw-title">${escapeHtml(e.name)}</span>${_stPill(e.status)}</div>
-        <button class="btn btn-primary" onclick="${e.real?`navigate('entities/${e.id}')`:`openMdEntityPreview('${m.id}','${e.id}')`}">${_MDIC.open} Open</button></div>
+        <button class="btn btn-primary" onclick="openMdEntityFull('${m.id}','${e.id}')">${_MDIC.open} Open</button></div>
       <div class="mdw-tabs">${tabs.map(([tid,l])=>`<button class="mdw-tab ${sub===tid?'on':''}" onclick="mdEntWsTab('${m.id}','${tid}')">${l}</button>`).join('')}</div>
       <div class="mdw-body">${body}</div>
     </section>
@@ -6168,6 +6173,29 @@ function saveMdEntity(id,entId){
       desc:isP?('The primary table backing the '+name+' entity.'):('Holds the extended attributes for each '+name+'.') }); }
   _mdSync(m,md); closeSlideout(); closeModal(); toast('Entity “'+name+'” added','ok'); modelDetailState.tab='entities'; renderModelDetail(id);
 }
+/* ── Open a model entity in the full-page entity detail ──
+   Real catalog entities render straight from ENTITIES; model-generated
+   entities are synthesized once into _bridgeEnts (shape matches ENTITIES). */
+function _synthK(seed){ const n=Math.max(3,(seed*1)%997); return (n>=1000?(n/1000).toFixed(1)+'M':n+'K'); }
+function _bridgeEntity(modelId, entId){
+  const real=ENTITIES.find(x=>x.id===entId); if(real) return real;
+  const c=_mdCtx(modelId); if(!c) return null; const {m,md}=c;
+  const me=md.ents.find(x=>x.id===entId); if(!me) return null;
+  const tbls=md.tables.filter(t=>t.entityId===entId).map(t=>({
+    id:t.id, alias:t.name, role:t.role, cols:t.cols,
+    rows:_synthK(t.name.length*17+t.cols*31+(t.role==='Primary'?400:90)) }));
+  const seed=(me.name||'').length*13+(me.cols||0)*29+(me.tables||0)*57;
+  const ent={ id:entId, name:me.name, model:m.id, domain:m.category||'Operations',
+    status:me.status, desc:me.desc||('The '+(me.name||'').toLowerCase()+' entity and its records.'),
+    owner:me.owner, updated:me.updated, pii:me.pii,
+    tables:tbls, rels:[], external:0, records:_synthK(seed),
+    cprivs:[], cperms:[], ceps:[], _bridged:true };
+  _bridgeEnts[entId]=ent; return ent;
+}
+function openMdEntityFull(modelId, entId){
+  if(!_bridgeEntity(modelId, entId)){ toast('Entity not found'); return; }
+  closeSlideout(); location.hash='#/entities/'+entId;
+}
 function openMdEntityPreview(id,entId){
   const c=_mdCtx(id); if(!c) return; const {m,md}=c; const e=md.ents.find(x=>x.id===entId); if(!e) return;
   if(e.real && _entById(entId)) return openEntityPreview(entId);   // real entity → full catalog preview
@@ -6185,7 +6213,7 @@ function openMdEntityPreview(id,entId){
 function mdEntMenu(id,entId,btn){ const e=_mdEnt(id,entId); if(!e) return;
   _mdKebab(btn,[
     {ic:_MD_EYE,label:'Preview',act:`openMdEntityPreview('${id}','${entId}')`},
-    e.real?{ic:_RM_IC.open,label:'Open full entity',act:`navigate('entities/${entId}')`}:null,
+    {ic:_RM_IC.open,label:'Open full entity',act:`openMdEntityFull('${id}','${entId}')`},
     {ic:_MDIC.edit,label:'Edit',act:`openMdEditEntity('${id}','${entId}')`},
     'sep',
     {ic:_RM_IC.del,label:'Remove from model',act:`confirmMdRemoveEnt('${id}','${entId}')`,danger:true},
