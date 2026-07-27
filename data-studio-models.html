@@ -6199,8 +6199,23 @@ function _doAssociate(mid){
   });
   _mdSync(m,md); _assocSel=null; closeModal(); closeSlideout(); toast(n+' entit'+(n===1?'y':'ies')+' associated to “'+m.name+'”','ok'); modelDetailState.tab='entities'; renderModelDetail(mid);
 }
-function openMdAddEntity(id){ openMdEntityForm(id,null); }
+function openMdAddEntity(id){ openCreateEntityModal(id); }
 function openMdEditEntity(id,entId){ openMdEntityForm(id,entId); }
+function openCreateEntityModal(mid){
+  const c=_mdCtx(mid); if(!c) return; const owners=_mdOwners();
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_MDIC.ent}</div><div class="modal-title">New entity</div></div>
+    <div class="modal-body"><div class="mform">
+      <div class="mfield"><label class="mfield-l">Name <span style="color:var(--field-text-error)">*</span></label><input class="minput" id="mde_name" placeholder="e.g. Contact" autocomplete="off"></div>
+      <div class="mrow"><div class="mfield"><label class="mfield-l">Owner</label><select class="mselect" id="mde_owner">${owners.map(k=>`<option value="${k}">${escapeHtml(P(k).n)}</option>`).join('')}</select></div>
+        <div class="mfield"><label class="mfield-l">Status</label><select class="mselect" id="mde_status"><option>Draft</option><option>Published</option></select></div></div>
+      <div class="mfield"><label class="mfield-l">Description <span style="color:var(--field-placeholder);font-weight:400">· required for the LLM</span></label><textarea class="mtextarea" id="mde_desc" placeholder="What this entity represents and who uses it."></textarea></div>
+      <div class="mrow"><div class="mfield"><label class="mfield-l">Tables</label><select class="mselect" id="mde_tables"><option value="1">1 — primary only</option><option value="2">2 — primary + detail</option><option value="3">3 — primary + detail + link</option></select></div>
+        <div class="mfield"><label class="mfield-l">Sensitivity</label><label class="mde-check" style="height:38px;margin:0"><input type="checkbox" id="mde_pii"> Contains PII</label></div></div>
+      <div style="font-size:12px;color:var(--t2);display:flex;gap:8px;align-items:flex-start"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="var(--primary)" stroke-width="1.6" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 7.5v3.5M8 5h.01" stroke-linecap="round"/></svg><span>An entity groups the tables, columns and relationships for one business concept — add its columns after creating.</span></div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveMdEntity('${mid}','')">${_MDIC.plus} Create entity</button></div></div>`;
+  $('modalScrim').classList.add('open'); setTimeout(()=>{const el=$('mde_name'); if(el)el.focus();},50);
+}
 function openMdEntityForm(id,entId){
   const c=_mdCtx(id); if(!c) return; const {m}=c; const e=entId?_mdEnt(id,entId):null; const owners=_mdOwners();
   $('slideout').innerHTML=`
@@ -6222,7 +6237,7 @@ function saveMdEntity(id,entId){
   const desc=($('mde_desc').value||'').trim(), owner=$('mde_owner').value, status=$('mde_status').value, pii=$('mde_pii').checked;
   if(entId){ const e=md.ents.find(x=>x.id===entId); if(e){ e.name=name; e.desc=desc; e.owner=owner; e.status=status; e.pii=pii; e.updated='just now';
       md.tables.filter(t=>t.entityId===entId).forEach(t=>{ t.entity=name; t.owner=owner; if(t.role==='Primary'){ t.pii=pii; t.status=status; } }); }
-    _mdSync(m,md); closeSlideout(); toast('Entity “'+name+'” updated','ok'); renderModelDetail(id); return; }
+    _mdSync(m,md); closeSlideout(); closeModal(); toast('Entity “'+name+'” updated','ok'); renderModelDetail(id); return; }
   let base=_slug(name), uid=base, k=2; while(md.ents.find(e=>e.id===uid)) uid=base+'-'+(k++);
   const nT=parseInt(($('mde_tables')||{}).value||'1',10)||1; const cols=6*nT;
   md.ents.unshift({ id:uid, name, real:false, pii, tables:nT, cols, status, owner, updated:'just now', desc:desc||('The '+name.toLowerCase()+' entity and its records.') });
@@ -6231,7 +6246,7 @@ function saveMdEntity(id,entId){
     md.tables.push({ id:m.id+'__'+code, name:name+sf.s, code, entity:name, entityId:uid, role:isP?'Primary':sf.role, pii:isP&&pii,
       cols:isP?Math.max(4,Math.round(cols*0.55)):Math.max(3,Math.round(cols*0.4)), rel:isP?2:1, status, owner, updated:'just now',
       desc:isP?('The primary table backing the '+name+' entity.'):('Holds the extended attributes for each '+name+'.') }); }
-  _mdSync(m,md); closeSlideout(); toast('Entity “'+name+'” added','ok'); modelDetailState.tab='entities'; renderModelDetail(id);
+  _mdSync(m,md); closeSlideout(); closeModal(); toast('Entity “'+name+'” added','ok'); modelDetailState.tab='entities'; renderModelDetail(id);
 }
 function openMdEntityPreview(id,entId){
   const c=_mdCtx(id); if(!c) return; const {m,md}=c; const e=md.ents.find(x=>x.id===entId); if(!e) return;
