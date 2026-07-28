@@ -2074,6 +2074,50 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .et-col-t{color:var(--t3); font-size:10.5px; font-weight:600; letter-spacing:.03em; flex-shrink:0}
 .et-col-t.pk{color:var(--tag-success-fg,#4ade80)}
 .et-col-t.fk{color:var(--tag-informative-fg,#7db1ff)}
+/* Entity Relationships tab */
+.erel-diag{position:relative; margin-bottom:14px}
+.erel-legend{display:flex; gap:16px; font-size:11px; color:var(--t3); padding:8px 2px 0}
+.erel-lg-line{display:inline-block; width:16px; height:0; border-top:2px solid var(--t3); vertical-align:middle; margin-right:5px}
+.erel-lg-line.dash{border-top-style:dashed}
+.erel-list{display:flex; flex-direction:column; gap:10px}
+.erel-card{border:1px solid var(--card-border); background:var(--card-bg); border-radius:12px; padding:13px 15px}
+.erel-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.erel-side{display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:13.5px; color:var(--t1)}
+.erel-side svg{color:var(--t3)}
+.erel-ur{color:var(--t3); flex-shrink:0}
+.erel-scope{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px}
+.erel-scope.intra{background:var(--hover); color:var(--t2)}
+.erel-scope.cross{background:var(--tag-informative-bg,rgba(125,177,255,.14)); color:var(--tag-informative-fg,#7db1ff)}
+.erel-scope svg{width:11px; height:11px}
+.erel-comp{font-size:11px; font-weight:600; color:var(--t3); padding:2px 8px; border:1px solid var(--line); border-radius:999px}
+.erel-new{font-size:10px; font-weight:700; letter-spacing:.04em; color:var(--tag-success-fg,#4ade80); background:var(--tag-success-bg,rgba(74,222,128,.14)); padding:2px 7px; border-radius:999px}
+.erel-right{margin-left:auto}
+.erel-nav{display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap}
+.erel-nav-l{font-size:10.5px; font-weight:700; letter-spacing:.05em; color:var(--t3)}
+.erel-nav-swap{color:var(--t3); display:inline-flex}
+.erel-dir{font-size:11px}
+.erel-desc{margin-top:9px; font-size:12.5px; color:var(--t2); line-height:1.55}
+.erel-inc-h{display:flex; align-items:center; gap:8px; margin:22px 0 6px; font-size:12px; font-weight:600; color:var(--t2)}
+.erel-inc-c{font-size:11px; font-weight:700; color:var(--t3); background:var(--hover); padding:1px 7px; border-radius:6px}
+.erel-inc{background:transparent; border-style:dashed}
+.erel-inc-foot{margin-top:9px; font-size:11.5px; color:var(--t3)}
+.erel-inc-link{color:var(--primary); cursor:pointer}
+/* New-relationship slideout form */
+.erf-title{display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:15px}
+.erf-t-side{display:inline-flex; align-items:center; gap:5px}
+.erf-lbl{font-size:12px; font-weight:600; color:var(--t2); margin:15px 0 6px; display:flex; align-items:center}
+.erf-req{color:var(--field-text-error,#f87171); margin-left:3px}
+.erf-seg{display:flex; gap:6px}
+.erf-seg-b{flex:1; border:1px solid var(--line); background:transparent; color:var(--t2); border-radius:8px; padding:8px 6px; font-size:12px; cursor:pointer; text-align:center}
+.erf-seg-b.on{border-color:var(--primary); background:var(--tag-informative-bg,rgba(125,177,255,.12)); color:var(--t1)}
+.erf-seg-b b{color:var(--t1)}
+.erf-row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.erf-help{font-size:11px; color:var(--t3); line-height:1.45; margin-top:5px}
+.erf-sec-t{font-size:12px; font-weight:600; color:var(--t2); margin:18px 0 6px; padding-top:15px; border-top:1px solid var(--line); display:flex; align-items:center; gap:7px}
+.erf-note{font-size:12.5px; color:var(--t3); margin-bottom:8px}
+.erf-addc{height:32px}
+.erf-phys{display:flex; gap:8px; font-size:12px; color:var(--t2); background:var(--hover); border-radius:8px; padding:10px 12px; line-height:1.5}
+.erf-phys svg{flex-shrink:0; color:var(--tag-alert-fg,#facc15); margin-top:1px}
 .ref-preview{width:100%; border-collapse:collapse; font-size:12.5px}
 .ref-preview th{text-align:left; font-weight:600; color:var(--t3); padding:7px 10px; border-bottom:1px solid var(--card-border); font-size:11px; text-transform:uppercase; letter-spacing:.03em}
 .ref-preview td{padding:8px 10px; border-bottom:1px solid var(--card-border); color:var(--t1)}
@@ -3086,9 +3130,136 @@ function _relView(kind, obj, centerLabel, rels){
   else { body=`<div class="rfb-list">${rels.map((r,i)=>`<div class="rfb-card" onclick="_relOpen('${kind}','${id}',${i})"><div class="rfb-top"><span class="idx-ic">${_HIC.link}</span><span class="rfb-col">${escapeHtml(centerLabel)}</span>${r.via?`<span class="cv-field-n">.${escapeHtml(r.via)}</span>`:''}${_ARROW}<span class="rfb-col">${escapeHtml(r.target)}</span><span class="card-badge">${r.cardShort}</span><span class="rfb-reqchip ${r.strong?'rfb-req':'rfb-opt'}">${r.strong?'Strong':'Weak'}</span><span style="flex:1"></span><span style="font-size:11px;color:var(--t3)">${escapeHtml(r.dir||'Uni')} · on delete ${escapeHtml(r.del)}</span></div>${r.desc?`<div class="rfb-desc">${escapeHtml(r.desc)}</div>`:''}</div>`).join('')}</div>`; }
   return toolbar+body;
 }
+/* ── Entity Relationships tab — rich (diagram + list · scope · incoming · new-rel slideout) ── */
+const _erState={ent:null,search:'',dir:'all',card:'all',scope:'all',view:'diagramlist'};
+const _ERUR='<svg class="erel-ur" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l6-6M6 5h5v5"/></svg>';
+const _ERSWAP='<svg width="15" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h10M10 2l2 2-2 2M14 8H4M6 6l-2 2 2 2"/></svg>';
+function _erReset(id){ if(_erState.ent!==id){ _erState.ent=id; _erState.search=''; _erState.dir='all'; _erState.card='all'; _erState.scope='all'; _erState.view='diagramlist'; } }
+function erSet(k,v){ _erState[k]=v; renderEntityDetail(detailState.id); if(k==='search') _mdRefocus('erSearch',v); }
+function erView(v){ _erState.view=v; renderEntityDetail(detailState.id); if(v!=='list') setTimeout(_diagInit,0); }
+function _entRelEnrich(e,r){ const es=_slug(e.name).replace(/-/g,'_'), ts=_slug(r.t||'related').replace(/-/g,'_');
+  return { t:r.t, k:r.k||'one-to-many', s:!!r.s, comp:r.comp||'Association', scope:r.scope||'', cross:!!r.scope,
+    dir:r.dir||'Bidirectional', navChild:r.navChild||(es+'.'+_plural(ts)), navParent:r.navParent||(ts+'.'+es), desc:r.desc||'', isNew:!!r.isNew }; }
 function relsTab(e){
-  const rels=(e.rels||[]).map(r=>({target:r.t, via:r.via, desc:r.desc, cardShort:_cardShort(r.k), strong:!!r.s, dir:r.dir||'Outgoing', del:r.del||(r.s?'Restrict':'Set null')}));
-  return _relView('entity', e, e.name, rels);
+  _erReset(e.id); const st=_erState;
+  const raw=(e.rels||[]).map((r,i)=>({i, r:_entRelEnrich(e,r)}));
+  const q=st.search.toLowerCase();
+  const rows=raw.filter(({r})=>{
+    if(st.dir!=='all'&&r.dir!==st.dir) return false;
+    if(st.card!=='all'&&_cardShort(r.k)!==st.card) return false;
+    if(st.scope==='intra'&&r.cross) return false;
+    if(st.scope==='cross'&&!r.cross) return false;
+    if(q&&!(r.t.toLowerCase().includes(q)||r.navChild.toLowerCase().includes(q)||r.navParent.toLowerCase().includes(q))) return false;
+    return true; });
+  const incoming=(e.incoming||[]);
+  const dc=st.dir!=='all'?{label:st.dir,onremove:"erSet('dir','all')"}:null;
+  const cc=st.card!=='all'?{label:st.card,onremove:"erSet('card','all')"}:null;
+  const sc=st.scope!=='all'?{label:st.scope==='intra'?'Intra-model':'Cross-model',onremove:"erSet('scope','all')"}:null;
+  const seg=(v,l)=>`<button class="rel-vw-btn ${st.view===v?'on':''}" onclick="erView('${v}')">${l}</button>`;
+  const toolbar=`<div class="tbar md-tbar">
+      <label class="dsf-search">${_MDIC.search}<input id="erSearch" type="text" placeholder="Search related entity or nav name…" value="${escapeHtml(st.search)}" oninput="erSet('search',this.value)" autocomplete="off"></label>
+      ${dsfDrop('erDir','Direction',dc,[{label:'All directions',selected:st.dir==='all',onclick:"dsfPickSingle();erSet('dir','all')"}].concat(['Bidirectional','Unidirectional'].map(x=>({label:x,selected:st.dir===x,onclick:`dsfPickSingle();erSet('dir','${x}')`}))))}
+      ${dsfDrop('erCard','Cardinality',cc,[{label:'All cardinalities',selected:st.card==='all',onclick:"dsfPickSingle();erSet('card','all')"}].concat(['1:1','1:N','N:M'].map(x=>({label:x,selected:st.card===x,onclick:`dsfPickSingle();erSet('card','${x}')`}))))}
+      ${dsfDrop('erScope','Scope',sc,[{label:'All scopes',selected:st.scope==='all',onclick:"dsfPickSingle();erSet('scope','all')"},{label:'Intra-model',selected:st.scope==='intra',onclick:"dsfPickSingle();erSet('scope','intra')"},{label:'Cross-model',selected:st.scope==='cross',onclick:"dsfPickSingle();erSet('scope','cross')"}])}
+      <span class="tbar-spring"></span>
+      <div class="rel-vw">${seg('diagramlist','Diagram + list')}${seg('diagram','Diagram')}${seg('list','List')}</div>
+      <button class="btn btn-primary" onclick="openEntRelForm('${e.id}',null)">${_MDIC.plus} New relationship</button>
+    </div>`;
+  const diagRels=rows.map(({r})=>({target:r.t, cardShort:_cardShort(r.k), strong:!r.cross}));
+  const diagram=`<div class="erel-diag">${rows.length?_relDiagram(e.name, diagRels)+`<div class="erel-legend"><span><span class="erel-lg-line"></span>Intra-model</span><span><span class="erel-lg-line dash"></span>Cross-model</span></div>`:'<div class="empty" style="padding:34px"><div class="empty-t">No relationships to diagram</div>Add one with New relationship.</div>'}</div>`;
+  const listCards = rows.length ? rows.map(({r,i})=>_entRelCard(e,r,i)).join('') : `<div class="empty" style="padding:30px"><div class="empty-t">No relationships match</div>Adjust the filters or add a new relationship.</div>`;
+  const incBlock = incoming.length ? `<div class="erel-inc-h">Incoming relationships from other entities <span class="erel-inc-c">${incoming.length}</span></div>${incoming.map(x=>_entIncCard(e,x)).join('')}` : '';
+  const list=`<div class="erel-list">${listCards}${incBlock}</div>`;
+  let body = st.view==='diagram' ? diagram : st.view==='list' ? list : diagram+list;
+  return toolbar+body;
+}
+function _entRelCard(e,r,idx){
+  const scopeBadge = r.cross ? `<span class="erel-scope cross">${_MDIC.open}Cross-model · ${escapeHtml(r.scope)}</span>` : `<span class="erel-scope intra">Intra-model</span>`;
+  const tgtIcon = r.cross ? _MDIC.open : _MDIC.ent;
+  return `<div class="erel-card">
+    <div class="erel-top">
+      <span class="erel-side">${_MDIC.ent}${escapeHtml(e.name)}</span>${_ERUR}<span class="erel-side">${tgtIcon}${escapeHtml(r.t)}</span>
+      <span class="card-badge">${_cardShort(r.k)}</span>${scopeBadge}
+      <span class="rfb-reqchip ${r.s?'rfb-req':'rfb-opt'}">${r.s?'Strong':'Weak'}</span><span class="erel-comp">${escapeHtml(r.comp)}</span>
+      ${r.isNew?'<span class="erel-new">NEW</span>':''}
+      <span class="erel-right"><button class="lrow-menu" onclick="event.stopPropagation();_entRelMenu('${e.id}',${idx},this)" aria-label="Relationship actions">${_MDIC.dots}</button></span>
+    </div>
+    <div class="erel-nav"><span class="erel-nav-l">NAVIGATE</span><code class="md-code">${escapeHtml(r.navChild)}</code><span class="erel-nav-swap">${_ERSWAP}</span><code class="md-code">${escapeHtml(r.navParent)}</code><span class="chip erel-dir">${escapeHtml(r.dir)}</span></div>
+    ${r.desc?`<div class="erel-desc">${escapeHtml(r.desc)}</div>`:''}
+  </div>`;
+}
+function _entIncCard(e,x){
+  return `<div class="erel-card erel-inc">
+    <div class="erel-top">
+      <span class="erel-side">${_MDIC.ent}${escapeHtml(x.from)}</span>${_ERUR}<span class="erel-side">${_MDIC.ent}${escapeHtml(e.name)}</span>
+      <span class="card-badge">${_cardShort(x.k)}</span><span class="erel-scope intra">Intra-model</span>
+      <span class="rfb-reqchip ${x.s?'rfb-req':'rfb-opt'}">${x.s?'Strong':'Weak'}</span><span class="erel-comp">${escapeHtml(x.comp||'Association')}</span>
+    </div>
+    <div class="erel-nav"><span class="erel-nav-l">NAVIGATE</span><code class="md-code">${escapeHtml(x.navChild)}</code><span class="erel-nav-swap">${_ERSWAP}</span><code class="md-code">${escapeHtml(x.navParent)}</code><span class="chip erel-dir">${escapeHtml(x.dir||'Bidirectional')}</span></div>
+    <div class="erel-inc-foot">Referential · edit on <a class="erel-inc-link" onclick="toast('Edit on ${escapeHtml(x.editOn)} — open the source entity')">${escapeHtml(x.editOn)}</a></div>
+  </div>`;
+}
+function _entRelMenu(id,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.edit,label:'Edit relationship',act:`openEntRelForm('${id}',${idx})`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove relationship',act:`_entRelRemove('${id}',${idx})`,danger:true},
+  ]); }
+function _entRelRemove(id,idx){ const e=_entById(id); if(!e||!e.rels||!e.rels[idx]) return; const nm=e.rels[idx].t; e.rels.splice(idx,1); _entEdited(e); toast('Relationship to “'+nm+'” removed','ok'); renderEntityDetail(id); }
+/* New / edit relationship slideout */
+let _erDraft=null;
+function _erCandidates(e){ const set=new Set([e.name]); const list=[]; const m=_model(e.model);
+  if(m){ (_md(m).ents||[]).forEach(x=>{ if(!set.has(x.name)){ set.add(x.name); list.push({name:x.name,scope:''}); } }); }
+  MODELS.filter(om=>!m||om.id!==m.id).slice(0,3).forEach(om=>{ (_md(om).ents||[]).slice(0,2).forEach(x=>{ if(!set.has(x.name)){ set.add(x.name); list.push({name:x.name,scope:om.name}); } }); });
+  return list; }
+function _erAutoNav(d){ const es=_slug((_entById(d.entId)||{}).name||'entity').replace(/-/g,'_'); const ts=_slug(d.target||'related').replace(/-/g,'_');
+  const many=d.k==='many-to-many'||d.k==='one-to-many'; d.navChild=es+'.'+(many?_plural(ts):ts); d.navParent=ts+'.'+(d.k==='many-to-many'?_plural(es):es); }
+function openEntRelForm(entId, idx){ const e=_entById(entId); if(!e) return; const r=(idx!=null&&idx>=0)?(e.rels||[])[idx]:null;
+  const cands=_erCandidates(e); const first=cands[0]||{name:'',scope:''};
+  _erDraft = r
+    ? { entId, idx, k:r.k||'one-to-many', target:r.t, scope:r.scope||'', strength:r.s?'Strong':'Weak', comp:r.comp||'Association', dir:r.dir||'Bidirectional', navChild:r.navChild||'', navParent:r.navParent||'', desc:r.desc||'', navEdited:true }
+    : { entId, idx:null, k:'one-to-many', target:first.name, scope:first.scope, strength:'Weak', comp:'Association', dir:'Bidirectional', navChild:'', navParent:'', desc:'', navEdited:false };
+  if(!_erDraft.navEdited) _erAutoNav(_erDraft);
+  _renderEntRelForm(); }
+function _erFormSet(k,v){ const d=_erDraft; if(!d) return; d[k]=v;
+  if(k==='target'){ const c=_erCandidates(_entById(d.entId)).find(x=>x.name===v); d.scope=c?c.scope:''; }
+  if((k==='target'||k==='k')&&!d.navEdited) _erAutoNav(d); _renderEntRelForm(); }
+function _renderEntRelForm(){ const d=_erDraft; if(!d) return; const e=_entById(d.entId); if(!e) return;
+  const cands=_erCandidates(e); const cardShort=_cardShort(d.k); const editing=d.idx!=null;
+  const cardSeg=[['one-to-one','1:1','One-to-one'],['one-to-many','1:N','One-to-many'],['many-to-many','N:M','Many-to-many']]
+    .map(([v,s,l])=>`<button class="erf-seg-b ${d.k===v?'on':''}" onclick="_erFormSet('k','${v}')"><b>${s}</b> ${l}</button>`).join('');
+  const dirSeg=['Bidirectional','Unidirectional'].map(v=>`<button class="erf-seg-b ${d.dir===v?'on':''}" onclick="_erFormSet('dir','${v}')">${v}</button>`).join('');
+  const strHelp={Weak:'The dependency is optional (e.g., a Customer may or may not have a referrer).',Strong:'The dependency is required — the child cannot exist without the parent.'}[d.strength];
+  const compHelp={Association:'Simple relation without ownership (e.g., a Customer is associated with a Country but does not belong to it).',Aggregation:'Whole–part relation where the part can outlive the whole (e.g., a Team and its Members).',Composition:'Strong ownership — the part cannot exist without the whole (e.g., an Order and its Line items).'}[d.comp];
+  const scopeChip = d.scope?`<span class="erel-scope cross" style="margin-left:8px">${_MDIC.open}Cross-model · ${escapeHtml(d.scope)}</span>`:`<span class="erel-scope intra" style="margin-left:8px">Intra-model</span>`;
+  $('slideout').innerHTML=`
+    <div class="so-head"><div><div class="so-title erf-title"><span class="erf-t-side">${_MDIC.ent}${escapeHtml(e.name)}</span>${_ERUR}<span class="card-badge">${cardShort}</span><span class="erf-t-side">${d.target?(d.scope?_MDIC.open:_MDIC.ent)+escapeHtml(d.target):'—'}</span></div><div class="so-internal">${editing?'Edit relationship':'New relationship'}</div></div><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+    <div class="so-body">
+      <div class="erf-lbl">Cardinality <span class="erf-req">*</span></div><div class="erf-seg">${cardSeg}</div>
+      <div class="erf-lbl">Related entity <span class="erf-req">*</span>${scopeChip}</div>
+      <select class="minput" onchange="_erFormSet('target',this.value)">${cands.map(c=>`<option value="${escapeHtml(c.name)}" ${d.target===c.name?'selected':''}>${escapeHtml(c.name)}${c.scope?' · '+escapeHtml(c.scope):''}</option>`).join('')||'<option>—</option>'}</select>
+      <div class="erf-row">
+        <div><div class="erf-lbl">Strength <span class="erf-req">*</span></div><select class="minput" onchange="_erFormSet('strength',this.value)">${['Weak','Strong'].map(x=>`<option ${d.strength===x?'selected':''}>${x}</option>`).join('')}</select><div class="erf-help">${strHelp}</div></div>
+        <div><div class="erf-lbl">Composition <span class="erf-req">*</span></div><select class="minput" onchange="_erFormSet('comp',this.value)">${['Association','Aggregation','Composition'].map(x=>`<option ${d.comp===x?'selected':''}>${x}</option>`).join('')}</select><div class="erf-help">${compHelp}</div></div>
+      </div>
+      <div class="erf-lbl">Direction <span class="erf-req">*</span></div><div class="erf-seg erf-seg-2">${dirSeg}</div>
+      <div class="erf-row">
+        <div><div class="erf-lbl">Nav name → child <span class="erf-req">*</span></div><input class="minput md-name-mono" value="${escapeHtml(d.navChild)}" oninput="_erDraft.navChild=this.value;_erDraft.navEdited=true" autocomplete="off"></div>
+        <div><div class="erf-lbl">Nav name → parent <span class="erf-req">*</span></div><input class="minput md-name-mono" value="${escapeHtml(d.navParent)}" oninput="_erDraft.navParent=this.value;_erDraft.navEdited=true" autocomplete="off"></div>
+      </div>
+      <div class="erf-sec-t">Entity-level constraints</div><div class="erf-note">No entity-level constraints defined.</div><button class="btn erf-addc" onclick="toast('Add constraint — prototype')">${_MDIC.plus} Add constraint</button>
+      <div class="erf-sec-t">Physical implementation <span class="so-locked">read-only</span></div>
+      <div class="erf-phys">${_MDIC.warn} No physical implementation yet. Add an FK column in a table of <b>${escapeHtml(e.name)}</b> that references a table of <b>${escapeHtml(d.target||'the related entity')}</b>.</div>
+      <div class="erf-lbl">Description</div><textarea class="mtextarea" placeholder="What does this relationship represent at the business level?" oninput="_erDraft.desc=this.value">${escapeHtml(d.desc)}</textarea>
+    </div>
+    <div class="so-foot"><button class="btn" onclick="closeSlideout()">Cancel</button><button class="btn btn-primary" onclick="saveEntRel()">${_MDIC.plus}${editing?'Save changes':'Create relationship'}</button></div>`;
+  _soOpen();
+}
+function saveEntRel(){ const d=_erDraft; if(!d) return; const e=_entById(d.entId); if(!e) return; e.rels=e.rels||[];
+  if(!d.target){ toast('Pick a related entity'); return; }
+  const rel={ t:d.target, k:d.k, s:d.strength==='Strong', comp:d.comp, scope:d.scope||'', dir:d.dir, navChild:(d.navChild||'').trim(), navParent:(d.navParent||'').trim(), desc:(d.desc||'').trim(), isNew:true };
+  if(d.idx!=null&&d.idx>=0&&e.rels[d.idx]){ rel.isNew=e.rels[d.idx].isNew; e.rels[d.idx]=rel; toast('Relationship updated','ok'); }
+  else { e.rels.unshift(rel); toast('Relationship to “'+d.target+'” created','ok'); }
+  _entEdited(e); _erDraft=null; closeSlideout(); renderEntityDetail(d.entId);
 }
 function privTab(e){
   const cperms=e.cperms||[], cprivs=e.cprivs||[];
@@ -6371,6 +6542,27 @@ function saveMdEntity(id,entId){
    Real catalog entities render straight from ENTITIES; model-generated
    entities are synthesized once into _bridgeEnts (shape matches ENTITIES). */
 function _synthK(seed){ const n=Math.max(3,(seed*1)%997); return (n>=1000?(n/1000).toFixed(1)+'M':n+'K'); }
+function _plural(w){ w=String(w||''); if(/[^aeiou]y$/.test(w)) return w.slice(0,-1)+'ies'; if(/(s|x|z|ch|sh)$/.test(w)) return w+'es'; return w+'s'; }
+function _seedEntRels(m, md, me){
+  const es=_slug(me.name).replace(/-/g,'_'); const rels=[];
+  MODELS.filter(x=>x.id!==m.id).slice(0,2).forEach(om=>{
+    const oed=_md(om); const tgt=(oed.ents||[]).find(x=>x.name!==me.name); if(!tgt) return;
+    const ts=_slug(tgt.name).replace(/-/g,'_');
+    rels.push({ t:tgt.name, k:'many-to-many', s:false, comp:'Association', scope:om.name,
+      dir:'Bidirectional', navChild:es+'.'+_plural(ts), navParent:ts+'.'+_plural(es), desc:'' });
+  });
+  const sib=md.ents.find(x=>x.id!==me.id);
+  if(sib){ const ss=_slug(sib.name).replace(/-/g,'_');
+    rels.push({ t:sib.name, k:'one-to-many', s:false, comp:'Association', scope:'',
+      dir:'Bidirectional', navChild:es+'.'+_plural(ss), navParent:ss+'.'+es, desc:'' }); }
+  return rels;
+}
+function _seedIncoming(m, md, me){
+  const sib=md.ents.find(x=>x.id!==me.id); if(!sib) return [];
+  const es=_slug(me.name).replace(/-/g,'_'); const ss=_slug(sib.name).replace(/-/g,'_');
+  return [{ from:sib.name, k:'one-to-many', s:false, comp:'Composition', scope:'',
+    dir:'Bidirectional', navChild:ss+'.'+_plural(es), navParent:es+'.'+ss, editOn:sib.name }];
+}
 function _bridgeEntity(modelId, entId){
   const real=ENTITIES.find(x=>x.id===entId); if(real) return real;
   const c=_mdCtx(modelId); if(!c) return null; const {m,md}=c;
@@ -6379,10 +6571,11 @@ function _bridgeEntity(modelId, entId){
     id:t.id, alias:t.name, role:t.role, cols:t.cols,
     rows:_synthK(t.name.length*17+t.cols*31+(t.role==='Primary'?400:90)) }));
   const seed=(me.name||'').length*13+(me.cols||0)*29+(me.tables||0)*57;
+  const rels=_seedEntRels(m, md, me);
   const ent={ id:entId, name:me.name, model:m.id, domain:m.category||'Operations',
     status:me.status, desc:me.desc||('The '+(me.name||'').toLowerCase()+' entity and its records.'),
     owner:me.owner, updated:me.updated, pii:me.pii,
-    tables:tbls, rels:[], external:0, records:_synthK(seed),
+    tables:tbls, rels:rels, incoming:_seedIncoming(m, md, me), external:rels.length, records:_synthK(seed),
     cprivs:[], cperms:[], ceps:[], _bridged:true };
   _bridgeEnts[entId]=ent; return ent;
 }
