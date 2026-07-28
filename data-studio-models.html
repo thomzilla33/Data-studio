@@ -2064,6 +2064,16 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .ov-addtag:hover{color:var(--t1); border-color:var(--t3)}
 .ent-er-ctrls{display:flex; align-items:center; gap:10px}
 .sens-dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; vertical-align:middle}
+/* Entity Tables tab — inline column expand */
+.et-chev{display:inline-flex; align-items:center; color:var(--t3); transition:transform .15s ease; margin-left:2px}
+.et-chev.on{transform:rotate(180deg); color:var(--t1)}
+.md-trow.et-open{background:var(--hover)}
+.et-cols{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:2px 20px; padding:11px 14px 5px; border-top:1px solid var(--line); margin-top:9px}
+.et-col{display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:12.5px; padding:3px 0}
+.et-col-n{color:var(--t1); font-family:ui-monospace,Menlo,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.et-col-t{color:var(--t3); font-size:10.5px; font-weight:600; letter-spacing:.03em; flex-shrink:0}
+.et-col-t.pk{color:var(--tag-success-fg,#4ade80)}
+.et-col-t.fk{color:var(--tag-informative-fg,#7db1ff)}
 .ref-preview{width:100%; border-collapse:collapse; font-size:12.5px}
 .ref-preview th{text-align:left; font-weight:600; color:var(--t3); padding:7px 10px; border-bottom:1px solid var(--card-border); font-size:11px; text-transform:uppercase; letter-spacing:.03em}
 .ref-preview td{padding:8px 10px; border-bottom:1px solid var(--card-border); color:var(--t1)}
@@ -2884,6 +2894,7 @@ const _CHK = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke
 function renderEntityDetail(id){
   const e = _entById(id);
   if(!e){ location.hash='#/entities'; return; }
+  _dsfRerender = ()=>renderEntityDetail(detailState.id);
   const endpoints = _defaultEndpoints(e).concat(e.ceps||[]);
   const tab = detailState.tab;
   const pending = e.status==='Draft'||e.status==='Pending changes';
@@ -2967,9 +2978,78 @@ function entityOverviewTab(e){
     ${internal}
     ${_ovActivity('entity',e)}`;
 }
+/* ── Entity Tables tab — rich rows + toolbar + inline column expand ── */
+const _etState={ent:null,search:'',type:'all',status:'all',view:'list',page:1,perPage:10,expand:null};
+function _etReset(id){ if(_etState.ent!==id){ _etState.ent=id; _etState.search=''; _etState.type='all'; _etState.status='all'; _etState.view='list'; _etState.page=1; _etState.expand=null; } }
+function etSet(k,v){ _etState[k]=v; if(k!=='page'&&k!=='view'&&k!=='expand') _etState.page=1; renderEntityDetail(detailState.id); if(k==='search') _mdRefocus('etSearch',v); }
+function etView(v){ _etState.view=v; renderEntityDetail(detailState.id); }
+function etPage(p){ _etState.page=p; renderEntityDetail(detailState.id); }
+function etPer(n){ _etState.perPage=+n; _etState.page=1; renderEntityDetail(detailState.id); }
+function etExpand(tid){ _etState.expand=(_etState.expand===tid?null:tid); renderEntityDetail(detailState.id); }
+function _etTblEnrich(e,t,all){
+  const m=_model(e.model); const md=m?_md(m):null; const rich=md?md.tables.find(x=>x.id===t.id):null;
+  const code=t.code||(rich&&rich.code)||(t.alias||'').toLowerCase().replace(/[^a-z0-9]+/g,'_');
+  const desc=t.desc||(rich&&rich.desc)||(t.role==='Primary'
+      ? `The primary table backing the ${e.name} entity. Stores the canonical record and identity columns that everything else joins against.`
+      : `Holds the extended descriptive attributes for each ${e.name}, kept separate from the core record to keep the primary table lean.`);
+  const rel=(t.rel!=null)?t.rel:(rich&&rich.rel!=null)?rich.rel:(t.role==='Primary'?Math.max(1,all.length-1):1);
+  return { id:t.id, alias:t.alias, role:t.role, cols:t.cols, rows:t.rows, code,
+    entity:t.entity||(rich&&rich.entity)||e.name, entityId:t.entityId||e.id, desc,
+    status:t.status||(rich&&rich.status)||e.status, owner:t.owner||(rich&&rich.owner)||e.owner,
+    updated:t.updated||(rich&&rich.updated)||e.updated, rel,
+    pii:(t.pii!=null)?t.pii:((rich&&rich.pii)!=null?rich.pii:(t.role==='Primary'&&!!e.pii)) };
+}
 function tablesTab(e){
-  return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">Tables<span class="dsec-sub">${e.tables.length} tables · exactly one primary required</span></div><button class="btn" style="height:34px" onclick="openEntTableForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add table</button></div>
-    <div class="dcard">${e.tables.map((t,i)=>`<div class="drow"><span class="drow-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg></span><span class="drow-name">${escapeHtml(t.alias)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><span class="drow-meta"><span>${t.cols} cols</span><span>${escapeHtml(t.rows)} rows</span>${_tableExists(t.id)?`<span class="drow-link" onclick="navigate('tables/${t.id}')">Open →</span>`:''}<button class="lrow-menu" onclick="_entTblMenu('${e.id}',${i},this)" aria-label="Table actions">${_MDIC.dots}</button></span></div>`).join('')}</div></div>`;
+  _etReset(e.id); const st=_etState;
+  const items=(e.tables||[]).map((t,i)=>({i, en:_etTblEnrich(e,t,e.tables)}));
+  const q=st.search.toLowerCase();
+  const rows=items.filter(({en})=>{ if(st.type!=='all'&&en.role!==st.type)return false; if(st.status!=='all'&&en.status!==st.status)return false;
+    if(q&&!((en.alias||'').toLowerCase().includes(q)||(en.code||'').toLowerCase().includes(q)||(en.entity||'').toLowerCase().includes(q)))return false; return true; });
+  const total=rows.length, per=st.perPage; const pages=Math.max(1,Math.ceil(total/per)); const page=Math.min(Math.max(1,st.page),pages);
+  const pageRows=rows.slice((page-1)*per, page*per);
+  const tc=st.type!=='all'?{label:st.type,onremove:"etSet('type','all')"}:null;
+  const stc=st.status!=='all'?{label:st.status,onremove:"etSet('status','all')"}:null;
+  let body;
+  if(!items.length) body=`<div class="empty"><div class="empty-t">No tables yet</div>Add the first table for ${escapeHtml(e.name)}.</div>`;
+  else if(!rows.length) body=`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>`;
+  else if(st.view==='table') body=_mdMiniTable(['Table','Code','Type','Status','Columns','Relations','Updated'], pageRows.map(({en})=>[
+      `<span class="mtbl-name">${escapeHtml(en.alias)}</span>`, `<code class="md-code">${escapeHtml(en.code)}</code>`,
+      `<span class="mini-badge ${en.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(en.role)}</span>`, _stPill(en.status), en.cols, en.rel, `<span class="mtbl-date">${escapeHtml(en.updated)}</span>`]));
+  else if(st.view==='grid') body=`<div class="mcard-grid">${pageRows.map(({en})=>_etTblCard(e,en)).join('')}</div>`;
+  else body=`<div class="md-trows">${pageRows.map(({en,i})=>_etTblRow(e,en,i)).join('')}</div>`;
+  const pgn=_pagination({per,total,page,opts:[10,25,50],id:'et-pgn',perCall:n=>`etPer(${n})`,pageCall:p=>`etPage(${p})`});
+  return `<div class="tbar md-tbar">
+      <label class="dsf-search">${_MDIC.search}<input id="etSearch" type="text" placeholder="Search tables…" value="${escapeHtml(st.search)}" oninput="etSet('search',this.value)" autocomplete="off"></label>
+      ${dsfDrop('etTy','Type',tc,[{label:'All types',selected:st.type==='all',onclick:"dsfPickSingle();etSet('type','all')"}].concat(['Primary','Secondary'].map(x=>({label:x,selected:st.type===x,onclick:`dsfPickSingle();etSet('type','${x}')`}))))}
+      ${dsfDrop('etSt','Status',stc,[{label:'All statuses',selected:st.status==='all',onclick:"dsfPickSingle();etSet('status','all')"}].concat(['Published','Draft'].map(x=>({label:x,selected:st.status===x,onclick:`dsfPickSingle();etSet('status','${x}')`}))))}
+      <button class="flt-btn" onclick="toast('More table filters — prototype')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M4 8h8M6 12h4"/></svg> Filters</button>
+      <span class="tbar-spring"></span>
+      ${viewToggle(st,'etView')}
+      <button class="btn btn-primary" onclick="openEntTableForm('${e.id}')">${_MDIC.plus} Add table</button>
+    </div>${body}${pgn}`;
+}
+function _etTblRow(e,t,idx){
+  const open=_etState.expand===t.id;
+  const cols=open?_erColsForTable(t):null;
+  const colsHtml=open?`<div class="et-cols">${cols.map(c=>`<div class="et-col"><span class="et-col-n">${escapeHtml(c.n)}</span><span class="et-col-t ${c.pk?'pk':c.fk?'fk':''}">${c.pk?'PK':c.fk?'FK':escapeHtml(c.ty)}</span></div>`).join('')}</div>`:'';
+  return `<div class="md-trow${open?' et-open':''}">
+    <div class="md-trow-h" onclick="etExpand('${t.id}')">
+      <span class="md-trow-ic">${_MDIC.tbl}</span><span class="md-trow-av">${av(P(t.owner),'sm')}</span>
+      <span class="md-trow-name">${escapeHtml(t.alias)}</span><code class="md-code">${escapeHtml(t.code)}</code>
+      ${_entityChip(t.entityId,t.entity)}<span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${t.pii?_piiBadge():''}
+      <span class="md-trow-right">${_stPill(t.status)}<span class="lrow-time">${escapeHtml(t.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();_entTblMenu('${e.id}',${idx},this)" aria-label="Table actions">${_MDIC.dots}</button><span class="et-chev${open?' on':''}">${_MDIC.chev}</span></span>
+    </div>
+    <div class="md-trow-desc">${escapeHtml(t.desc)}</div>
+    <div class="md-trow-foot"><span class="lrow-metric">${_MDIC.col}${t.cols} columns</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.rel}${t.rel} relations</span><span class="lrow-sep">·</span><span>${escapeHtml(P(t.owner).n)}</span></div>
+    ${colsHtml}
+  </div>`;
+}
+function _etTblCard(e,t){
+  return `<div class="md-ecard" onclick="etView('list');etExpand('${t.id}')">
+    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.tbl}</span><span class="md-ecard-name">${escapeHtml(t.alias)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div>
+    <div class="md-ecard-desc">${escapeHtml(t.desc)}</div>
+    <div class="md-ecard-meta">${_stPill(t.status)}<span class="metaico">${_MDIC.col}${t.cols} cols</span><span class="metaico">${_MDIC.rel}${t.rel} rel</span></div>
+    <div class="md-ecard-foot"><span class="mcard-owner">${av(P(t.owner),'sm')}${escapeHtml(t.entity)}</span><span class="mcard-date">${escapeHtml(t.updated)}</span></div></div>`;
 }
 function _tableExists(id){ return !!(typeof _table==='function'?_table(id):TABLES.find(t=>t.id===id)); }
 /* ── Relationships tab: Diagram / Cards / Table (port of TfdRelationshipsTab) ── */
