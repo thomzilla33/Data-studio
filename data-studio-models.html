@@ -1402,11 +1402,12 @@ html.theme-light .vw-seg button.on{color:#fff}  /* keep white icon in light them
 
 /* ── Model card grid ── */
 .mcard-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px}
-.mcard{display:flex; flex-direction:column; gap:12px; padding:18px; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s}
+.mcard{display:flex; flex-direction:column; gap:12px; padding:18px; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s, background .12s}
+html:not(.theme-light) .mcard{background:var(--surface-raised)}  /* DS card container: distinct surface, not blended with the page bg */
 /* Light mode: soft resting shadow so white cards float on the blue-gray canvas */
 html.theme-light .mcard, html.theme-light .lrow, html.theme-light .md-ecard, html.theme-light .md-trow, html.theme-light .md-ccard, html.theme-light .md-tile, html.theme-light .md-sec, html.theme-light .mtbl-wrap{box-shadow:0 1px 2px rgba(15,23,42,0.04), 0 2px 6px rgba(15,23,42,0.05)}
 html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .md-ecard:hover, html.theme-light .md-trow:hover, html.theme-light .md-ccard:hover{box-shadow:0 4px 14px rgba(15,23,42,0.10)}
-.mcard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 8px 24px rgba(0,0,0,0.16); transform:translateY(-1px)}
+.mcard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:inset 0 0 0 2000px rgba(255,255,255,0.025), 0 8px 24px rgba(0,0,0,0.16); transform:translateY(-1px)}  /* more evident hover: subtle surface lift */
 .mcard-head{display:flex; align-items:flex-start; gap:8px}
 .mcard-title{font-size:16px; font-weight:700; color:var(--t1); letter-spacing:-.01em}
 .mcard-head .av-stack{margin-left:auto}
@@ -1424,13 +1425,14 @@ html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .m
 .obadge.implemented{color:var(--tag-informative-fg,#7db1ff); background:var(--tag-informative-bg,rgba(43,127,255,0.14)); border-color:var(--tag-informative-bd,rgba(43,127,255,0.3))}
 .obadge.cloned{color:var(--tag-purple-fg,#c084fc); background:var(--tag-purple-bg,rgba(168,85,247,0.14)); border-color:var(--tag-purple-bd,rgba(168,85,247,0.3))}
 .ver-chip{display:inline-flex; align-items:center; gap:4px; height:20px; padding:0 7px; border-radius:6px; font-size:11px; font-weight:700; color:var(--tag-informative-fg,#7db1ff); background:var(--tag-informative-bg,rgba(43,127,255,0.1)); border:1px solid var(--tag-informative-bd,rgba(43,127,255,0.22))}
-.st-pill{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600}
-.st-pill .st-dot{width:7px; height:7px; border-radius:50%}
-.st-pill.published{color:var(--tag-success-fg,#34d399)} .st-pill.published .st-dot{background:var(--tag-success-fg,#34d399)}
-.st-pill.draft{color:var(--t3)} .st-pill.draft .st-dot{background:var(--t3)}
-.st-pill.pending{color:var(--tag-alert-fg,#fbbf24)} .st-pill.pending .st-dot{background:var(--tag-alert-fg,#fbbf24)}
-.st-pill.deprecated{color:var(--tag-alert-fg,#fbbf24)} .st-pill.deprecated .st-dot{background:var(--tag-alert-fg,#fbbf24)}
-.st-pill.archived{color:var(--t3); opacity:.8} .st-pill.archived .st-dot{background:var(--t3)}
+/* DS Badge = colored dot (state by color) + neutral label; not colored text */
+.st-pill{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:500; color:var(--t2)}
+.st-pill .st-dot{width:7px; height:7px; border-radius:50%; background:var(--t3)}
+.st-pill.published .st-dot{background:var(--tag-success-fg,#34d399)}
+.st-pill.draft .st-dot{background:var(--t3)}
+.st-pill.pending .st-dot{background:var(--tag-alert-fg,#fbbf24)}
+.st-pill.deprecated .st-dot{background:var(--tag-error-fg,#f87171)}
+.st-pill.archived{opacity:.8} .st-pill.archived .st-dot{background:var(--t3)}
 
 /* ── Rich list rows (Entities / Tables / Reference) ── */
 .lrows{display:flex; flex-direction:column; gap:12px}
