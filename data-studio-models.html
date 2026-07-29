@@ -1478,6 +1478,7 @@ html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .m
 .lrow-metric{display:inline-flex; align-items:center; gap:6px}
 .lrow-metric svg{color:var(--t3)}
 .lrow-foot-r{margin-left:auto; display:flex; align-items:center; gap:10px}
+.lrow-collab{display:inline-flex; align-items:center}
 .chip{display:inline-flex; align-items:center; gap:5px; height:23px; padding:0 9px; border-radius:7px; font-size:12px; font-weight:500; border:1px solid var(--line); background:var(--muted); color:var(--t2); white-space:nowrap}
 .chip svg{color:var(--t3); flex-shrink:0}
 .chip-model{font-weight:600; color:var(--t1)}
@@ -2949,7 +2950,7 @@ function entityRow(e){
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1.2"/><path d="M2 6.5h12M6 6.5v6.5"/></svg>${e.tables.length} tables</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h3v3M13 3l-5 5M3 7v6h6v-3"/></svg>${e.external} external</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="4" rx="5" ry="2"/><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/></svg>${escapeHtml(e.records)} records</span>
-      <span class="lrow-foot-r">${e.collab&&e.collab.length?avStack(e.collab,3):''}${e.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</span>
+      ${e.collab&&e.collab.length?`<span class="lrow-sep">·</span><span class="lrow-collab">${avStack(e.collab,3)}</span>`:''}<span class="lrow-foot-r">${e.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</span>
     </div>
   </div>`;
 }
@@ -3909,7 +3910,7 @@ function tableRow(t){
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M2.5 6.5h11"/></svg>${t.cols.length} columns</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="4" rx="5" ry="2"/><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/></svg>${escapeHtml(t.rows)} rows</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 10a3 3 0 0 1 0-4l1-1a3 3 0 0 1 4 4M10 6a3 3 0 0 1 0 4l-1 1a3 3 0 0 1-4-4"/></svg>${relN} relations</span>
-      <span class="lrow-foot-r">${t.collab&&t.collab.length?avStack(t.collab,3):''}${t.tags.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</span>
+      ${t.collab&&t.collab.length?`<span class="lrow-sep">·</span><span class="lrow-collab">${avStack(t.collab,3)}</span>`:''}<span class="lrow-foot-r">${t.tags.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</span>
     </div>
   </div>`;
 }
@@ -4604,7 +4605,7 @@ function refRow(r){
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg>${r.values.length} items</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M2.5 6.5h11"/></svg>${r.fields} fields</span>
       <span class="lrow-sep">·</span><span class="lrow-metric"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 10a3 3 0 0 1 0-4l1-1a3 3 0 0 1 4 4M10 6a3 3 0 0 1 0 4l-1 1a3 3 0 0 1-4-4"/></svg>${r.referencedBy} referenced by</span>
-      <span class="lrow-foot-r">${r.collab&&r.collab.length?avStack(r.collab,3):''}${r.tags.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</span>
+      ${r.collab&&r.collab.length?`<span class="lrow-sep">·</span><span class="lrow-collab">${avStack(r.collab,3)}</span>`:''}<span class="lrow-foot-r">${r.tags.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</span>
     </div>
   </div>`;
 }
