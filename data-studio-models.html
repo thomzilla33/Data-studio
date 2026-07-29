@@ -2118,6 +2118,50 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .erf-addc{height:32px}
 .erf-phys{display:flex; gap:8px; font-size:12px; color:var(--t2); background:var(--hover); border-radius:8px; padding:10px 12px; line-height:1.5}
 .erf-phys svg{flex-shrink:0; color:var(--tag-alert-fg,#facc15); margin-top:1px}
+/* Privileges tab */
+.priv-sec-h{display:flex; align-items:center; gap:10px; margin-bottom:4px}
+.priv-sec-actions{margin-left:auto; display:flex; align-items:center; gap:10px}
+.dsec-count{font-size:11px; font-weight:700; color:var(--t3); background:var(--hover); padding:1px 8px; border-radius:6px}
+.priv-sec-sub{font-size:12.5px; color:var(--t3); margin:0 0 14px; max-width:660px; line-height:1.5}
+.priv-card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+.priv-card{border:1px solid var(--card-border); background:var(--card-bg); border-radius:var(--r12); padding:14px 16px; display:flex; flex-direction:column; gap:10px}
+.priv-card-h{display:flex; align-items:flex-start; gap:10px}
+.priv-card-ic{width:30px; height:30px; border-radius:var(--r8); display:flex; align-items:center; justify-content:center; background:var(--hover); color:var(--t2); flex-shrink:0}
+.priv-card-ic-key{background:var(--tag-informative-bg); color:var(--tag-informative-fg)}
+.priv-card-tt{flex:1; min-width:0}
+.priv-card-name{font-size:14px; font-weight:600; color:var(--t1)}
+.priv-sym{font-family:var(--font-mono,ui-monospace,Menlo,monospace); font-size:11.5px; color:var(--t3); margin-top:1px}
+.priv-badge{font-size:10.5px; font-weight:600; color:var(--t3); background:var(--hover); border:1px solid var(--line); border-radius:999px; padding:2px 8px; flex-shrink:0}
+.priv-badge-custom{color:var(--tag-informative-fg); background:var(--tag-informative-bg); border-color:transparent}
+.priv-badge-scope{color:var(--primary); background:transparent; border-color:var(--line)}
+.priv-card-desc{font-size:12.5px; color:var(--t2); line-height:1.5; flex:1}
+.priv-card-foot{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:11px; border-top:1px solid var(--line); margin-top:auto}
+.priv-roles{display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:1}
+.priv-role{font-size:11px; font-weight:600; color:var(--t2); background:var(--hover); border-radius:999px; padding:3px 9px}
+.priv-role-none{color:var(--t3); background:transparent; border:1px dashed var(--line); font-weight:500}
+.priv-manage{height:30px; font-size:12px; flex-shrink:0}
+/* Manage-roles + create-custom-privilege modals */
+.modal.modal-lg{width:560px; max-width:calc(100vw - 32px)}
+.mr-list{display:grid; grid-template-columns:1fr 1fr; gap:8px 16px}
+.mr-opt{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--t1); cursor:pointer}
+.mr-opt input{accent-color:var(--primary)}
+.cp-sec-t{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--t3); margin:4px 0 10px}
+.cp-field{margin-bottom:13px}
+.cp-lbl{display:block; font-size:12px; font-weight:600; color:var(--t2); margin-bottom:6px}
+.cp-hint{font-size:11px; color:var(--t3); margin-top:5px}
+.cp-perms-h{display:flex; align-items:center; gap:10px; margin:18px 0 10px; padding-top:15px; border-top:1px solid var(--line)}
+.cp-perms-h .btn{margin-left:auto}
+.cp-picker{display:flex; flex-wrap:wrap; gap:6px 14px; padding:10px 12px; background:var(--hover); border-radius:var(--r8); margin-bottom:10px}
+.cp-pick-opt{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer}
+.cp-pick-opt input{accent-color:var(--primary)}
+.cp-perms{display:flex; flex-wrap:wrap; gap:8px}
+.cp-perm{display:inline-flex; align-items:center; gap:6px; background:var(--hover); border-radius:999px; padding:3px 6px 3px 4px}
+.cp-perm-x{border:none; background:transparent; color:var(--t3); cursor:pointer; font-size:11px; line-height:1; padding:2px}
+.cp-perm-x:hover{color:var(--t1)}
+.cp-empty{text-align:center; padding:26px 16px; border:1px dashed var(--line); border-radius:var(--r12)}
+.cp-empty-ic{display:inline-flex; color:var(--t3)}
+.cp-empty-t{font-size:13px; font-weight:600; color:var(--t2); margin-top:8px}
+.cp-empty-s{font-size:12px; color:var(--t3); margin:4px 0 14px; line-height:1.5}
 .ref-preview{width:100%; border-collapse:collapse; font-size:12.5px}
 .ref-preview th{text-align:left; font-weight:600; color:var(--t3); padding:7px 10px; border-bottom:1px solid var(--card-border); font-size:11px; text-transform:uppercase; letter-spacing:.03em}
 .ref-preview td{padding:8px 10px; border-bottom:1px solid var(--card-border); color:var(--t1)}
@@ -3261,15 +3305,118 @@ function saveEntRel(){ const d=_erDraft; if(!d) return; const e=_entById(d.entId
   else { e.rels.unshift(rel); toast('Relationship to “'+d.target+'” created','ok'); }
   _entEdited(e); _erDraft=null; closeSlideout(); renderEntityDetail(d.entId);
 }
+/* ── Privileges tab — Standard cards (role assignment) + Custom cards + create modal ── */
+const _KEY_IC='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3"/><path d="M8 8l5 5M11 11l1.5-1.5M12.5 12.5L14 11" stroke-linecap="round"/></svg>';
+const _ROLE_POOL=['Analyst','Sales Manager','Revenue Ops','Compliance Lead','Data Steward','Support Agent','Schema Admin','Read-only'];
+const _STD_PRIV_DEFS=[
+  {k:'read',n:'Read',desc:'Allows reading records of this entity through APIs and views.',ic:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>'},
+  {k:'create',n:'Create',desc:'Allows creating new records of this entity.',ic:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>'},
+  {k:'update',n:'Update',desc:'Allows updating existing records of this entity.',ic:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.5l2.5 2.5M3 13l.7-2.6 7-7 2.5 2.5-7 7L3 13z"/></svg>'},
+  {k:'delete',n:'Delete',desc:'Allows soft-deleting records of this entity.',ic:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.5 8.5h6l.5-8.5"/></svg>'},
+  {k:'list',n:'List',desc:'Allows listing records of this entity through paginated queries.',ic:'<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 4.5h9M5 8h9M5 11.5h9M2.5 4.5h.01M2.5 8h.01M2.5 11.5h.01"/></svg>'},
+];
+let _cpSearch='', _cpDraft=null, _mrDraft=null;
+function cpSearch(v){ _cpSearch=v; renderEntityDetail(detailState.id); _mdRefocus('cpSearch',v); }
+function _normCpriv(pv){ return { n:pv.n, sym:pv.sym||(_slug(pv.n).replace(/-/g,'_')), scope:pv.scope||'This entity only', desc:pv.desc||'', roles:pv.roles||[], perms:pv.perms||((pv.p||[]).map(x=>x[0])), isNew:!!pv.isNew }; }
+function _roleChips(roles){ return roles.length? roles.map(r=>`<span class="priv-role">${escapeHtml(r)}</span>`).join('') : `<span class="priv-role priv-role-none">No roles assigned</span>`; }
 function privTab(e){
-  const cperms=e.cperms||[], cprivs=e.cprivs||[];
+  e.privRoles=e.privRoles||{};
+  const cprivs=(e.cprivs||[]).map(_normCpriv);
+  const q=_cpSearch.toLowerCase();
+  const cfiltered=cprivs.filter(pv=>!q||pv.n.toLowerCase().includes(q)||pv.sym.toLowerCase().includes(q));
   return `
-    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Default permissions<span class="dsec-sub">created automatically with every entity</span></div></div>
-      <div class="priv-grid">${['Read','Create','Update','Delete','List'].map(p=>`<div class="priv-cell">${_CHK} ${p}</div>`).join('')}</div></div>
-    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom permissions<span class="dsec-sub">granular controls you define (data · screen · API)</span></div><button class="btn" style="height:34px" onclick="openPermForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add permission</button></div>
-      ${cperms.length?`<div class="dcard">${cperms.map((p,i)=>`<div class="drow"><span class="drow-name">${escapeHtml(p.n)}</span><span class="drow-meta"><span class="perm-chip ${p.c==='Data'?'data':(p.c==='Screen'?'':'api')}">Controls: ${escapeHtml(p.c)}</span><button class="lrow-menu" onclick="_entPermMenu('${e.id}',${i},this)" aria-label="Permission actions">${_MDIC.dots}</button></span></div>`).join('')}</div>`:`<div class="placeholder" style="padding:24px">No custom permissions.</div>`}</div>
-    <div class="dsec"><div class="dsec-h"><div class="dsec-t">Custom privileges<span class="dsec-sub">named groups of permissions granted to users, roles or agents</span></div><button class="btn" style="height:34px" onclick="openPrivForm('${e.id}')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Add privilege</button></div>
-      ${cprivs.length?cprivs.map((pv,i)=>`<div class="cpriv"><div class="cpriv-name"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#7db1ff" stroke-width="1.5"><rect x="3" y="7" width="10" height="6" rx="1.3"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>${escapeHtml(pv.n)}<span style="flex:1"></span><button class="lrow-menu" onclick="_entPrivMenu('${e.id}',${i},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div><div class="cpriv-perms">${pv.p.map(([lbl,kind])=>`<span class="perm-chip ${kind}">${escapeHtml(lbl)}</span>`).join('')}</div></div>`).join(''):`<div class="placeholder" style="padding:24px">No custom privileges.</div>`}</div>`;
+    <div class="dsec">
+      <div class="priv-sec-h"><div class="dsec-t">Standard privileges</div></div>
+      <div class="priv-sec-sub">Predefined system privileges every entity has. Assign which roles hold them; the privileges themselves can’t be edited.</div>
+      <div class="priv-card-grid">${_STD_PRIV_DEFS.map(p=>_entStdPrivCard(e,p)).join('')}</div>
+    </div>
+    <div class="dsec">
+      <div class="priv-sec-h"><div class="dsec-t">Custom privileges <span class="dsec-count">${cprivs.length}</span></div>
+        <div class="priv-sec-actions"><label class="dsf-search" style="max-width:220px;height:34px">${_MDIC.search}<input id="cpSearch" type="text" placeholder="Search privileges…" value="${escapeHtml(_cpSearch)}" oninput="cpSearch(this.value)" autocomplete="off"></label>
+          <button class="btn btn-primary" onclick="openCreateCustomPriv('${e.id}')">${_MDIC.plus} New custom privilege</button></div></div>
+      <div class="priv-sec-sub">Domain-specific privileges you define for ${escapeHtml(e.name)}, composed from the tenant permission catalog. Cross-entity permissions are allowed.</div>
+      ${cfiltered.length?`<div class="priv-card-grid">${cfiltered.map(pv=>_entCustPrivCard(e,pv,cprivs.indexOf(pv))).join('')}</div>`
+        :`<div class="empty" style="padding:30px"><div class="empty-t">${cprivs.length?'No privileges match':'No custom privileges yet'}</div>${cprivs.length?'Try a different search.':'Create one to grant domain-specific access.'}</div>`}
+    </div>`;
+}
+function _entStdPrivCard(e,p){
+  const roles=(e.privRoles[p.k]||[]);
+  return `<div class="priv-card"><div class="priv-card-h"><span class="priv-card-ic">${p.ic}</span>
+      <div class="priv-card-tt"><div class="priv-card-name">${p.n}</div><div class="priv-sym">${p.k}</div></div>
+      <span class="priv-badge">Standard</span></div>
+    <div class="priv-card-desc">${p.desc}</div>
+    <div class="priv-card-foot"><div class="priv-roles">${_roleChips(roles)}</div>
+      <button class="btn priv-manage" onclick="openManageRoles('${e.id}','${p.k}')">${_MDIC.gear} Manage roles</button></div></div>`;
+}
+function _entCustPrivCard(e,pv,idx){
+  return `<div class="priv-card"><div class="priv-card-h"><span class="priv-card-ic priv-card-ic-key">${_KEY_IC}</span>
+      <div class="priv-card-tt"><div class="priv-card-name">${escapeHtml(pv.n)}</div><div class="priv-sym">${escapeHtml(pv.sym)}</div></div>
+      <span class="priv-badge priv-badge-custom">Custom</span><span class="priv-badge priv-badge-scope">${escapeHtml(pv.scope)}</span>
+      ${pv.isNew?'<span class="erel-new">NEW</span>':''}
+      <button class="lrow-menu" onclick="_cpMenu('${e.id}',${idx},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div>
+    <div class="priv-card-desc">${escapeHtml(pv.desc)}</div>
+    <div class="priv-card-foot"><div class="priv-roles">${_roleChips(pv.roles)}</div>
+      <button class="btn priv-manage" onclick="openManageRoles('${e.id}','custom:${idx}')">${_MDIC.gear} Manage roles</button></div></div>`;
+}
+function _cpMenu(id,idx,btn){ _mdKebab(btn,[
+    {ic:_MDIC.gear,label:'Manage roles',act:`openManageRoles('${id}','custom:${idx}')`},
+    'sep',
+    {ic:_RM_IC.del,label:'Remove privilege',act:`_cpRemove('${id}',${idx})`,danger:true},
+  ]); }
+function _cpRemove(id,idx){ const e=_entById(id); if(!e||!e.cprivs||!e.cprivs[idx]) return; const nm=e.cprivs[idx].n; e.cprivs.splice(idx,1); _entEdited(e); toast('Privilege “'+nm+'” removed','ok'); renderEntityDetail(id); }
+/* Manage roles modal */
+function openManageRoles(entId,key){
+  const e=_entById(entId); if(!e) return; e.privRoles=e.privRoles||{};
+  let current, title;
+  if(key.indexOf('custom:')===0){ const i=+key.split(':')[1]; const pv=_normCpriv((e.cprivs||[])[i]||{n:''}); current=new Set(pv.roles); title=pv.n; }
+  else { current=new Set(e.privRoles[key]||[]); title=(_STD_PRIV_DEFS.find(p=>p.k===key)||{}).n||key; }
+  _mrDraft={entId,key};
+  $('modalScrim').innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_MDIC.gear}</div><div><div class="modal-title">Manage roles · ${escapeHtml(title)}</div><div class="so-internal">${escapeHtml(e.name)}</div></div></div>
+    <div class="modal-body"><div class="cp-hint" style="margin-bottom:12px">Select which roles hold this privilege.</div>
+      <div class="mr-list">${_ROLE_POOL.map(r=>`<label class="mr-opt"><input type="checkbox" class="mr-cb" value="${escapeHtml(r)}" ${current.has(r)?'checked':''}><span>${escapeHtml(r)}</span></label>`).join('')}</div></div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveManageRoles()">Save roles</button></div></div>`;
+  $('modalScrim').classList.add('open');
+}
+function saveManageRoles(){ const d=_mrDraft; if(!d) return; const e=_entById(d.entId); if(!e) return;
+  const roles=[...document.querySelectorAll('.mr-cb')].filter(cb=>cb.checked).map(cb=>cb.value);
+  if(d.key.indexOf('custom:')===0){ const i=+d.key.split(':')[1]; if(e.cprivs&&e.cprivs[i]){ e.cprivs[i]=_normCpriv(e.cprivs[i]); e.cprivs[i].roles=roles; } }
+  else { e.privRoles=e.privRoles||{}; e.privRoles[d.key]=roles; }
+  _entEdited(e); _mrDraft=null; closeModal(); toast('Roles updated','ok'); renderEntityDetail(d.entId);
+}
+/* Create custom privilege modal (metadata + permissions builder) */
+function _cpSym(e,name){ const s=_slug(name||'').replace(/-/g,'_'); return s?(_slug(e.name).replace(/-/g,'_')+'_'+s):''; }
+function openCreateCustomPriv(entId){ const e=_entById(entId); if(!e) return;
+  _cpDraft={entId, name:'', sym:'', symEdited:false, desc:'', perms:[], picking:false}; _renderCreateCustomPriv(); }
+function _renderCreateCustomPriv(){ const d=_cpDraft; if(!d) return; const e=_entById(d.entId); if(!e) return;
+  const catalog=['Read','Create','Update','Delete','List'];
+  const canCreate=!!((d.name||'').trim() && d.perms.length);
+  const permsBody = d.perms.length
+    ? `<div class="cp-perms">${d.perms.map((p,i)=>`<div class="cp-perm"><span class="perm-chip">${escapeHtml(p)}</span><button class="cp-perm-x" onclick="_cpRemovePerm(${i})" aria-label="Remove">✕</button></div>`).join('')}</div>`
+    : `<div class="cp-empty"><span class="cp-empty-ic">${_KEY_IC}</span><div class="cp-empty-t">No permissions yet</div><div class="cp-empty-s">This privilege won’t grant anything until it includes at least one permission.</div><button class="btn btn-primary" onclick="_cpTogglePick()">${_MDIC.plus} Add the first permission</button></div>`;
+  const picker = d.picking? `<div class="cp-picker">${catalog.map(p=>`<label class="cp-pick-opt"><input type="checkbox" ${d.perms.indexOf(p)>=0?'checked':''} onchange="_cpTogglePerm('${p}')"><span class="perm-chip">${escapeHtml(p)}</span></label>`).join('')}</div>`:'';
+  $('modalScrim').innerHTML=`<div class="modal modal-lg"><div class="modal-head"><div class="modal-ic" style="background:var(--tag-informative-bg);color:var(--tag-informative-fg);border-color:var(--tag-informative-bd)">${_KEY_IC}</div><div><div class="modal-title">Create custom privilege</div><div class="so-internal">For entity: <b style="color:var(--primary)">${escapeHtml(e.name)}</b></div></div></div>
+    <div class="modal-body">
+      <div class="cp-sec-t">Metadata</div>
+      <div class="cp-field"><label class="cp-lbl">Privilege name <span class="erf-req">*</span></label><input class="minput" id="cp_name" value="${escapeHtml(d.name)}" placeholder="e.g. Approve" oninput="_cpSetName(this.value)" autocomplete="off"></div>
+      <div class="cp-field"><label class="cp-lbl">Internal symbol <span class="erf-req">*</span></label><input class="minput md-name-mono" id="cp_sym" value="${escapeHtml(d.sym||_cpSym(e,d.name))}" placeholder="${escapeHtml(_slug(e.name).replace(/-/g,'_'))}_approve" oninput="_cpDraft.sym=this.value;_cpDraft.symEdited=true"><div class="cp-hint">snake_case, unique within ${escapeHtml(e.name)} privileges.</div></div>
+      <div class="cp-field"><label class="cp-lbl">Description</label><textarea class="mtextarea" placeholder="What does this privilege control on ${escapeHtml(e.name)}? When does it apply?" oninput="_cpDraft.desc=this.value">${escapeHtml(d.desc)}</textarea></div>
+      <div class="cp-perms-h"><span class="cp-sec-t" style="margin:0">Permissions in this privilege <span class="dsec-count">${d.perms.length}</span></span><button class="btn" style="height:30px" onclick="_cpTogglePick()">${_MDIC.plus} Add permission</button></div>
+      ${picker}${permsBody}
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" ${canCreate?'':'disabled style="opacity:.5;cursor:not-allowed"'} onclick="saveCreateCustomPriv()">Create privilege</button></div></div>`;
+  $('modalScrim').classList.add('open'); setTimeout(()=>{const el=$('cp_name'); if(el&&!d.name)el.focus();},50);
+}
+function _cpSetName(v){ _cpDraft.name=v; if(!_cpDraft.symEdited){ const s=_cpSym(_entById(_cpDraft.entId),v); _cpDraft.sym=s; const el=$('cp_sym'); if(el)el.value=s; } _cpUpdateCreateBtn(); }
+function _cpUpdateCreateBtn(){ const btn=document.querySelector('#modalScrim .modal-foot .btn-primary'); if(!btn)return; const ok=!!((_cpDraft.name||'').trim()&&_cpDraft.perms.length); btn.disabled=!ok; btn.style.opacity=ok?'':'.5'; btn.style.cursor=ok?'':'not-allowed'; }
+function _cpSyncInputs(){ const n=$('cp_name'), s=$('cp_sym'), t=$('modalScrim')&&document.querySelector('#modalScrim textarea'); if(n)_cpDraft.name=n.value; if(s)_cpDraft.sym=s.value; if(t)_cpDraft.desc=t.value; }
+function _cpTogglePick(){ _cpSyncInputs(); _cpDraft.picking=!_cpDraft.picking; _renderCreateCustomPriv(); }
+function _cpTogglePerm(p){ _cpSyncInputs(); const a=_cpDraft.perms; const i=a.indexOf(p); if(i>=0)a.splice(i,1); else a.push(p); _renderCreateCustomPriv(); }
+function _cpRemovePerm(i){ _cpSyncInputs(); _cpDraft.perms.splice(i,1); _renderCreateCustomPriv(); }
+function saveCreateCustomPriv(){ const d=_cpDraft; if(!d) return; const e=_entById(d.entId); if(!e) return; _cpSyncInputs();
+  const name=(d.name||'').trim(); if(!name){ toast('Enter a privilege name'); return; }
+  if(!d.perms.length){ toast('Add at least one permission'); return; }
+  e.cprivs=e.cprivs||[]; e.cprivs.unshift({n:name, sym:(d.sym||_cpSym(e,name)).trim(), scope:'This entity only', desc:(d.desc||'').trim(), roles:[], perms:d.perms.slice(), isNew:true});
+  _entEdited(e); _cpDraft=null; closeModal(); toast('Privilege “'+name+'” created','ok'); renderEntityDetail(d.entId);
 }
 function apiTab(e,endpoints){
   return `<div class="dsec"><div class="dsec-h"><div class="dsec-t">API contracts<span class="dsec-sub">${endpoints.length} endpoints exposing this entity</span></div></div>
@@ -6563,6 +6710,10 @@ function _seedIncoming(m, md, me){
   return [{ from:sib.name, k:'one-to-many', s:false, comp:'Composition', scope:'',
     dir:'Bidirectional', navChild:ss+'.'+_plural(es), navParent:es+'.'+ss, editOn:sib.name }];
 }
+function _seedCustomPrivs(me){ const s=_slug(me.name).replace(/-/g,'_');
+  return [{ n:'Approve', sym:s+'_approve_flow', scope:'This entity only',
+    desc:'Allows approving '+me.name+' records in the review workflow before they go live.',
+    roles:['Revenue Ops','Compliance Lead','Data Steward'], perms:['Read','Update'] }]; }
 function _bridgeEntity(modelId, entId){
   const real=ENTITIES.find(x=>x.id===entId); if(real) return real;
   const c=_mdCtx(modelId); if(!c) return null; const {m,md}=c;
@@ -6576,7 +6727,8 @@ function _bridgeEntity(modelId, entId){
     status:me.status, desc:me.desc||('The '+(me.name||'').toLowerCase()+' entity and its records.'),
     owner:me.owner, updated:me.updated, pii:me.pii,
     tables:tbls, rels:rels, incoming:_seedIncoming(m, md, me), external:rels.length, records:_synthK(seed),
-    cprivs:[], cperms:[], ceps:[], _bridged:true };
+    privRoles:{read:['Analyst'],create:['Sales Manager'],update:['Sales Manager'],delete:['Sales Manager'],list:['Sales Manager']},
+    cprivs:_seedCustomPrivs(me), cperms:[], ceps:[], _bridged:true };
   _bridgeEnts[entId]=ent; return ent;
 }
 function openMdEntityFull(modelId, entId){
