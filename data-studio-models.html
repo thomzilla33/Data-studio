@@ -1375,9 +1375,11 @@ html.theme-light .toast{background:#fff}
 .vtoggle-seg button.on{background:var(--primary); color:#fff; border-color:var(--primary)}
 
 /* ── Persistent page header (Models module) ── */
-.page-h1{font-size:30px; font-weight:800; letter-spacing:-.02em; color:var(--t1); margin:2px 0 16px}
-.mtabs.mtabs-lg{gap:6px; margin-bottom:22px}
-.mtabs.mtabs-lg .mtab{padding:9px 4px; margin-right:20px; font-size:14px; font-weight:600}
+.page-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin:2px 0 16px}
+.page-h1{font-size:24px; font-weight:600; letter-spacing:-.01em; color:var(--t1); margin:0}  /* DS Text/Title L */
+@media (max-width:640px){ .page-h1{font-size:18px} }  /* DS Text/Title M / compress */
+.mtabs.mtabs-lg{gap:4px; margin-bottom:22px; border-bottom:0}  /* DS tabs: no full-width divider, only the active underline */
+.mtabs.mtabs-lg .mtab{padding:9px 12px; margin-right:0; font-size:14px; font-weight:600; border-radius:8px 8px 0 0}  /* hover fill gets horizontal padding */
 
 /* ── Toolbar row: filters left, view-toggle + primary right ── */
 .tbar{display:flex; align-items:center; gap:10px; margin-bottom:20px; flex-wrap:wrap}
@@ -2900,7 +2902,6 @@ function renderEntities(){
       ${filtering ? `<button class="dsf-clear" onclick="clearFilters()">Clear</button>` : ''}
       <span class="tbar-spring"></span>
       ${viewToggle(listState,'eView')}
-      <button class="btn btn-primary" onclick="navigate('entities/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New entity</button>
     </div>
     ${listState.view==='table' ? dtblView('entities',filtered,_entCols(),'entities') : filtered.length===0 ? `<div class="empty"><div class="empty-t">No entities match</div>Try a different search or clear the filters.</div>` : listState.view==='grid' ? `<div class="mcard-grid">${filtered.map(entityCard).join('')}</div>` : `<div class="lrows">${filtered.map(entityRow).join('')}</div>`}
     ${vcallout('v2','Models &amp; Marketplace — group entities and tables into publishable models, browse pre-built marketplace models, and generate entities with AI.')}
@@ -3862,7 +3863,6 @@ function renderTablesList(){
       ${filtering?`<button class="dsf-clear" onclick="tlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(tablesListState,'tlView')}
-      <button class="btn btn-primary" onclick="navigate('tables/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New table</button>
     </div>
     ${tablesListState.view==='table' ? dtblView('tables',filtered,_tblCols(),'tables') : filtered.length===0?`<div class="empty"><div class="empty-t">No tables match</div>Try a different search or clear the filters.</div>` : tablesListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(tableCard).join('')}</div>` : `<div class="lrows">${filtered.map(tableRow).join('')}</div>`}`;
 }
@@ -4560,7 +4560,6 @@ function renderReferenceList(){
       ${filtering?`<button class="dsf-clear" onclick="rlClear()">Clear</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(refListState,'rlView')}
-      <button class="btn btn-primary" onclick="navigate('reference/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New reference list</button>
     </div>
     ${refListState.view==='table' ? dtblView('reference',filtered,_refCols(),'reference') : filtered.length===0?`<div class="empty"><div class="empty-t">No reference data matches</div>Try a different search or clear the filters.</div>` : refListState.view==='grid' ? `<div class="mcard-grid">${filtered.map(refCard).join('')}</div>` : `<div class="lrows">${filtered.map(refRow).join('')}</div>`}`;
 }
@@ -5160,7 +5159,9 @@ function _crumbs(items){
 }
 function pageShell(active){
   const tab=(id,label)=>`<button class="mtab ${active===id?'active':''}" onclick="navigate('${id}')">${label}</button>`;
-  return `<h1 class="page-h1">Models</h1>
+  const ACT={models:['New model','models/new'],entities:['New entity','entities/new'],tables:['New table','tables/new'],reference:['New reference list','reference/new']};
+  const a=ACT[active]||ACT.models;
+  return `<div class="page-head"><h1 class="page-h1">Models</h1><button class="btn btn-primary" onclick="navigate('${a[1]}')">${_MDIC.plus} ${a[0]}</button></div>
     <div class="mtabs mtabs-lg">${tab('models','Models')}${tab('entities','Entities')}${tab('tables','Tables')}${tab('reference','Reference Data')}</div>`;
 }
 
@@ -5225,7 +5226,6 @@ function renderModels(){
       ${filtering?`<button class="dsf-clear" onclick="mClear()">Clear filters</button>`:''}
       <span class="tbar-spring"></span>
       ${viewToggle(modelsState,'mView')}
-      <button class="btn btn-primary" onclick="navigate('models/new')"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> New model</button>
     </div>
     ${body}`;
 }
