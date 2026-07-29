@@ -1404,6 +1404,17 @@ html.theme-light .vw-seg button.on{color:#fff}  /* keep white icon in light them
 .mcard-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px}
 .mcard{display:flex; flex-direction:column; gap:12px; padding:18px; border:1px solid var(--card-border,var(--line)); border-radius:14px; background:var(--card-bg,var(--bg2)); cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s, background .12s}
 html:not(.theme-light) .mcard{background:var(--surface-raised)}  /* DS card container: distinct surface, not blended with the page bg */
+/* DS Card-grid layout: title + State tag · subtitle · desc · colored-icon metadata row */
+.mcard-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px}
+.mcard-subtitle{font-size:13px; color:var(--t2); margin-top:-6px}
+.mcard-state{flex-shrink:0; display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:2px 10px; border-radius:999px; border:1px solid var(--line-strong); background:transparent; color:var(--t2); white-space:nowrap}
+.mcard-state.published{color:var(--tag-success-fg); border-color:var(--tag-success-fg)}
+.mcard-state.pending{color:var(--tag-alert-fg); border-color:var(--tag-alert-fg)}
+.mcard-state.deprecated{color:var(--tag-error-fg); border-color:var(--tag-error-fg)}
+.mcard-meta2{display:flex; align-items:center; flex-wrap:wrap; gap:7px 16px; margin-top:2px}
+.cmeta{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:var(--t2)}
+.cmi{flex-shrink:0}
+.cmi-blue{color:var(--primary)} .cmi-cyan{color:var(--cyan)} .cmi-green{color:var(--tag-success-fg)} .cmi-orange{color:var(--tag-alert-fg)} .cmi-purple{color:#a78bfa}
 /* Light mode: soft resting shadow so white cards float on the blue-gray canvas */
 html.theme-light .mcard, html.theme-light .lrow, html.theme-light .md-ecard, html.theme-light .md-trow, html.theme-light .md-ccard, html.theme-light .md-tile, html.theme-light .md-sec, html.theme-light .mtbl-wrap{box-shadow:0 1px 2px rgba(15,23,42,0.04), 0 2px 6px rgba(15,23,42,0.05)}
 html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .md-ecard:hover, html.theme-light .md-trow:hover, html.theme-light .md-ccard:hover{box-shadow:0 4px 14px rgba(15,23,42,0.10)}
@@ -1433,6 +1444,12 @@ html.theme-light .mcard:hover, html.theme-light .lrow:hover, html.theme-light .m
 .st-pill.pending .st-dot{background:var(--tag-alert-fg,#fbbf24)}
 .st-pill.deprecated .st-dot{background:var(--tag-error-fg,#f87171)}
 .st-pill.archived{opacity:.8} .st-pill.archived .st-dot{background:var(--t3)}
+/* Semantic status tag (Entity-list rows) */
+.st-tag{display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:2px 9px; border-radius:999px; line-height:1.55}
+.st-tag-success{color:var(--tag-success-fg); background:var(--tag-success-bg)}
+.st-tag-alert{color:var(--tag-alert-fg); background:var(--tag-alert-bg,rgba(252,211,77,0.14))}
+.st-tag-error{color:var(--tag-error-fg); background:var(--tag-error-bg)}
+.st-tag-neutral{color:var(--t2); background:var(--hover)}
 
 /* ── Rich list rows (Entities / Tables / Reference) ── */
 .lrows{display:flex; flex-direction:column; gap:12px}
@@ -2917,7 +2934,7 @@ function entityRow(e){
       <span class="lrow-title">${escapeHtml(e.name)}</span>
       ${_modelChip(e.model)}
       <span class="chip">${escapeHtml(e.domain)}</span>
-      <span class="lrow-right">${_stPill(e.status)}<span class="lrow-time">${escapeHtml(e.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('entities','${e.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
+      <span class="lrow-right">${_stTag(e.status)}<span class="lrow-time">${escapeHtml(e.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('entities','${e.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
     </div>
     <div class="lrow-desc">${escapeHtml(e.desc)}</div>
     <div class="lrow-foot">
@@ -3877,7 +3894,7 @@ function tableRow(t){
       ${_modelChip(t.model)}
       ${_entityChip(t.entityId,t.entity)}
       <span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>
-      <span class="lrow-right">${_stPill(t.status)}<span class="lrow-time">${escapeHtml(t.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('tables','${t.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
+      <span class="lrow-right">${_stTag(t.status)}<span class="lrow-time">${escapeHtml(t.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('tables','${t.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
     </div>
     <div class="lrow-desc">${escapeHtml(t.desc)}</div>
     <div class="lrow-foot">
@@ -4572,7 +4589,7 @@ function refRow(r){
       <span class="lrow-title">${escapeHtml(r.name)}</span>
       ${_catBadge(r.category)}
       ${_originBadge(r.origin)}
-      <span class="lrow-right">${_stPill(r.status)}<span class="lrow-time">${escapeHtml(r.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('reference','${r.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
+      <span class="lrow-right">${_stTag(r.status)}<span class="lrow-time">${escapeHtml(r.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();openRowMenu('reference','${r.id}',this)" aria-label="Actions"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="13" cy="8" r="1.3"/></svg></button></span>
     </div>
     <div class="lrow-desc">${escapeHtml(r.desc)}</div>
     <div class="lrow-foot">
@@ -5119,6 +5136,8 @@ function P(k){ return PEOPLE[k]||{i:'?',n:'Unknown',c:'slate'}; }
 function av(p,size){ const c=AV_COLORS[p.c]||AV_COLORS.slate; return `<span class="av av-${size||'sm'}" style="background:${c}" title="${escapeHtml(p.n||p.i)}">${escapeHtml(p.i)}</span>`; }
 function avStack(keys,max){ max=max||3; const list=keys.map(P); const shown=list.slice(0,max); const extra=list.length-shown.length; return `<span class="av-stack">${shown.map(p=>av(p,'sm')).join('')}${extra>0?`<span class="av-more">+${extra}</span>`:''}</span>`; }
 function _stPill(s){ const map={Published:'published',Draft:'draft','Pending changes':'pending',Deprecated:'deprecated',Archived:'archived'}; return `<span class="st-pill ${map[s]||'draft'}"><span class="st-dot"></span>${escapeHtml(s)}</span>`; }
+/* Entity-list uses a SEMANTIC TAG for status (colored pill), vs the card Badge (dot). */
+function _stTag(s){ const map={Published:'success',Draft:'neutral','Pending changes':'alert',Deprecated:'error',Archived:'neutral'}; return `<span class="st-tag st-tag-${map[s]||'neutral'}">${escapeHtml(s)}</span>`; }
 function _origin(o){ return `<span class="obadge ${o.toLowerCase()}">${escapeHtml(o)}</span>`; }
 
 const MODELS=[
@@ -5231,12 +5250,29 @@ function renderModels(){
     </div>
     ${body}`;
 }
+/* Colored metadata icons for the DS card-grid layout */
+const _CIC={
+  user:'<svg class="cmi cmi-blue" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.3" r="2.5"/><path d="M3.5 13a4.5 4.5 0 0 1 9 0" stroke-linecap="round"/></svg>',
+  grid:'<svg class="cmi cmi-cyan" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
+  clock:'<svg class="cmi cmi-green" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.6V8l2.4 1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  people:'<svg class="cmi cmi-orange" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5.5" r="2.1"/><path d="M2.4 12.5a3.6 3.6 0 0 1 7.2 0" stroke-linecap="round"/><path d="M10.6 4.2a2 2 0 0 1 0 3.6M11.4 12.5a3.4 3.4 0 0 0-1.6-2.7" stroke-linecap="round"/></svg>',
+  ver:'<svg class="cmi cmi-purple" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3.5h6l4 4v5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/><path d="M9 3.5V7h4" stroke-linejoin="round"/></svg>',
+};
 function modelCard(m){
+  const own=P(m.owner);
+  const st={Published:'published',Draft:'draft','Pending changes':'pending',Deprecated:'deprecated',Archived:'draft'}[m.status]||'draft';
+  const meta=[
+    `<span class="cmeta">${_CIC.user}${escapeHtml(own.n)}</span>`,
+    `<span class="cmeta">${_CIC.grid}${m.entities} entities</span>`,
+    `<span class="cmeta">${_CIC.clock}${escapeHtml(m.updated)}</span>`,
+    (m.collab&&m.collab.length)?`<span class="cmeta">${_CIC.people}+${m.collab.length}</span>`:'',
+    m.version?`<span class="cmeta">${_CIC.ver}${escapeHtml(m.version)}</span>`:'',
+  ].filter(Boolean).join('');
   return `<div class="mcard" onclick="openModelPreview('${m.id}')">
-    <div class="mcard-head"><div class="mcard-title">${escapeHtml(m.name)}</div>${_origin(m.origin)}${m.collab&&m.collab.length?avStack([m.owner].concat(m.collab),3):''}</div>
+    <div class="mcard-top"><div class="mcard-title">${escapeHtml(m.name)}</div><span class="mcard-state ${st}">${escapeHtml(m.status)}</span></div>
+    <div class="mcard-subtitle">${escapeHtml(m.origin)}${m.category?' · '+escapeHtml(m.category):''}</div>
     <div class="mcard-desc">${escapeHtml(m.desc)}</div>
-    <div class="mcard-meta">${_stPill(m.status)}<span class="metaico"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>${m.entities} entities</span>${m.version?`<span class="ver-chip"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round"/></svg>${m.version}</span>`:''}</div>
-    <div class="mcard-foot"><span class="mcard-owner">${av(P(m.owner),'sm')}${escapeHtml(P(m.owner).n)}</span><span class="mcard-date">${escapeHtml(m.updated)}</span></div>
+    <div class="mcard-meta2">${meta}</div>
   </div>`;
 }
 function modelRow(m){
@@ -5438,11 +5474,11 @@ function openModelPreview(id){
     </div>
     <div class="so-body">
       ${_pvInsights([drift, added+' columns added across the model in the last week.'])}
-      <div class="so-desc" style="margin-bottom:4px">${escapeHtml(m.desc)}</div>
-      ${_erDiagram(er.nodes, er.edges, er.note)}
-      <div class="mp-stats">${stats.map(([l,v])=>`<div class="mp-stat"><div class="mp-stat-v">${v}</div><div class="mp-stat-l">${l}</div></div>`).join('')}</div>
-      <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">${avStack([m.owner].concat(m.collab||[]),6)}<span style="font-size:12.5px;color:var(--t2)">${escapeHtml(P(m.owner).n)} (owner)${m.collab&&m.collab.length?` · +${m.collab.length} collaborator${m.collab.length===1?'':'s'}`:''}</span></div>
-      ${m.tags&&m.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${m.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`:''}
+      <div class="so-desc">${escapeHtml(m.desc)}</div>
+      <div class="so-sec"><div class="so-sec-h">Metrics</div><div class="mp-stats">${stats.map(([l,v])=>`<div class="mp-stat"><div class="mp-stat-v">${v}</div><div class="mp-stat-l">${l}</div></div>`).join('')}</div></div>
+      <div class="so-sec"><div class="so-sec-h">Structure</div>${_erDiagram(er.nodes, er.edges, er.note)}</div>
+      <div class="so-sec"><div class="so-sec-h">Team</div><div style="display:flex;align-items:center;gap:9px">${avStack([m.owner].concat(m.collab||[]),6)}<span style="font-size:12.5px;color:var(--t2)">${escapeHtml(P(m.owner).n)} (owner)${m.collab&&m.collab.length?` · +${m.collab.length} collaborator${m.collab.length===1?'':'s'}`:''}</span></div></div>
+      ${m.tags&&m.tags.length?`<div class="so-sec"><div class="so-sec-h">Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px">${m.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div></div>`:''}
     </div>`;
   $('slideout').classList.add('open'); $('slideout').setAttribute('aria-hidden','false'); $('scrim').classList.add('open');
   _diagInit();
