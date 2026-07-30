@@ -1372,13 +1372,14 @@ html.theme-light .toast{background:#fff}
 /* ── Version / scope callouts + floating toggle ── */
 .vcallout{display:flex; align-items:center; gap:10px; border:1px dashed var(--line-strong); border-radius:10px; padding:11px 14px; margin-top:12px; font-size:12.5px; color:var(--t2); background:rgba(255,255,255,0.015)}
 .vcallout-tag{flex-shrink:0; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--tag-purple-fg,#c084fc); background:var(--tag-purple-bg,rgba(168,85,247,0.14)); border:1px solid var(--tag-purple-bd,rgba(168,85,247,0.3)); padding:2px 7px; border-radius:6px}
-.vtoggle{position:fixed; bottom:16px; right:16px; z-index:80; display:flex; align-items:center; gap:8px; background:var(--surface-raised,var(--bg2)); border:1px solid var(--line); border-radius:10px; padding:6px 8px 6px 8px; box-shadow:0 8px 24px rgba(0,0,0,0.28); font-size:12px; cursor:grab; touch-action:none; user-select:none}
-.vtoggle.dragging{cursor:grabbing; box-shadow:0 12px 32px rgba(0,0,0,0.4); border-color:var(--line-strong)}
-.vtoggle-grip{display:flex; align-items:center; color:var(--field-placeholder); margin-right:-2px}
-.vtoggle-lbl{font-weight:600; color:var(--t2)}
-.vtoggle-seg{display:flex; gap:3px}
-.vtoggle-seg button{padding:4px 10px; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--t2); font-size:11.5px; font-weight:600; cursor:pointer; white-space:nowrap}
-.vtoggle-seg button.on{background:var(--primary); color:#fff; border-color:var(--primary)}
+.vtoggle{position:fixed; bottom:16px; right:16px; z-index:80; display:flex; align-items:center; gap:10px; background:var(--surface-raised,var(--bg2)); background-image:linear-gradient(rgba(255,255,255,0.05),rgba(255,255,255,0.05)); border:1.5px solid var(--line-strong); border-radius:12px; padding:7px 9px 7px 11px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.28); font-size:12.5px; cursor:grab; touch-action:none; user-select:none}
+.vtoggle.dragging{cursor:grabbing; border-color:var(--primary); box-shadow:0 16px 42px rgba(0,0,0,0.6), 0 0 0 1px var(--primary)}
+.vtoggle-grip{display:flex; align-items:center; color:var(--t2)}
+.vtoggle-lbl{font-weight:700; color:var(--t1); letter-spacing:.02em}
+.vtoggle-seg{display:flex; gap:2px; background:var(--hover); border:1px solid var(--line); border-radius:9px; padding:2px}
+.vtoggle-seg button{padding:5px 11px; border-radius:7px; border:1px solid transparent; background:transparent; color:var(--t2); font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:color .12s, background .12s}
+.vtoggle-seg button:hover:not(.on){color:var(--t1); background:var(--hover)}
+.vtoggle-seg button.on{background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:0 1px 5px rgba(43,127,255,0.55)}
 
 /* ── Persistent page header (Models module) ── */
 .page-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin:2px 0 16px}
