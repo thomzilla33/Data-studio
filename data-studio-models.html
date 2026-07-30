@@ -6613,7 +6613,7 @@ const _COMP_SING={widgets:'widget',queries:'query',metrics:'metric',datasets:'da
 function _mdCompSub(sub,x){ return sub==='widgets'?`${x.type} · ${x.studio}` : sub==='queries'?`Query · ${x.rows} rows` : sub==='metrics'?`Metric · ${x.val}` : `Dataset · ${x.rows} rows`; }
 function _mdCompCard(mid,sub,x,idx){
   return `<div class="mcard" onclick="mdSelectComp('${mid}','${sub}',${idx})">
-    <div class="mcard-top"><div style="display:flex;align-items:center;gap:9px;min-width:0"><span class="priv-card-ic priv-card-ic-key" style="width:28px;height:28px">${_COMP_IC[sub]}</span><div class="mcard-title">${escapeHtml(x.name)}</div></div><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
+    <div class="mcard-top"><div class="mcard-title">${escapeHtml(x.name)}</div><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
     <div class="mcard-subtitle">${escapeHtml(_mdCompSub(sub,x))}</div>
     <div class="mcard-meta2"><span class="cmeta">${_CIC.grid}${escapeHtml(x.entity)}</span><span class="cmeta">${_CIC.user}${escapeHtml(P(x.owner).n)}</span></div></div>`;
 }
