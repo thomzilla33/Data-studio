@@ -2155,22 +2155,26 @@ html:not(.theme-light) .ref-vals{background:var(--surface-raised,#131C2E)}
 .priv-sec-actions{margin-left:auto; display:flex; align-items:center; gap:10px}
 .dsec-count{font-size:11px; font-weight:700; color:var(--t3); background:var(--hover); padding:1px 8px; border-radius:6px}
 .priv-sec-sub{font-size:12.5px; color:var(--t3); margin:0 0 14px; max-width:660px; line-height:1.5}
-.priv-card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
-.priv-card{border:1px solid var(--card-border); background:var(--card-bg); border-radius:var(--r12); padding:14px 16px; display:flex; flex-direction:column; gap:10px}
-.priv-card-h{display:flex; align-items:flex-start; gap:10px}
-.priv-card-ic{width:30px; height:30px; border-radius:var(--r8); display:flex; align-items:center; justify-content:center; background:var(--hover); color:var(--t2); flex-shrink:0}
+/* Privileges — compact permission rows (standard CRUD + custom) */
+.priv-list{border:1px solid var(--card-border); background:var(--card-bg); border-radius:var(--r12); overflow:hidden}
+.priv-row{display:flex; align-items:center; gap:16px; padding:12px 14px 12px 16px; border-top:1px solid var(--line); transition:background .12s}
+.priv-row:first-child{border-top:0}
+.priv-row:hover{background:var(--hover)}
+.priv-row-l{display:flex; align-items:center; gap:12px; flex:1; min-width:0}
+.priv-card-ic{width:32px; height:32px; border-radius:var(--r8); display:flex; align-items:center; justify-content:center; background:var(--hover); color:var(--t2); flex-shrink:0}
 .priv-card-ic-key{background:var(--tag-informative-bg); color:var(--tag-informative-fg)}
-.priv-card-tt{flex:1; min-width:0}
-.priv-card-name{font-size:14px; font-weight:600; color:var(--t1)}
-.priv-sym{font-family:var(--font-mono,ui-monospace,Menlo,monospace); font-size:11.5px; color:var(--t3); margin-top:1px}
-.priv-badge{font-size:10.5px; font-weight:600; color:var(--t3); background:var(--hover); border:1px solid var(--line); border-radius:999px; padding:2px 8px; flex-shrink:0}
-.priv-badge-custom{color:var(--tag-informative-fg); background:var(--tag-informative-bg); border-color:transparent}
-.priv-badge-scope{color:var(--primary); background:transparent; border-color:var(--line)}
-.priv-card-desc{font-size:12.5px; color:var(--t2); line-height:1.5; flex:1}
-.priv-card-foot{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:11px; border-top:1px solid var(--line); margin-top:auto}
-.priv-roles{display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:1}
+.priv-row-tx{min-width:0}
+.priv-row-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.priv-row-name{font-size:13.5px; font-weight:600; color:var(--t1)}
+.priv-sym{font-family:var(--font-mono,ui-monospace,Menlo,monospace); font-size:11px; color:var(--t3)}
+.priv-row-desc{font-size:12px; color:var(--t2); line-height:1.45; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.priv-row-r{display:flex; align-items:center; gap:10px; flex-shrink:0}
+.priv-roles{display:flex; align-items:center; gap:6px}
 .priv-role{font-size:11px; font-weight:600; color:var(--t2); background:var(--hover); border-radius:999px; padding:3px 9px}
-.priv-role-none{color:var(--t3); background:transparent; border:1px dashed var(--line); font-weight:500}
+.priv-role-none{color:var(--t3); background:transparent; border:1px dashed var(--line); font-weight:500; padding:3px 9px; border-radius:999px}
+.priv-more{font-size:11px; font-weight:600; color:var(--t3)}
+.priv-badge{font-size:10.5px; font-weight:600; color:var(--t3); background:var(--hover); border:1px solid var(--line); border-radius:999px; padding:2px 8px; flex-shrink:0}
+.priv-badge-scope{color:var(--primary); background:transparent; border-color:var(--line)}
 .priv-manage{height:30px; font-size:12px; flex-shrink:0}
 /* Manage-roles + create-custom-privilege modals */
 .modal.modal-lg{width:560px; max-width:calc(100vw - 32px)}
@@ -3350,7 +3354,6 @@ const _STD_PRIV_DEFS=[
 let _cpSearch='', _cpDraft=null, _mrDraft=null;
 function cpSearch(v){ _cpSearch=v; renderEntityDetail(detailState.id); _mdRefocus('cpSearch',v); }
 function _normCpriv(pv){ return { n:pv.n, sym:pv.sym||(_slug(pv.n).replace(/-/g,'_')), scope:pv.scope||'This entity only', desc:pv.desc||'', roles:pv.roles||[], perms:pv.perms||((pv.p||[]).map(x=>x[0])), isNew:!!pv.isNew }; }
-function _roleChips(roles){ return roles.length? roles.map(r=>`<span class="priv-role">${escapeHtml(r)}</span>`).join('') : `<span class="priv-role priv-role-none">No roles assigned</span>`; }
 function privTab(e){
   e.privRoles=e.privRoles||{};
   const cprivs=(e.cprivs||[]).map(_normCpriv);
@@ -3358,37 +3361,41 @@ function privTab(e){
   const cfiltered=cprivs.filter(pv=>!q||pv.n.toLowerCase().includes(q)||pv.sym.toLowerCase().includes(q));
   return `
     <div class="dsec">
-      <div class="priv-sec-h"><div class="dsec-t">Standard privileges</div></div>
+      <div class="priv-sec-h"><div class="dsec-t">Standard privileges <span class="dsec-count">${_STD_PRIV_DEFS.length}</span></div></div>
       <div class="priv-sec-sub">Predefined system privileges every entity has. Assign which roles hold them; the privileges themselves can’t be edited.</div>
-      <div class="priv-card-grid">${_STD_PRIV_DEFS.map(p=>_entStdPrivCard(e,p)).join('')}</div>
+      <div class="priv-list">${_STD_PRIV_DEFS.map(p=>_entStdPrivRow(e,p)).join('')}</div>
     </div>
     <div class="dsec">
       <div class="priv-sec-h"><div class="dsec-t">Custom privileges <span class="dsec-count">${cprivs.length}</span></div>
         <div class="priv-sec-actions"><label class="dsf-search" style="max-width:220px;height:34px">${_MDIC.search}<input id="cpSearch" type="text" placeholder="Search privileges…" value="${escapeHtml(_cpSearch)}" oninput="cpSearch(this.value)" autocomplete="off"></label>
           <button class="btn btn-primary" onclick="openCreateCustomPriv('${e.id}')">${_MDIC.plus} New custom privilege</button></div></div>
       <div class="priv-sec-sub">Domain-specific privileges you define for ${escapeHtml(e.name)}, composed from the tenant permission catalog. Cross-entity permissions are allowed.</div>
-      ${cfiltered.length?`<div class="priv-card-grid">${cfiltered.map(pv=>_entCustPrivCard(e,pv,cprivs.indexOf(pv))).join('')}</div>`
+      ${cfiltered.length?`<div class="priv-list">${cfiltered.map(pv=>_entCustPrivRow(e,pv,cprivs.indexOf(pv))).join('')}</div>`
         :`<div class="empty" style="padding:30px"><div class="empty-t">${cprivs.length?'No privileges match':'No custom privileges yet'}</div>${cprivs.length?'Try a different search.':'Create one to grant domain-specific access.'}</div>`}
     </div>`;
 }
-function _entStdPrivCard(e,p){
+function _roleRow(roles){
+  if(!roles||!roles.length) return `<span class="priv-role priv-role-none">No roles assigned</span>`;
+  const shown=roles.slice(0,2), extra=roles.length-shown.length;
+  return shown.map(r=>`<span class="priv-role">${escapeHtml(r)}</span>`).join('')+(extra>0?`<span class="priv-more">+${extra}</span>`:'');
+}
+function _entStdPrivRow(e,p){
   const roles=(e.privRoles[p.k]||[]);
-  return `<div class="priv-card"><div class="priv-card-h"><span class="priv-card-ic">${p.ic}</span>
-      <div class="priv-card-tt"><div class="priv-card-name">${p.n}</div><div class="priv-sym">${p.k}</div></div>
-      <span class="priv-badge">Standard</span></div>
-    <div class="priv-card-desc">${p.desc}</div>
-    <div class="priv-card-foot"><div class="priv-roles">${_roleChips(roles)}</div>
+  return `<div class="priv-row">
+    <div class="priv-row-l"><span class="priv-card-ic">${p.ic}</span>
+      <div class="priv-row-tx"><div class="priv-row-top"><span class="priv-row-name">${p.n}</span><span class="priv-sym">${p.k}</span></div>
+        <div class="priv-row-desc">${p.desc}</div></div></div>
+    <div class="priv-row-r"><div class="priv-roles">${_roleRow(roles)}</div>
       <button class="btn priv-manage" onclick="openManageRoles('${e.id}','${p.k}')">${_MDIC.gear} Manage roles</button></div></div>`;
 }
-function _entCustPrivCard(e,pv,idx){
-  return `<div class="priv-card"><div class="priv-card-h"><span class="priv-card-ic priv-card-ic-key">${_KEY_IC}</span>
-      <div class="priv-card-tt"><div class="priv-card-name">${escapeHtml(pv.n)}</div><div class="priv-sym">${escapeHtml(pv.sym)}</div></div>
-      <span class="priv-badge priv-badge-custom">Custom</span><span class="priv-badge priv-badge-scope">${escapeHtml(pv.scope)}</span>
-      ${pv.isNew?'<span class="erel-new">NEW</span>':''}
-      <button class="lrow-menu" onclick="_cpMenu('${e.id}',${idx},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div>
-    <div class="priv-card-desc">${escapeHtml(pv.desc)}</div>
-    <div class="priv-card-foot"><div class="priv-roles">${_roleChips(pv.roles)}</div>
-      <button class="btn priv-manage" onclick="openManageRoles('${e.id}','custom:${idx}')">${_MDIC.gear} Manage roles</button></div></div>`;
+function _entCustPrivRow(e,pv,idx){
+  return `<div class="priv-row">
+    <div class="priv-row-l"><span class="priv-card-ic priv-card-ic-key">${_KEY_IC}</span>
+      <div class="priv-row-tx"><div class="priv-row-top"><span class="priv-row-name">${escapeHtml(pv.n)}</span><span class="priv-sym">${escapeHtml(pv.sym)}</span><span class="priv-badge priv-badge-scope">${escapeHtml(pv.scope)}</span>${pv.isNew?'<span class="erel-new">NEW</span>':''}</div>
+        <div class="priv-row-desc">${escapeHtml(pv.desc)}</div></div></div>
+    <div class="priv-row-r"><div class="priv-roles">${_roleRow(pv.roles)}</div>
+      <button class="btn priv-manage" onclick="openManageRoles('${e.id}','custom:${idx}')">${_MDIC.gear} Manage roles</button>
+      <button class="lrow-menu" onclick="_cpMenu('${e.id}',${idx},this)" aria-label="Privilege actions">${_MDIC.dots}</button></div></div>`;
 }
 function _cpMenu(id,idx,btn){ _mdKebab(btn,[
     {ic:_MDIC.gear,label:'Manage roles',act:`openManageRoles('${id}','custom:${idx}')`},
