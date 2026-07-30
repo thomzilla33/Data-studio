@@ -1769,18 +1769,7 @@ html:not(.theme-light) .diag-legend{background:var(--surface-raised,#131C2E)}
 /* PII badge */
 .pii-badge{display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; letter-spacing:.02em; color:var(--tag-alert-fg,#d08700); background:var(--tag-alert-bg,rgba(208,135,0,0.12)); border-radius:6px; padding:2px 6px}
 
-/* entity / table cards */
-.md-ecard{display:flex; flex-direction:column; gap:10px; border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); padding:16px; cursor:pointer; transition:border-color .12s, box-shadow .12s}
-.md-ecard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 4px 14px rgba(0,0,0,0.08)}
-.md-ecard-h{display:flex; align-items:center; gap:8px}
-.md-ecard-ic{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:8px; background:var(--muted,var(--hover)); color:var(--t2); flex-shrink:0}
-.md-ecard-name{font-size:15px; font-weight:700; color:var(--t1); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.md-ecard-desc{font-size:12.5px; line-height:1.5; color:var(--t2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:37px}
-.md-ecard-meta{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
-.md-ecard-meta .metaico{display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--t2)}
-.md-ecard-foot{display:flex; align-items:center; justify-content:space-between; padding-top:11px; border-top:1px solid var(--line)}
-.md-ecard-foot .mcard-owner{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--t2)}
-.md-ecard-foot .mcard-date{font-size:12px; color:var(--t3)}
+/* entity / table / component grids in the model detail reuse the shared .mcard (DS Card-grid) */
 
 /* code chips */
 .md-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:var(--t3); background:var(--muted,var(--hover)); padding:1px 7px; border-radius:6px}
@@ -1820,14 +1809,6 @@ html:not(.theme-light) .diag-legend{background:var(--surface-raised,#131C2E)}
 .md-comp-head h3{font-size:16px; font-weight:700; color:var(--t1); margin:0 0 4px}
 .md-comp-head p{font-size:13px; color:var(--t2); margin:0 0 16px}
 .md-comp-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
-.md-ccard{display:flex; flex-direction:column; gap:12px; border:1px solid var(--card-border,var(--line)); border-radius:12px; background:var(--card-bg,var(--bg2)); padding:15px; cursor:pointer; transition:border-color .12s, box-shadow .12s}
-.md-ccard:hover{border-color:var(--field-border-hover,var(--line-strong)); box-shadow:0 4px 14px rgba(0,0,0,0.08)}
-.md-ccard-h{display:flex; align-items:center; gap:9px}
-.md-ccard-ic{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:8px; background:var(--tag-informative-bg,rgba(37,99,235,0.1)); color:var(--primary); flex-shrink:0}
-.md-ccard-name{font-size:14px; font-weight:700; color:var(--t1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.md-ccard-sub{font-size:12px; color:var(--t3)}
-.md-ccard-foot{display:flex; align-items:center; justify-content:space-between; gap:8px}
-.md-ccard-ent{display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--t2)}
 .mtbl-inline{display:inline-flex; align-items:center; gap:6px}
 
 @media (max-width:900px){
@@ -3159,11 +3140,10 @@ function _etTblRow(e,t,idx){
   </div>`;
 }
 function _etTblCard(e,t){
-  return `<div class="md-ecard" onclick="etView('list');etExpand('${t.id}')">
-    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.tbl}</span><span class="md-ecard-name">${escapeHtml(t.alias)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div>
-    <div class="md-ecard-desc">${escapeHtml(t.desc)}</div>
-    <div class="md-ecard-meta">${_stPill(t.status)}<span class="metaico">${_MDIC.col}${t.cols} cols</span><span class="metaico">${_MDIC.rel}${t.rel} rel</span></div>
-    <div class="md-ecard-foot"><span class="mcard-owner">${av(P(t.owner),'sm')}${escapeHtml(t.entity)}</span><span class="mcard-date">${escapeHtml(t.updated)}</span></div></div>`;
+  return `<div class="mcard" onclick="etView('list');etExpand('${t.id}')">
+    <div class="mcard-top"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="mcard-title">${escapeHtml(t.alias)}</div><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div>${_stateTag(t.status)}</div>
+    <div class="mcard-desc">${escapeHtml(t.desc)}</div>
+    <div class="mcard-meta2"><span class="cmeta">${_CIC.user}${escapeHtml(P(t.owner).n)}</span><span class="cmeta">${_CIC.col}${t.cols} cols</span><span class="cmeta">${_CIC.link}${t.rel} rel</span><span class="cmeta">${_CIC.clock}${escapeHtml(t.updated)}</span></div></div>`;
 }
 function _tableExists(id){ return !!(typeof _table==='function'?_table(id):TABLES.find(t=>t.id===id)); }
 /* ── Relationships tab: Diagram / Cards / Table (port of TfdRelationshipsTab) ── */
@@ -5615,10 +5595,11 @@ function _pvHead2(icon,name,status,subtitle,route){ return `<div class="so-head 
   </div>`; }
 /* DS Slide Out footer — primary action moves out of the header into a right-aligned footer */
 function _pvFoot2(route,label){ return `<div class="so-foot mp-foot"><button class="btn" onclick="closeSlideout()">Close</button><button class="btn btn-primary" onclick="closeSlideout();navigate('${route}')">${_OPEN_IC} ${escapeHtml(label)}</button></div>`; }
-function _pvHead(icon,name,status,badges,headBtn){ return `<div class="so-head mp-head">
+/* DS Slide Out header for edit-context previews — status state-tag + subtitle; close only (footer carries edit/remove) */
+function _pvHead3(icon,name,status,subtitle){ return `<div class="so-head mp-head">
     <div class="mp-head-l"><span class="lrow-ic" style="width:34px;height:34px;flex-shrink:0">${icon}</span>
-      <div style="min-width:0"><div class="mp-title-row"><span class="so-title">${escapeHtml(name)}</span>${status}</div><div class="mp-badges">${badges}</div></div></div>
-    <div class="mp-head-r">${headBtn||''}<button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
+      <div style="min-width:0"><div class="mp-title-row"><span class="so-title">${escapeHtml(name)}</span>${status?_stateTag(status):''}</div>${subtitle?`<div class="so-subtitle">${subtitle}</div>`:''}</div></div>
+    <div class="mp-head-r"><button class="so-close" onclick="closeSlideout()" aria-label="Close">✕</button></div>
   </div>`; }
 function openEntityPreview(id){
   const e=ENTITIES.find(x=>x.id===id); if(!e) return;
@@ -6123,11 +6104,11 @@ function mdBackToEntities(mid){ modelDetailState.ent.selEntId=null; renderModelD
 function mdEntWsTab(mid,t){ modelDetailState.ent.subtab=t; renderModelDetail(mid); if(t==='diagram') setTimeout(_diagInit,0); }
 function mdDiagMode(mid,v){ modelDetailState.ent.diagMode=v; renderModelDetail(mid); setTimeout(_diagInit,0); }
 function _mdEntCard(m,e){
-  return `<div class="md-ecard" onclick="${_mdEntClick(e)}">
-    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.ent}</span><span class="md-ecard-name">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div>
-    <div class="md-ecard-desc">${escapeHtml(e.desc)}</div>
-    <div class="md-ecard-meta">${_stPill(e.status)}<span class="metaico">${_MDIC.tbl}${e.tables} tables</span><span class="metaico">${_MDIC.col}${e.cols} cols</span></div>
-    <div class="md-ecard-foot"><span class="mcard-owner">${av(P(e.owner),'sm')}${escapeHtml(P(e.owner).n)}</span><span class="mcard-date">${escapeHtml(e.updated)}</span></div></div>`;
+  return `<div class="mcard" onclick="${_mdEntClick(e)}">
+    <div class="mcard-top"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="mcard-title">${escapeHtml(e.name)}</div>${e.pii?_piiBadge():''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">${_stateTag(e.status)}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div></div>
+    ${e.domain?`<div class="mcard-subtitle">${escapeHtml(e.domain)}</div>`:''}
+    <div class="mcard-desc">${escapeHtml(e.desc)}</div>
+    <div class="mcard-meta2"><span class="cmeta">${_CIC.user}${escapeHtml(P(e.owner).n)}</span><span class="cmeta">${_CIC.tbl}${e.tables} tables</span><span class="cmeta">${_CIC.col}${e.cols} cols</span><span class="cmeta">${_CIC.clock}${escapeHtml(e.updated)}</span></div></div>`;
 }
 function _mdEntListRow(m,e){
   return `<div class="lrow" onclick="${_mdEntClick(e)}"><div class="lrow-top"><span class="lrow-ic">${_MDIC.ent}</span><span class="lrow-title">${escapeHtml(e.name)}</span>${e.pii?_piiBadge():''}<span class="lrow-right">${_stPill(e.status)}<span class="lrow-time">${escapeHtml(e.updated)}</span><button class="lrow-menu" onclick="event.stopPropagation();mdEntMenu('${modelDetailState.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></span></div>
@@ -6401,11 +6382,11 @@ function _mdTblRow(m,t){
     <div class="md-trow-foot"><span class="lrow-metric">${_MDIC.col}${t.cols} columns</span><span class="lrow-sep">·</span><span class="lrow-metric">${_MDIC.rel}${t.rel} relations</span><span class="lrow-sep">·</span><span>${escapeHtml(P(t.owner).n)}</span></div></div>`;
 }
 function _mdTblCard(m,t){
-  return `<div class="md-ecard" onclick="mdSelectTbl('${m.id}','${t.id}')">
-    <div class="md-ecard-h"><span class="md-ecard-ic">${_MDIC.tbl}</span><span class="md-ecard-name">${escapeHtml(t.name)}</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span><button class="md-cardkb" onclick="event.stopPropagation();_mdTblMenu('${m.id}','${t.id}',this)" aria-label="Table actions">${_MDIC.dots}</button></div>
-    <div class="md-ecard-desc">${escapeHtml(t.desc)}</div>
-    <div class="md-ecard-meta">${_stPill(t.status)}<span class="metaico">${_MDIC.col}${t.cols} cols</span><span class="metaico">${_MDIC.rel}${t.rel} rel</span></div>
-    <div class="md-ecard-foot"><span class="mcard-owner">${av(P(t.owner),'sm')}${escapeHtml(t.entity)}</span><span class="mcard-date">${escapeHtml(t.updated)}</span></div></div>`;
+  return `<div class="mcard" onclick="mdSelectTbl('${m.id}','${t.id}')">
+    <div class="mcard-top"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="mcard-title">${escapeHtml(t.name)}</div><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">${_stateTag(t.status)}<button class="md-cardkb" onclick="event.stopPropagation();_mdTblMenu('${m.id}','${t.id}',this)" aria-label="Table actions">${_MDIC.dots}</button></div></div>
+    <div class="mcard-subtitle">${escapeHtml(t.entity)}</div>
+    <div class="mcard-desc">${escapeHtml(t.desc)}</div>
+    <div class="mcard-meta2"><span class="cmeta">${_CIC.user}${escapeHtml(P(t.owner).n)}</span><span class="cmeta">${_CIC.col}${t.cols} cols</span><span class="cmeta">${_CIC.link}${t.rel} rel</span><span class="cmeta">${_CIC.clock}${escapeHtml(t.updated)}</span></div></div>`;
 }
 
 /* ── Table WORKSPACE (master-detail inside a model) ── */
@@ -6631,10 +6612,10 @@ function _mdComponentsTab(m,md){
 const _COMP_SING={widgets:'widget',queries:'query',metrics:'metric',datasets:'dataset'};
 function _mdCompSub(sub,x){ return sub==='widgets'?`${x.type} · ${x.studio}` : sub==='queries'?`Query · ${x.rows} rows` : sub==='metrics'?`Metric · ${x.val}` : `Dataset · ${x.rows} rows`; }
 function _mdCompCard(mid,sub,x,idx){
-  return `<div class="md-ccard" onclick="mdSelectComp('${mid}','${sub}',${idx})">
-    <div class="md-ccard-h"><span class="md-ccard-ic">${_COMP_IC[sub]}</span><span class="md-ccard-name">${escapeHtml(x.name)}</span><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
-    <div class="md-ccard-sub">${escapeHtml(_mdCompSub(sub,x))}</div>
-    <div class="md-ccard-foot"><span class="md-ccard-ent">${_MDIC.ent}${escapeHtml(x.entity)}</span>${av(P(x.owner),'sm')}</div></div>`;
+  return `<div class="mcard" onclick="mdSelectComp('${mid}','${sub}',${idx})">
+    <div class="mcard-top"><div style="display:flex;align-items:center;gap:9px;min-width:0"><span class="priv-card-ic priv-card-ic-key" style="width:28px;height:28px">${_COMP_IC[sub]}</span><div class="mcard-title">${escapeHtml(x.name)}</div></div><button class="md-cardkb" onclick="event.stopPropagation();_mdCompMenu('${mid}','${sub}',${idx},this)" aria-label="Component actions">${_MDIC.dots}</button></div>
+    <div class="mcard-subtitle">${escapeHtml(_mdCompSub(sub,x))}</div>
+    <div class="mcard-meta2"><span class="cmeta">${_CIC.grid}${escapeHtml(x.entity)}</span><span class="cmeta">${_CIC.user}${escapeHtml(P(x.owner).n)}</span></div></div>`;
 }
 
 /* ── Component WORKSPACE (master-detail inside a model) ── */
@@ -6896,9 +6877,14 @@ function openMdEntityPreview(id,entId){
   const drift=e.status==='Published'?'No drift detected against the catalog baseline.':e.status==='Draft'?'Draft — not yet published to the catalog.':e.status==='Pending changes'?'Pending changes awaiting publish.':'Deprecated — superseded.';
   const insights=[`${e.tables} table${e.tables===1?'':'s'} in ${escapeHtml(m.name)}, last touched ${escapeHtml(e.updated)}.`, drift, `${e.cols} column${e.cols===1?'':'s'} total${e.pii?' · contains PII':''}.`];
   const stats=[['Tables',e.tables],['Columns',e.cols],['PII',e.pii?'Yes':'No'],['Updated',escapeHtml(e.updated)]];
-  const badges=`${_modelChip(m.id)}${e.pii?_piiBadge():''}`;
-  $('slideout').innerHTML=`${_pvHead(_IC_ENTITY,e.name,_stPill(e.status),badges,'')}
-    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(e.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>
+  const subtitle=`${escapeHtml(m.name)}${e.domain?' · '+escapeHtml(e.domain):''}${e.pii?' · PII':''}`;
+  $('slideout').innerHTML=`${_pvHead3(_IC_ENTITY,e.name,e.status,subtitle)}
+    <div class="so-body">
+      ${_pvInsights(insights)}
+      <div class="so-desc">${escapeHtml(e.desc)}</div>
+      <div class="so-sec"><div class="so-sec-h">Metrics</div>${_pvStats(stats)}</div>
+      <div class="so-sec"><div class="so-sec-h">Structure</div>${_erDiagram(er.nodes,er.edges,er.note)}</div>
+    </div>
     <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveEnt('${id}','${entId}')">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdEditEntity('${id}','${entId}')">${_MDIC.edit} Edit entity</button></div>`;
   _soOpen(); setTimeout(_diagInit,0);
 }
@@ -6958,9 +6944,14 @@ function openMdTablePreview(id,tblId){
   const drift=t.status==='Published'?'No drift detected against the catalog baseline.':t.status==='Draft'?'Draft — not yet published to the catalog.':'Pending changes awaiting publish.';
   const insights=[`${t.cols} column${t.cols===1?'':'s'} · ${t.rel} relation${t.rel===1?'':'s'}.`, drift, `Backs the ${escapeHtml(t.entity)} entity in ${escapeHtml(m.name)}.`];
   const stats=[['Columns',t.cols],['Relations',t.rel],['Role',t.role],['Updated',escapeHtml(t.updated)]];
-  const badges=`<span class="mono" style="font-size:12px;color:var(--t3)">${escapeHtml(t.code)}</span><span class="pv-hsep">·</span><span class="mini-badge ${t.role==='Primary'?'mb-primary':'mb-secondary'}">${escapeHtml(t.role)}</span>${_entityChip(t.entityId,t.entity)}${t.pii?_piiBadge():''}`;
-  $('slideout').innerHTML=`${_pvHead(_IC_TABLE,t.name,_stPill(t.status),badges,'')}
-    <div class="so-body">${_pvInsights(insights)}<div class="so-desc" style="margin-bottom:8px">${escapeHtml(t.desc)}</div>${_erDiagram(er.nodes,er.edges,er.note)}${_pvStats(stats)}</div>
+  const subtitle=`${escapeHtml(t.role)} · ${escapeHtml(t.entity)} · <span style="font-family:var(--font-mono,ui-monospace,Menlo,monospace)">${escapeHtml(t.code)}</span>${t.pii?' · PII':''}`;
+  $('slideout').innerHTML=`${_pvHead3(_IC_TABLE,t.name,t.status,subtitle)}
+    <div class="so-body">
+      ${_pvInsights(insights)}
+      <div class="so-desc">${escapeHtml(t.desc)}</div>
+      <div class="so-sec"><div class="so-sec-h">Metrics</div>${_pvStats(stats)}</div>
+      <div class="so-sec"><div class="so-sec-h">Structure</div>${_erDiagram(er.nodes,er.edges,er.note)}</div>
+    </div>
     <div class="so-foot"><button class="btn btn-danger" style="margin-right:auto" onclick="confirmMdRemoveTbl('${id}','${tblId}')">${_RM_IC.del} Remove</button><button class="btn btn-primary" onclick="openMdEditTable('${id}','${tblId}')">${_MDIC.edit} Edit table</button></div>`;
   _soOpen(); setTimeout(_diagInit,0);
 }
@@ -7021,8 +7012,8 @@ function openMdCompPreview(id,sub,idx){
   const extra = sub==='widgets' ? F('Type',escapeHtml(x.type))+F('Studio',escapeHtml(x.studio))
     : sub==='metrics' ? F('Value',escapeHtml(x.val)) : F('Rows',escapeHtml(x.rows));
   const insights=[`${kind} consuming the ${escapeHtml(x.entity)} entity of ${escapeHtml(m.name)}.`, `${escapeHtml(detail)}.`, `Owned by ${escapeHtml(P(x.owner).n)}.`];
-  const badges=`<span class="chip">${_COMP_IC[sub]}${kind}</span><span class="md-ccard-ent" style="font-size:12px;color:var(--t3)">${_MDIC.ent}${escapeHtml(x.entity)}</span>`;
-  $('slideout').innerHTML=`${_pvHead(_COMP_IC[sub],x.name,'',badges,'')}
+  const subtitle=`${escapeHtml(kind)} · ${escapeHtml(x.entity)}`;
+  $('slideout').innerHTML=`${_pvHead3(_COMP_IC[sub],x.name,'',subtitle)}
     <div class="so-body">${_pvInsights(insights)}
       <div class="so-sec"><div class="so-sec-h">Details</div><div class="so-fields">
         ${F('Kind',escapeHtml(kind))}${F('Source entity',_entityChip('',x.entity))}${extra}${F('Owner',`<span class="mtbl-inline">${av(P(x.owner),'sm')}${escapeHtml(P(x.owner).n)}</span>`)}
