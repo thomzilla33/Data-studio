@@ -6104,9 +6104,10 @@ function mdBackToEntities(mid){ modelDetailState.ent.selEntId=null; renderModelD
 function mdEntWsTab(mid,t){ modelDetailState.ent.subtab=t; renderModelDetail(mid); if(t==='diagram') setTimeout(_diagInit,0); }
 function mdDiagMode(mid,v){ modelDetailState.ent.diagMode=v; renderModelDetail(mid); setTimeout(_diagInit,0); }
 function _mdEntCard(m,e){
+  const dom=e.domain||(_entById(e.id)||{}).domain||'Entity';
   return `<div class="mcard" onclick="${_mdEntClick(e)}">
     <div class="mcard-top"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="mcard-title">${escapeHtml(e.name)}</div>${e.pii?_piiBadge():''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">${_stateTag(e.status)}<button class="md-cardkb" onclick="event.stopPropagation();mdEntMenu('${m.id}','${e.id}',this)" aria-label="Entity actions">${_MDIC.dots}</button></div></div>
-    ${e.domain?`<div class="mcard-subtitle">${escapeHtml(e.domain)}</div>`:''}
+    <div class="mcard-subtitle">${escapeHtml(dom)}</div>
     <div class="mcard-desc">${escapeHtml(e.desc)}</div>
     <div class="mcard-meta2"><span class="cmeta">${_CIC.user}${escapeHtml(P(e.owner).n)}</span><span class="cmeta">${_CIC.tbl}${e.tables} tables</span><span class="cmeta">${_CIC.col}${e.cols} cols</span><span class="cmeta">${_CIC.clock}${escapeHtml(e.updated)}</span></div></div>`;
 }
